@@ -15,17 +15,16 @@ function ThemeConfig({ children }) {
 
   const themeOptions = useMemo(
     () => ({
-      palette: isLightTheme
-        ? { mode: "light" }
-        : {
-            mode: "dark",
-          },
+      palette: isLightTheme ? palette.light : palette.dark,
       typography: typography,
+      breakpoints: breakpoints,
     }),
     [isLightTheme]
   );
 
   const theme = createTheme(themeOptions);
+
+  console.log("theme", theme);
 
   return (
     <ThemeProvider theme={theme}>

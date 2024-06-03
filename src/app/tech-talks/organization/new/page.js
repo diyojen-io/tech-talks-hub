@@ -1,17 +1,27 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Formik, Field, Form } from "formik";
 import { TextField, Button, Container, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import * as Yup from "yup";
+import { styled } from "@mui/material";
+import Head from "next/head";
+import useLocalStorage from "../../../hooks/useLocalStorage";
 
+const CreateBox = styled(Box)(({ theme }) => ({
+  height: "80vh",
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+}));
 
 const organizationSchema = Yup.object().shape({
   organizationName: Yup.string().required("Organization name is required"),
-  occupation: Yup.string().required("Occupation is required"),
   email: Yup.string()
     .email("Invalid email format")
-    .required("eMail is required"),
+    .required("Email is required"),
   location: Yup.string().required("Location is required"),
   items: Yup.array().of(
     Yup.object().shape({
@@ -20,62 +30,44 @@ const organizationSchema = Yup.object().shape({
   ),
 });
 
-const CreateOrganizationForm = () => {
-  const [initialValues, setInitialValues] = useState({
-    organizationName: "",
-    occupation: "",
-    email: "",
-    location: "",
-    items: [{ Logo: null }],
-  });
-
-  useEffect(() => {
-    const savedOrganization = JSON.parse(
-      window.localStorage.getItem("organization")
-    );
-    if (savedOrganization) {
-      setInitialValues(savedOrganization);
+export default function CreateOrganizationForm() {
+  const [organizationData, setOrganizationData] = useLocalStorage(
+    "organization",
+    {
+      organizationName: "",
+      occupation: "",
+      email: "",
+      location: "",
+      items: [{ Logo: null }],
     }
-  }, []);
+  );
+
+  const submitCreateForm = async (values, { setSubmitting }) => {
+    values.createdBy = "ozkan";
+    values.owner = "ozkan";
+    values.createdAt = new Date().toISOString();
+    setOrganizationData(values); // Yerel depolama işlemi
+    setSubmitting(false);
+  };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        height: "calc(100vh - 60px)",
-      }}
-    >
-      <Box
-        sx={{
-          my: 4,
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          justifyContent: " center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
+    <>
+      <Head>
+        <title>Create Organization</title>
+      </Head>
+      <CreateBox>
         <Typography variant="h4" component="h1" gutterBottom>
           Create Organization
         </Typography>
         <Formik
           validationSchema={organizationSchema}
-          initialValues={initialValues}
-          onSubmit={async (values, { setSubmitting }) => {
-            await new Promise((r) => setTimeout(r, 500));
-            values.createdBy = "ozkan";
-            values.owner = "ozkan";
-            values.createdAt = new Date().toISOString();
-            alert(JSON.stringify(values, null, 2));
-            window.localStorage.setItem("organization", JSON.stringify(values));
-            setSubmitting(false);
-          }}
+          initialValues={organizationData}
+          onSubmit={submitCreateForm}
           enableReinitialize
         >
           {({ handleSubmit, isSubmitting, errors, touched }) => (
-            <Form onSubmit={handleSubmit}>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Form onSubmit={handleSubmit} style={{ width: "100%" }}>
+              <Box display="flex" flexDirection="column" gap={3}>
                 <Field name="organizationName">
                   {({ field }) => (
                     <TextField
@@ -146,9 +138,7 @@ const CreateOrganizationForm = () => {
             </Form>
           )}
         </Formik>
-      </Box>
-    </Container>
+      </CreateBox>
+    </>
   );
-};
-
-export default CreateOrganizationForm;
+}

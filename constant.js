@@ -10,15 +10,20 @@ export const DIYOJEN = {
     alt: "TechTalk",
   },
 };
+export const ORGANIZATION_IMAGES = {
+  img: {
+    src: "/images/photo-Create.jpg",
+    alt: "Organization Images",
+  },
+};
 
 export const POST = [
   {
     id: "bilgikrali",
     nickName: "BilgiKralı",
     img: {
-      src: "/images/pexels-pixabay-434551.jpg",
-
-      alt: "TechTalk",
+      src: "/images/main-images-1.jpg",
+      alt: "TechTalk1",
     },
     title: "Yazılım Gelişimi ve Yenilikler",
     logo: {
@@ -33,8 +38,8 @@ export const POST = [
     id: "koddehasi",
     nickName: "KodDehası",
     img: {
-      src: "/images/pexels-pixabay-531844.jpg",
-      alt: "TechTalk",
+      src: "/images/main-images-2.jpg",
+      alt: "TechTalk2",
     },
     title: "Yazılım Mimarisi ve Tasarım Prensipleri",
     logo: {
@@ -46,10 +51,11 @@ export const POST = [
     date: "16.2.2021",
   },
   {
+    id: "teknolojiasigi",
     nickName: "TeknolojiAşığı",
     img: {
-      src: "/images/asadas.jpg",
-      alt: "TechTalk",
+      src: "/images/main-images-3.jpg",
+      alt: "TechTalk3",
     },
     title: "Yapay Zeka ve Geleceği",
     logo: {
@@ -60,10 +66,11 @@ export const POST = [
       "Yazılım, bilgisayarların çalışmasını sağlayan programların ve verilerin bir araya gelerek bir işlevi yerine getirmesini sağlayan kodların genel adıdır. Bu kodlar, bir programın nasıl çalışacağını belirleyen talimatlar içerir. Yazılım, bilgisayarlarla etkileşimde bulunmamızı sağlar ve çeşitli görevleri yerine getirmemize olanak tanır, örneğin işletim sistemleri, uygulama yazılımları, oyunlar ve web siteleri gibi çeşitli alanlarda kullanılır.",
   },
   {
+    id: "bilgikrali",
     nickName: "BilgiKralı",
     img: {
-      src: "/images/pexels-tirachard-kumtanom-733854.jpg",
-      alt: "TechTalk",
+      src: "/images/main-images-4.jpg",
+      alt: "TechTalk4",
     },
     title: "Yazılım Gelişimi ve Yenilikler",
     logo: {
@@ -72,20 +79,6 @@ export const POST = [
     },
     contents:
       "Yazılım, bilgisayarların çalışmasını sağlayan programların ve verilerin bir araya gelerek bir işlevi yerine getirmesini sağlayan kodların genel adıdır. Bu kodlar, bir programın nasıl çalışacağını belirleyen talimatlar içerir. Yazılım, bilgisayarlarla etkileşimde bulunmamızı sağlar ve çeşitli görevleri yerine getirmemize olanak tanır, örneğin işletim sistemleri, uygulama yazılımları, oyunlar ve web siteleri gibi çeşitli alanlarda kullanılır.",
-  },
-  {
-    nickName: "KodDehası",
-    img: {
-      src: "/images/asadas.jpg",
-      alt: "TechTalk",
-    },
-    title: "Yazılım Mimarisi ve Tasarım Prensipleri",
-    logo: {
-      src: "/images/logo.png",
-      alt: "TechTalk",
-    },
-    contents:
-      "Yazılım, bilgisayarların çalışmasını sağlayan programların ve verilerin bir araya gelerek bir işlevi yerine getirmesini sağlayan kodların genel adıdır. Bu kodlar, bir programın nasıl çalışacağını belirleyen talimatlar içerir. Yazılım, bilgisayarlarla etkileşimde bulunmamızı sağlar ve çeşitli görevleri yerine getirmem",
   },
 ];
 

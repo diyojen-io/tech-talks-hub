@@ -4,77 +4,68 @@ function createGradient(color1, color2) {
   return `linear-gradient(to bottom, ${color1}, ${color2})`;
 }
 
-// SETUP COLORS
-
 const PRIMARY = {
-  lighter: "#D6E4FF",
-  light: "#84A9FF",
-  main: "#3366FF",
-  dark: "#1939B7",
-  darker: "#091A7A",
+  lighter: "#f0f0f0",
+  light: "#d0d0d0",
+  main: "#a0a0a0",
+  dark: "#707070",
+  darker: "#404040",
 };
 const SECONDARY = {
-  lighter: "#C8FACD",
-  light: "#DDE6ED",
-  main: "#526D82",
-  dark: "#27374D",
-  darker: "#005249",
+  lighter: "#f8f8f8",
+  light: "#e0e0e0",
+  main: "#b0b0b0",
+  dark: "#808080",
+  darker: "#505050",
 };
-// const CUSTOM = {
-//   lighter: "#D6E4FF",
-//   light: "#DDE6ED",
-//   main: "#526D82",
-//   dark: "#27374D",
-//   darker: "#091A7A",
-// };
 const INFO = {
-  lighter: "#D0F2FF",
-  light: "#74CAFF",
-  main: "#1890FF",
-  dark: "#0C53B7",
-  darker: "#04297A",
+  lighter: "#f0f0f0",
+  light: "#d0d0d0",
+  main: "#a0a0a0",
+  dark: "#707070",
+  darker: "#404040",
 };
 const SUCCESS = {
-  lighter: "#E9FCD4",
-  light: "#AAF27F",
-  main: "#54D62C",
-  dark: "#229A16",
-  darker: "#08660D",
+  lighter: "#e9e9e9",
+  light: "#c9c9c9",
+  main: "#999999",
+  dark: "#696969",
+  darker: "#393939",
 };
 const WARNING = {
-  lighter: "#FFF7CD",
-  light: "#FFE16A",
-  main: "#FFC107",
-  dark: "#B78103",
-  darker: "#7A4F01",
+  lighter: "#f9f9f9",
+  light: "#d9d9d9",
+  main: "#a9a9a9",
+  dark: "#797979",
+  darker: "#494949",
 };
 const ERROR = {
-  lighter: "#FFE7D9",
-  light: "#FFA48D",
-  main: "#FF4842",
-  dark: "#B72136",
-  darker: "#7A0C2E",
+  lighter: "#f7f7f7",
+  light: "#d7d7d7",
+  main: "#a7a7a7",
+  dark: "#777777",
+  darker: "#474747",
 };
 
 const GREY = {
-  0: "#FFFFFF",
-  100: "#F9FAFB",
-  200: "#F4F6F8",
-  300: "#DFE3E8",
-  400: "#C4CDD5",
-  500: "#919EAB",
-  600: "#637381",
-  700: "#454F5B",
-  800: "#96ab9c",
-  900: "#161C24",
-  500_8: ("#919EAB", 0.08),
-  500_12: ("#919EAB", 0.12),
-  500_16: ("#919EAB", 0.16),
-  500_24: ("#919EAB", 0.24),
-  500_32: ("#919EAB", 0.32),
-  500_48: ("#919EAB", 0.48),
-  500_56: ("#919EAB", 0.56),
-  500_80: ("#919EAB", 0.8),
+  0: "#ffffff",
+  100: "#f9f9f9",
+  200: "#e6e6e6",
+  300: "#d3d3d3",
+  400: "#c0c0c0",
+  500: "#a9a9a9",
+  600: "#808080",
+  700: "#696969",
+  800: "#505050",
+  900: "#303030",
+  500_8: alpha("#a9a9a9", 0.08),
+  500_12: alpha("#a9a9a9", 0.12),
+  500_16: alpha("#a9a9a9", 0.16),
+  500_24: alpha("#a9a9a9", 0.24),
+  500_32: alpha("#a9a9a9", 0.32),
+  500_48: alpha("#a9a9a9", 0.48),
+  500_56: alpha("#a9a9a9", 0.56),
+  500_80: alpha("#a9a9a9", 0.8),
 };
 
 const GRADIENTS = {
@@ -86,11 +77,11 @@ const GRADIENTS = {
 };
 
 const CHART_COLORS = {
-  violet: ["#826AF9", "#9E86FF", "#D0AEFF", "#F7D2FF"],
-  blue: ["#2D99FF", "#83CFFF", "#A5F3FF", "#CCFAFF"],
-  green: ["#2CD9C5", "#60F1C8", "#A4F7CC", "#C0F2DC"],
-  yellow: ["#FFE700", "#FFEF5A", "#FFF7AE", "#FFF3D6"],
-  red: ["#FF6C40", "#FF8F6D", "#FFBD98", "#FFF2D4"],
+  violet: ["#f0f0f0", "#d0d0d0", "#a0a0a0", "#707070"],
+  blue: ["#e0e0e0", "#b0b0b0", "#808080", "#505050"],
+  green: ["#f8f8f8", "#c8c8c8", "#989898", "#686868"],
+  yellow: ["#f9f9f9", "#d9d9d9", "#a9a9a9", "#797979"],
+  red: ["#f7f7f7", "#d7d7d7", "#a7a7a7", "#777777"],
 };
 
 const COMMON = {

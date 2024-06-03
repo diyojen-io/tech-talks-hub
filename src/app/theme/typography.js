@@ -36,12 +36,14 @@ const sourceCodePro = Source_Code_Pro({
   display: "swap",
 });
 
-export const FONT_PRIMARY = openSans.style.fontFamily;
-export const FONT_SECONDARY = roboto.style.fontFamily;
-export const FONT_PAGE = sourceCodePro.style.fontFamily;
+export const OPEN_SANS = openSans.style.fontFamily;
+export const ROBOTO = roboto.style.fontFamily;
+export const SOURCE_CODE_PRO = sourceCodePro.style.fontFamily;
 
 const typography = {
-  fontFamily: FONT_PRIMARY,
+  fontFamily: OPEN_SANS,
+  secondaryFontFamily: ROBOTO,
+  tertiaryFontFamily: SOURCE_CODE_PRO,
   fontWeightLight: 300,
   fontWeightRegular: 400,
   fontWeightMedium: 600,
