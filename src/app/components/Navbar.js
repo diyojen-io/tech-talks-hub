@@ -14,15 +14,6 @@ import { FEATURES } from "../../../constant";
 import { styled } from "@mui/material";
 import NextLink from "next/link";
 
-const ButtonStyle = styled(Button)(({ theme }) => ({
-  padding: "10px",
-  color: theme.palette.background.paper,
-  backgroundColor: theme.palette.primary.light,
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-}));
-
 const NavbarBox = styled(Container)(({ theme }) => ({
   top: "0",
   right: "0",
@@ -80,15 +71,18 @@ export default function TopNavbar() {
             })}
           </List>
         </Box>
+
         <Stack direction="row" pt={2} pb={2}>
-          <NextLink href="/tech-talks/login" passHref>
-            <ButtonStyle sx={{ marginRight: "10px" }} size="large">
-              Login
-            </ButtonStyle>
-          </NextLink>
-          <NextLink href="/tech-talks/sign-up" passHref>
-            <ButtonStyle>Sign up</ButtonStyle>
-          </NextLink>
+          <Button
+            sx={{ marginRight: "10px" }}
+            variant="outlined"
+            color="primary"
+          >
+            Login
+          </Button>
+          <Button variant="contained" color="primary" size="large">
+            Sign up
+          </Button>
         </Stack>
       </WrapperBox>
     </NavbarBox>

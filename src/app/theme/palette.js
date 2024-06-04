@@ -5,46 +5,46 @@ function createGradient(color1, color2) {
 }
 
 const PRIMARY = {
-  lighter: "#f0f0f0",
-  light: "#d0d0d0",
-  main: "#a0a0a0",
-  dark: "#707070",
-  darker: "#404040",
+  lighter: "#D6E4FF",
+  light: "#84A9FF",
+  main: "#3366FF",
+  dark: "#1939B7",
+  darker: "#091A7A",
 };
 const SECONDARY = {
-  lighter: "#f8f8f8",
-  light: "#e0e0e0",
-  main: "#b0b0b0",
-  dark: "#808080",
-  darker: "#505050",
+  lighter: "#C8FACD",
+  light: "#5BE584",
+  main: "#00AB55",
+  dark: "#007B55",
+  darker: "#005249",
 };
 const INFO = {
-  lighter: "#f0f0f0",
-  light: "#d0d0d0",
-  main: "#a0a0a0",
-  dark: "#707070",
-  darker: "#404040",
+  lighter: "#D0F2FF",
+  light: "#74CAFF",
+  main: "#1890FF",
+  dark: "#0C53B7",
+  darker: "#04297A",
 };
 const SUCCESS = {
-  lighter: "#e9e9e9",
-  light: "#c9c9c9",
-  main: "#999999",
-  dark: "#696969",
-  darker: "#393939",
+  lighter: "#E9FCD4",
+  light: "#AAF27F",
+  main: "#54D62C",
+  dark: "#229A16",
+  darker: "#08660D",
 };
 const WARNING = {
-  lighter: "#f9f9f9",
-  light: "#d9d9d9",
-  main: "#a9a9a9",
-  dark: "#797979",
-  darker: "#494949",
+  lighter: "#FFF7CD",
+  light: "#FFE16A",
+  main: "#FFC107",
+  dark: "#B78103",
+  darker: "#7A4F01",
 };
 const ERROR = {
-  lighter: "#f7f7f7",
-  light: "#d7d7d7",
-  main: "#a7a7a7",
-  dark: "#777777",
-  darker: "#474747",
+  lighter: "#FFE7D9",
+  light: "#FFA48D",
+  main: "#FF4842",
+  dark: "#B72136",
+  darker: "#7A0C2E",
 };
 
 const GREY = {

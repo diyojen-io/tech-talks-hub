@@ -24,8 +24,6 @@ function ThemeConfig({ children }) {
 
   const theme = createTheme(themeOptions);
 
-  console.log("theme", theme);
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

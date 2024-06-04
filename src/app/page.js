@@ -1,4 +1,4 @@
-import TechTalk from "./components/Tech-talk";
+import TechTalk from "./components/TechTalk";
 import CreateOrganization from "../app/components/CreateOrganization";
 import { Container } from "@mui/material";
 
