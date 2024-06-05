@@ -1,5 +1,5 @@
 import TechTalk from "./components/TechTalk";
-import CreateOrganization from "../app/components/CreateOrganization";
+import CreateOrganization from "./components/Hero";
 import { Container } from "@mui/material";
 
 export default function Home() {

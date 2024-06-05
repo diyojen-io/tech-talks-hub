@@ -6,7 +6,7 @@ export default function Main({ children }) {
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg" sx={{ padding: "75px 0 50px" }}>
+      <Container maxWidth="lg" sx={{ padding: "90px 0 50px" }}>
         <main>{children}</main>
       </Container>
     </>

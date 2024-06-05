@@ -6,7 +6,7 @@ import { Box } from "@mui/system";
 import * as Yup from "yup";
 import { styled } from "@mui/material";
 import Head from "next/head";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const CreateBox = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -15,6 +15,8 @@ const CreateBox = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
+  borderRadius: "10px",
+  backgroundColor: theme.palette.background.neutral,
 }));
 
 const organizationSchema = Yup.object().shape({
@@ -31,42 +33,38 @@ const organizationSchema = Yup.object().shape({
 });
 
 export default function CreateOrganizationForm() {
-  const [organizationData, setOrganizationData] = useLocalStorage(
-    "organization",
-    {
-      organizationName: "",
-      occupation: "",
-      email: "",
-      location: "",
-      items: [{ Logo: null }],
-    }
-  );
+  const initialValues = {
+    organizationName: "",
+    email: "",
+    location: "",
+    items: [],
+  };
 
   const submitCreateForm = async (values, { setSubmitting }) => {
-    values.createdBy = "ozkan";
+    console.log("values: ", values);
     values.owner = "ozkan";
     values.createdAt = new Date().toISOString();
-    setOrganizationData(values); // Yerel depolama işlemi
+    window.localStorage.setItem("organization", JSON.stringify(values));
     setSubmitting(false);
   };
 
   return (
-    <>
+    <Container>
       <Head>
         <title>Create Organization</title>
       </Head>
       <CreateBox>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography mb={5} variant="h4" component="h1" gutterBottom>
           Create Organization
         </Typography>
         <Formik
           validationSchema={organizationSchema}
-          initialValues={organizationData}
+          initialValues={initialValues}
           onSubmit={submitCreateForm}
           enableReinitialize
         >
           {({ handleSubmit, isSubmitting, errors, touched }) => (
-            <Form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <Form onSubmit={handleSubmit} style={{ width: "60%" }}>
               <Box display="flex" flexDirection="column" gap={3}>
                 <Field name="organizationName">
                   {({ field }) => (
@@ -139,6 +137,6 @@ export default function CreateOrganizationForm() {
           )}
         </Formik>
       </CreateBox>
-    </>
+    </Container>
   );
 }
