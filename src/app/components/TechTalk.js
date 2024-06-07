@@ -4,7 +4,7 @@ import Image from "next/image";
 import GradeIcon from "@mui/icons-material/Grade";
 import AddIcon from "@mui/icons-material/Add";
 import ShareIcon from "@mui/icons-material/Share";
-import { POST } from "../../../constant";
+import { TECH_TALK } from "../../../constant";
 import { styled } from "@mui/system";
 import NextLink from "next/link";
 
@@ -18,7 +18,7 @@ const BoxStyle = styled(Box)(() => ({
 export default function TechTalk() {
   return (
     <Container maxWidth="md" sx={{ padding: "50px 0 0" }}>
-      {POST.map(({ id, nickName, title, logo, img }, index) => (
+      {TECH_TALK.map(({ id, nickName, title, logo, img }, index) => (
         <BoxStyle key={index}>
           <Box
             display="flex"

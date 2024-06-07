@@ -6,7 +6,8 @@ import { Box } from "@mui/system";
 import * as Yup from "yup";
 import { styled } from "@mui/material";
 import Head from "next/head";
-import useLocalStorage from "../../hooks/useLocalStorage";
+import { useSnackbar } from "notistack";
+import { useRouter } from "next/navigation";
 
 const CreateBox = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -33,6 +34,9 @@ const organizationSchema = Yup.object().shape({
 });
 
 export default function CreateOrganizationForm() {
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+
   const initialValues = {
     organizationName: "",
     email: "",
@@ -40,19 +44,28 @@ export default function CreateOrganizationForm() {
     items: [],
   };
 
-  const submitCreateForm = async (values, { setSubmitting }) => {
-    console.log("values: ", values);
-    values.owner = "ozkan";
-    values.createdAt = new Date().toISOString();
-    window.localStorage.setItem("organization", JSON.stringify(values));
-    setSubmitting(false);
+  const submitCreateForm = async (values, { setSubmitting, resetForm }) => {
+    try {
+      values.owner = "ozkan";
+      values.createdAt = new Date().toISOString();
+      window.localStorage.setItem("organization", JSON.stringify(values));
+      enqueueSnackbar("Organization created successfully", {
+        variant: "success",
+      });
+      router.push("/");
+      setSubmitting(false);
+      resetForm();
+    } catch {
+      console.log("error");
+      setSubmitting(false);
+      enqueueSnackbar("Somethings went wrong", {
+        variant: "error",
+      });
+    }
   };
 
   return (
     <Container>
-      <Head>
-        <title>Create Organization</title>
-      </Head>
       <CreateBox>
         <Typography mb={5} variant="h4" component="h1" gutterBottom>
           Create Organization
@@ -124,13 +137,14 @@ export default function CreateOrganizationForm() {
                     />
                   )}
                 </Field>
+
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   disabled={isSubmitting}
                 >
-                  Submit
+                  Create
                 </Button>
               </Box>
             </Form>

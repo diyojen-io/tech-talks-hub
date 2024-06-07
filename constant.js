@@ -17,7 +17,7 @@ export const ORGANIZATION_IMAGES = {
   },
 };
 
-export const POST = [
+export const TECH_TALK = [
   {
     id: "bilgikrali",
     nickName: "BilgiKralı",

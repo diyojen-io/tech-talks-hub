@@ -3,7 +3,7 @@ import { Box, Stack, Container, Avatar, Typography, Chip } from "@mui/material";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import ChatIcon from "@mui/icons-material/Chat";
 import TurnedInIcon from "@mui/icons-material/TurnedIn";
-import { POST } from "../../../../constant";
+import { TECH_TALK } from "../../../../constant";
 import Head from "next/head";
 import { styled } from "@mui/system";
 
@@ -24,17 +24,19 @@ const IconBox = styled(Box)(({ theme }) => {
 });
 
 export default function Page({ params }) {
-  const post = POST.find((post) => post.id === params.techtalk);
+  const techtalk = TECH_TALK.find(
+    (techtalk) => techtalk.id === params.techtalk
+  );
 
   return (
     <Container sx={{ width: "100%" }}>
       <Head>
-        <title>{post.title}</title>
+        <title>{techtalk.title}</title>
       </Head>
-      {post && (
+      {techtalk && (
         <TechTalkBox pt={5} maxWidth={1200}>
           <Typography pt={4} variant="h2">
-            {post.title}
+            {techtalk.title}
           </Typography>
           <Box
             p={4}
@@ -47,20 +49,20 @@ export default function Page({ params }) {
             <Box display="flex" direction="column">
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar
-                  alt={post.title}
-                  src={post.logo.src}
+                  alt={techtalk.title}
+                  src={techtalk.logo.src}
                   sx={{
                     width: "40px",
                     height: "40px",
                   }}
                 />
-                <Typography secondary={post.nickName} />
+                <Typography secondary={techtalk.nickName} />
               </Stack>
               <Typography p={1} sx={{ fontSize: "12px" }} variant="inherit">
-                Upload date: {post.date}
+                Upload date: {techtalk.date}
               </Typography>
             </Box>
-            <Chip label="Following" color="success" sx={{ height: 30 }} />
+            <Chip label="Following" color="secondary" sx={{ height: 30 }} />
           </Box>
           <IconBox display="flex" justifyContent="space-between" m={2} p={2}>
             <Stack direction="row" spacing={2}>
@@ -72,8 +74,8 @@ export default function Page({ params }) {
           <Box
             component="img"
             p={2}
-            src={post.img.src}
-            alt={post.img.alt}
+            src={techtalk.img.src}
+            alt={techtalk.img.alt}
             sx={{
               width: "100%",
               borderRadius: "25px",
@@ -81,7 +83,7 @@ export default function Page({ params }) {
           />
 
           <Typography mb={4} variant="h6" component="h2" textAlign={"justify"}>
-            {post.contents}
+            {techtalk.contents}
           </Typography>
         </TechTalkBox>
       )}
