@@ -57,7 +57,12 @@ export default function TechTalk() {
                     marginRight: "5px",
                   }}
                 />
-                <Typography variant="body2">{nickName}</Typography>
+                <NextLink
+                  href={`/organization/${id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <Typography variant="body2">{nickName}</Typography>
+                </NextLink>
               </Stack>
               <Stack direction="row" spacing={1}>
                 <GradeIcon fontSize="small" color="action" />

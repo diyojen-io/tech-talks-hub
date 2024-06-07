@@ -73,16 +73,20 @@ export default function TopNavbar() {
         </Box>
 
         <Stack direction="row" pt={2} pb={2}>
-          <Button
-            sx={{ marginRight: "10px" }}
-            variant="outlined"
-            color="primary"
-          >
-            Login
-          </Button>
-          <Button variant="contained" color="primary" size="large">
-            Sign up
-          </Button>
+          <NextLink href="/login">
+            <Button
+              sx={{ marginRight: "10px" }}
+              variant="outlined"
+              color="primary"
+            >
+              Login
+            </Button>
+          </NextLink>
+          <NextLink href="/signUp">
+            <Button variant="contained" color="primary">
+              Sign up
+            </Button>
+          </NextLink>
         </Stack>
       </WrapperBox>
     </NavbarBox>
