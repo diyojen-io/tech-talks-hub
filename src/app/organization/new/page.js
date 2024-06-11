@@ -79,6 +79,32 @@ export default function CreateOrganizationForm() {
           {({ handleSubmit, isSubmitting, errors, touched }) => (
             <Form onSubmit={handleSubmit} style={{ width: "60%" }}>
               <Box display="flex" flexDirection="column" gap={3}>
+                <Field name="logo">
+                  {({ field, form }) => (
+                    <input
+                      id="logo"
+                      name="logo"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {
+                        form.setFieldValue(
+                          "logo",
+                          event.currentTarget.files[0]
+                        );
+                      }}
+                      style={{ display: "none" }}
+                    />
+                  )}
+                </Field>
+
+                <label htmlFor="logo">
+                  <Button variant="contained" component="span">
+                    Upload Logo
+                  </Button>
+                </label>
+                {touched.logo && errors.logo && (
+                  <Typography color="error">{errors.logo}</Typography>
+                )}
                 <Field name="organizationName">
                   {({ field }) => (
                     <TextField
@@ -94,6 +120,20 @@ export default function CreateOrganizationForm() {
                       helperText={
                         touched.organizationName && errors.organizationName
                       }
+                    />
+                  )}
+                </Field>
+                <Field name="email">
+                  {({ field }) => (
+                    <TextField
+                      {...field}
+                      id="email"
+                      label="Email"
+                      variant="outlined"
+                      type="email"
+                      fullWidth
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
                     />
                   )}
                 </Field>
@@ -123,21 +163,6 @@ export default function CreateOrganizationForm() {
                     />
                   )}
                 </Field>
-                <Field name="email">
-                  {({ field }) => (
-                    <TextField
-                      {...field}
-                      id="email"
-                      label="Email"
-                      variant="outlined"
-                      type="email"
-                      fullWidth
-                      error={touched.email && Boolean(errors.email)}
-                      helperText={touched.email && errors.email}
-                    />
-                  )}
-                </Field>
-
                 <Button
                   type="submit"
                   variant="contained"

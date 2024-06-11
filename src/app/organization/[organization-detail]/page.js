@@ -5,22 +5,24 @@ import {
   Box,
   Typography,
   Stack,
-  Button,
   Link,
-  IconButton,
   Avatar,
   Tab,
   Tabs,
   Grid,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import AddIcon from "@mui/icons-material/Add";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { styled } from "@mui/material";
 import Image from "next/image";
-import LOGO from "../../../../public/images/organization-logo.jpeg";
 import { TECH_TALK } from "../../../../constant";
+import LOGO from "../../../../public/images/organization-logo.jpeg";
 import NextLink from "next/link";
 
 const ImageLogo = styled(Image)(({ theme }) => ({
@@ -67,14 +69,18 @@ export default function Organization() {
         <Stack ml={5} flex="1">
           <Typography variant="h4">Teknoloji Dünyasi</Typography>
           <Typography variant="body1">members . 1903</Typography>
-        </Stack>
-        <Stack direction="row">
-          <Button sx={{ marginRight: "10px" }} variant="contained">
-            Follow
-          </Button>
-          <Button variant="contained" color="secondary">
-            Join
-          </Button>
+          <Stack direction="row">
+            <Tooltip title="Join the Organization">
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Follow the Organization">
+              <IconButton>
+                <FavoriteIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Stack>
       </Box>
       <Grid container sx={{ display: "flex" }}>
