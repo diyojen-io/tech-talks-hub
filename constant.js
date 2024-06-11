@@ -1,9 +1,3 @@
-import {
-  AlignHorizontalLeft as AllIcon,
-  Home as HomeIcon,
-  People as PeopleIcon,
-} from "@mui/icons-material";
-
 export const DIYOJEN = {
   logo: {
     src: "/images/logo.png",
@@ -18,6 +12,38 @@ export const ORGANIZATION_IMAGES = {
 };
 
 export const TECH_TALK = [
+  {
+    id: "bilgikrali",
+    nickName: "BilgiKralı",
+    img: {
+      src: "/images/main-images-1.jpg",
+      alt: "TechTalk1",
+    },
+    title: "Yazılım Gelişimi ve Yenilikler",
+    logo: {
+      src: "/images/logo.png",
+      alt: "TechTalk",
+    },
+    contents:
+      "Yazılım Gelişimi ve Yenilikler: İnternet Çağında Dönüşüm Yazılım, modern dünyanın temel taşlarından biridir. Bilgisayarlar, akıllı telefonlar, tabletler ve diğer akıllı cihazlar sayesinde günlük hayatımızın her alanında yer alır. Yazılım gelişimi, teknolojinin hızla ilerlemesiyle paralel olarak sürekli bir dönüşüm ve yenilik süreci içindedir. Yazılım Gelişiminin Tarihi: Yazılım gelişimi, ilk bilgisayarların ortaya çıkışından bu yana büyük bir evrim geçirdi. İlk bilgisayarlar sadece basit hesaplamaları yapabiliyorken, günümüzde yapay zeka, veri analizi, mobil uygulamalar ve bulut bilişim gibi alanlarda karmaşık yazılımlar geliştiriliyor. Yazılımın ",
+    date: "16.2.2021",
+  },
+  {
+    id: "bilgikrali",
+    nickName: "BilgiKralı",
+    img: {
+      src: "/images/main-images-1.jpg",
+      alt: "TechTalk1",
+    },
+    title: "Yazılım Gelişimi ve Yenilikler",
+    logo: {
+      src: "/images/logo.png",
+      alt: "TechTalk",
+    },
+    contents:
+      "Yazılım Gelişimi ve Yenilikler: İnternet Çağında Dönüşüm Yazılım, modern dünyanın temel taşlarından biridir. Bilgisayarlar, akıllı telefonlar, tabletler ve diğer akıllı cihazlar sayesinde günlük hayatımızın her alanında yer alır. Yazılım gelişimi, teknolojinin hızla ilerlemesiyle paralel olarak sürekli bir dönüşüm ve yenilik süreci içindedir. Yazılım Gelişiminin Tarihi: Yazılım gelişimi, ilk bilgisayarların ortaya çıkışından bu yana büyük bir evrim geçirdi. İlk bilgisayarlar sadece basit hesaplamaları yapabiliyorken, günümüzde yapay zeka, veri analizi, mobil uygulamalar ve bulut bilişim gibi alanlarda karmaşık yazılımlar geliştiriliyor. Yazılımın ",
+    date: "16.2.2021",
+  },
   {
     id: "bilgikrali",
     nickName: "BilgiKralı",
@@ -84,18 +110,11 @@ export const TECH_TALK = [
 
 export const FEATURES = [
   {
-    title: "Community",
-    icon: <PeopleIcon />,
-    linkTo: "/community",
-  },
-  {
     title: "Organizations",
-    icon: <AllIcon />,
     linkTo: "/organizations",
   },
   {
     title: "In Coming",
-    icon: <HomeIcon />,
     linkTo: "/incoming",
   },
 ];

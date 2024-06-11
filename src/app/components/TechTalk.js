@@ -1,45 +1,75 @@
 "use client";
-import { Box, Avatar, Stack, Typography, Container } from "@mui/material";
-import Image from "next/image";
-import GradeIcon from "@mui/icons-material/Grade";
+import * as React from "react";
+import {
+  Box,
+  Avatar,
+  Stack,
+  Typography,
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Tabs,
+  Tab,
+  Divider,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ShareIcon from "@mui/icons-material/Share";
-import { TECH_TALK } from "../../../constant";
 import { styled } from "@mui/system";
 import NextLink from "next/link";
+import { TECH_TALK } from "../../../constant";
+import { FEATURES } from "../../../constant";
 
 const BoxStyle = styled(Box)(() => ({
   paddingBottom: "20px",
+  marginTop: "20px",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
 }));
 
 export default function TechTalk() {
-  return (
-    <Container maxWidth="md" sx={{ padding: "50px 0 0" }}>
-      {TECH_TALK.map(({ id, nickName, title, logo, img }, index) => (
-        <BoxStyle key={index}>
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            mr={3}
-          >
-            <NextLink href={`/tech-talks/${id}`}>
-              <Image
-                style={{
-                  cursor: "pointer",
-                  borderRadius: "5px",
-                }}
-                src={img.src}
-                alt={img.alt}
-                width={200}
-                height={150}
-              />
-            </NextLink>
-          </Box>
+  const [value, setValue] = React.useState("one");
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  return (
+    <Container sx={{ padding: "50px 0 0" }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <List sx={{ display: "flex" }}>
+          {FEATURES.map((feature, index) => {
+            return (
+              <ListItem key={index} disablePadding sx={{ marginRight: "15px" }}>
+                <NextLink
+                  href={feature.linkTo}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    width: "100%",
+                  }}
+                >
+                  <ListItemText primary={feature.title} />
+                </NextLink>
+              </ListItem>
+            );
+          })}
+        </List>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          textColor="secondary"
+          indicatorColor="secondary"
+          aria-label="secondary tabs example"
+        >
+          <Tab value="one" label="All" />
+          <Tab value="two" label="Popular" />
+          <Tab value="three" label="Recent" />
+        </Tabs>
+      </Box>
+      <Divider />
+      {TECH_TALK.map(({ id, nickName, title, logo }, index) => (
+        <BoxStyle key={index}>
           <Box>
             <Stack direction="row" justifyContent="space-between">
               <Stack
@@ -65,7 +95,6 @@ export default function TechTalk() {
                 </NextLink>
               </Stack>
               <Stack direction="row" spacing={1}>
-                <GradeIcon fontSize="small" color="action" />
                 <AddIcon fontSize="small" color="action" />
                 <ShareIcon fontSize="small" color="action" />
               </Stack>

@@ -2,7 +2,6 @@
 import * as React from "react";
 import {
   Container,
-  Box,
   Typography,
   TextField,
   Button,
@@ -11,6 +10,8 @@ import {
 import { Formik, Form, Field } from "formik";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { styled } from "@mui/system";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../contexts/AuthContext";
 
 const FormContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(8),
@@ -34,6 +35,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function Login() {
+  const { login } = useAuth();
+  const router = useRouter();
   return (
     <FormContainer component="main" maxWidth="xs">
       <StyledAvatar>
@@ -45,7 +48,8 @@ export default function Login() {
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={(values) => {
-          console.log(values);
+          login();
+          router.push("/");
         }}
       >
         {({ handleSubmit }) => (
@@ -78,7 +82,7 @@ export default function Login() {
               variant="contained"
               color="primary"
             >
-              Login 
+              Login
             </StyledButton>
           </StyledForm>
         )}

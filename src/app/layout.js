@@ -6,6 +6,7 @@ import Main from "./main/layout";
 import CssBaseline from "@mui/material/CssBaseline";
 import ThemeConfig from "./theme";
 import { SnackbarProvider } from "notistack";
+import { AuthProvider } from "./contexts/AuthContext";
 
 // export const metadata = {
 //   title: "Main Page",
@@ -26,7 +27,9 @@ export default function RootLayout({ children }) {
               }}
             >
               <CssBaseline />
-              <Main>{children}</Main>
+              <AuthProvider>
+                <Main>{children}</Main>
+              </AuthProvider>
             </SnackbarProvider>
           </ThemeConfig>
         </SettingsProvider>

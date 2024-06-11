@@ -1,26 +1,13 @@
 "use client";
 import * as React from "react";
-import {
-  Box,
-  Button,
-  Stack,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Container,
-} from "@mui/material";
-import { FEATURES } from "../../../constant";
+import { Box, Button, Stack, Typography, Container } from "@mui/material";
 import { styled } from "@mui/material";
 import NextLink from "next/link";
+import { useAuth } from "../contexts/AuthContext";
 
-const NavbarBox = styled(Container)(({ theme }) => ({
-  top: "0",
-  right: "0",
-  left: "0",
-  position: "fixed",
-  backgroundColor: theme.palette.background.paper,
-  zIndex: "99",
+const NavbarBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
 }));
 
 const WrapperBox = styled(Box)(({ theme }) => ({
@@ -31,64 +18,62 @@ const WrapperBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function TopNavbar() {
+  const { isAuthenticated, logout } = useAuth();
   return (
-    <NavbarBox maxWidth="lg">
-      <WrapperBox>
-        <Box>
-          <NextLink
-            style={{ textDecoration: "none", color: "inherit" }}
-            href="/"
-          >
-            <Typography
-              variant="h5"
-              sx={{ letterSpacing: "-1.5px", fontWeight: "300" }}
+    <NavbarBox>
+      <Container maxWidth="md">
+        <WrapperBox>
+          <Box>
+            <NextLink
+              style={{ textDecoration: "none", color: "inherit" }}
+              href="/"
             >
-              TECHTALKSHUB
-            </Typography>
-          </NextLink>
-        </Box>
-        <Box>
-          <List sx={{ display: "flex" }}>
-            {FEATURES.map((feature, index) => {
-              return (
-                <ListItem
-                  key={index}
-                  disablePadding
-                  sx={{ marginRight: "15px" }}
+              <Typography
+                variant="h5"
+                sx={{ letterSpacing: "-1.5px", fontWeight: "300" }}
+              >
+                TECHTALKSHUB
+              </Typography>
+            </NextLink>
+          </Box>
+          <Stack direction="row" pt={2} pb={2}>
+            {isAuthenticated ? (
+              <>
+                <NextLink href="/organization/new" passHref>
+                  <Button sx={{ marginRight: "20px" }} variant="contained">
+                    Create Organization
+                  </Button>
+                </NextLink>
+                <Button
+                  sx={{ marginRight: "5px" }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={logout}
                 >
-                  <NextLink
-                    href={feature.linkTo}
-                    style={{
-                      textDecoration: "none",
-                      color: "inherit",
-                      width: "100%",
-                    }}
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <NextLink href="/login" passHref>
+                  <Button
+                    sx={{ marginRight: "5px" }}
+                    variant="outlined"
+                    color="primary"
                   >
-                    <ListItemText primary={feature.title} />
-                  </NextLink>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Box>
-
-        <Stack direction="row" pt={2} pb={2}>
-          <NextLink href="/login">
-            <Button
-              sx={{ marginRight: "10px" }}
-              variant="outlined"
-              color="primary"
-            >
-              Login
-            </Button>
-          </NextLink>
-          <NextLink href="/signUp">
-            <Button variant="contained" color="primary">
-              Sign up
-            </Button>
-          </NextLink>
-        </Stack>
-      </WrapperBox>
+                    Login
+                  </Button>
+                </NextLink>
+                <NextLink href="/signUp" passHref>
+                  <Button variant="contained" color="primary">
+                    Sign up
+                  </Button>
+                </NextLink>
+              </>
+            )}
+          </Stack>
+        </WrapperBox>
+      </Container>
     </NavbarBox>
   );
 }
