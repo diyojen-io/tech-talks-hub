@@ -19,6 +19,7 @@ const WrapperBox = styled(Box)(({ theme }) => ({
 
 export default function TopNavbar() {
   const { isAuthenticated, logout } = useAuth();
+
   return (
     <NavbarBox>
       <Container maxWidth="md">
@@ -44,14 +45,16 @@ export default function TopNavbar() {
                     Create Organization
                   </Button>
                 </NextLink>
-                <Button
-                  sx={{ marginRight: "5px" }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={logout}
-                >
-                  Logout
-                </Button>
+                <NextLink href="/" passHref>
+                  <Button
+                    sx={{ marginRight: "5px" }}
+                    variant="outlined"
+                    color="primary"
+                    onClick={logout}
+                  >
+                    Logout
+                  </Button>
+                </NextLink>
               </>
             ) : (
               <>

@@ -110,12 +110,12 @@ export const TECH_TALK = [
 
 export const FEATURES = [
   {
-    title: "Organizations",
-    linkTo: "/organizations",
+    title: "Tech Talk",
+    linkTo: "/",
   },
   {
-    title: "In Coming",
-    linkTo: "/incoming",
+    title: "Organizations",
+    linkTo: "/organizations",
   },
 ];
 

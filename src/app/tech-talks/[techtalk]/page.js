@@ -1,32 +1,64 @@
 "use client";
-import { Box, Stack, Container, Avatar, Typography, Chip } from "@mui/material";
-import RecommendIcon from "@mui/icons-material/Recommend";
-import ChatIcon from "@mui/icons-material/Chat";
-import TurnedInIcon from "@mui/icons-material/TurnedIn";
+import { useState } from "react";
+import {
+  Box,
+  Stack,
+  Container,
+  Avatar,
+  Typography,
+  Tooltip,
+  IconButton,
+  TextField,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  InputAdornment,
+} from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from "@mui/icons-material/Add";
+import SendIcon from "@mui/icons-material/Send";
 import { TECH_TALK } from "../../../../constant";
 import Head from "next/head";
 import { styled } from "@mui/system";
+import NextLink from "next/link";
 
-const TechTalkBox = styled(Box)(({ theme }) => {
-  return {
-    margin: "0 auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  };
-});
-const IconBox = styled(Box)(({ theme }) => {
-  return {
-    borderBottom: "1px solid black",
+const TechTalkBox = styled(Box)(({ theme }) => ({
+  margin: "0 auto",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+}));
 
-    width: "100%",
-  };
-});
+const CommentSection = styled(Box)(({ theme }) => ({
+  width: "100%",
+  marginTop: theme.spacing(4),
+}));
+
+const CommentsList = styled(List)(({ theme }) => ({
+  width: "100%",
+  backgroundColor: theme.palette.background.paper,
+}));
 
 export default function Page({ params }) {
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
   const techtalk = TECH_TALK.find(
     (techtalk) => techtalk.id === params.techtalk
   );
+
+  const handleCommentSubmit = () => {
+    if (commentText.trim() === "") return;
+
+    const newComment = {
+      id: comments.length + 1,
+      text: commentText,
+      date: new Date().toLocaleString(),
+    };
+
+    setComments([...comments, newComment]);
+    setCommentText("");
+  };
 
   return (
     <Container sx={{ width: "100%" }}>
@@ -35,7 +67,19 @@ export default function Page({ params }) {
       </Head>
       {techtalk && (
         <TechTalkBox pt={5} maxWidth={1200}>
-          <Typography pt={4} variant="h2">
+          <Container sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip title="Join the organization.">
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Follow the Tech Talk">
+              <IconButton>
+                <FavoriteIcon />
+              </IconButton>
+            </Tooltip>
+          </Container>
+          <Typography pt={4} variant="h3">
             {techtalk.title}
           </Typography>
           <Box
@@ -43,11 +87,15 @@ export default function Page({ params }) {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "center",
               width: "100%",
             }}
           >
-            <Box display="flex" direction="column">
-              <Stack direction="row" alignItems="center" spacing={2}>
+            <NextLink
+              style={{ textDecoration: "none", color: "inherit" }}
+              href={`../organization/organization-detail`}
+            >
+              <Stack direction="row" alignItems="center" spacing={1}>
                 <Avatar
                   alt={techtalk.title}
                   src={techtalk.logo.src}
@@ -56,35 +104,92 @@ export default function Page({ params }) {
                     height: "40px",
                   }}
                 />
-                <Typography secondary={techtalk.nickName} />
+                <Typography>{techtalk.nickName}</Typography>
               </Stack>
+            </NextLink>
+            <Stack>
               <Typography p={1} sx={{ fontSize: "12px" }} variant="inherit">
                 Upload date: {techtalk.date}
               </Typography>
-            </Box>
-            <Chip label="Following" color="secondary" sx={{ height: 30 }} />
-          </Box>
-          <IconBox display="flex" justifyContent="space-between" m={2} p={2}>
-            <Stack direction="row" spacing={2}>
-              <RecommendIcon color="action" />
-              <ChatIcon color="action" />
             </Stack>
-            <TurnedInIcon color="action" />
-          </IconBox>
-          <Box
-            component="img"
-            p={2}
-            src={techtalk.img.src}
-            alt={techtalk.img.alt}
-            sx={{
-              width: "100%",
-              borderRadius: "25px",
-            }}
-          />
-
-          <Typography mb={4} variant="h6" component="h2" textAlign={"justify"}>
+          </Box>
+          <Typography
+            mb={4}
+            variant="body1"
+            component="h2"
+            textAlign={"justify"}
+          >
             {techtalk.contents}
           </Typography>
+
+          <CommentSection>
+            <Typography variant="h6" gutterBottom>
+              Comments
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCommentSubmit();
+              }}
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-end"
+            >
+              <TextField
+                label="Write a comment"
+                fullWidth
+                variant="outlined"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                multiline
+                rows={4}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Tooltip title="Join the organization.">
+                        <IconButton type="submit">
+                          <SendIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "0",
+                    paddingRight: "7px",
+                  },
+                }}
+              />
+            </Box>
+            <CommentsList>
+              {comments.map((comment) => (
+                <ListItem key={comment.id} alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={techtalk.title}
+                      src={techtalk.logo.src}
+                      sx={{
+                        width: "30px",
+                        height: "30px",
+                      }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={comment.text}
+                    secondary={comment.date}
+                  />
+                </ListItem>
+              ))}
+            </CommentsList>
+          </CommentSection>
         </TechTalkBox>
       )}
     </Container>
