@@ -7,11 +7,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import ThemeConfig from "./theme";
 import { SnackbarProvider } from "notistack";
 
-// export const metadata = {
-//   title: "Main Page",
-//   description: "Main Page",
-// };
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

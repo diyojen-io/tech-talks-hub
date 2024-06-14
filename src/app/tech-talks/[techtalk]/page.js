@@ -30,9 +30,6 @@ export default function Page({ params }) {
 
   return (
     <Container sx={{ width: "100%" }}>
-      <Head>
-        <title>{techtalk.title}</title>
-      </Head>
       {techtalk && (
         <TechTalkBox pt={5} maxWidth={1200}>
           <Typography pt={4} variant="h2">
