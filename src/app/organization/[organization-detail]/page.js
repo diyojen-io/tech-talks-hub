@@ -58,14 +58,12 @@ export default function Organization() {
   return (
     <Container>
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Stack>
-          <ImageLogo
-            src={LOGO}
-            alt="organization LOGO"
-            width={130}
-            height={130}
-          />
-        </Stack>
+        <ImageLogo
+          src={LOGO}
+          alt="organization LOGO"
+          width={130}
+          height={130}
+        />
         <Stack ml={5} flex="1">
           <Typography variant="h4">Teknoloji Dünyasi</Typography>
           <Typography variant="body1">members . 1903</Typography>

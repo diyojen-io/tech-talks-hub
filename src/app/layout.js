@@ -17,22 +17,22 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SettingsProvider>
-          <ThemeConfig>
-            <SnackbarProvider
-              maxSnack={3}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <CssBaseline />
-              <AuthProvider>
+        <AuthProvider>
+          <SettingsProvider>
+            <ThemeConfig>
+              <SnackbarProvider
+                maxSnack={3}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <CssBaseline />
                 <Main>{children}</Main>
-              </AuthProvider>
-            </SnackbarProvider>
-          </ThemeConfig>
-        </SettingsProvider>
+              </SnackbarProvider>
+            </ThemeConfig>
+          </SettingsProvider>
+        </AuthProvider>
       </body>
     </html>
   );

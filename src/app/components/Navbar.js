@@ -39,11 +39,9 @@ export default function TopNavbar() {
           </Box>
           <Stack direction="row" pt={2} pb={2}>
             {isAuthenticated ? (
-              <>
+              <Stack direction="row" spacing={1}>
                 <NextLink href="/organization/new" passHref>
-                  <Button sx={{ marginRight: "20px" }} variant="contained">
-                    Create Organization
-                  </Button>
+                  <Button variant="contained">Create Organization</Button>
                 </NextLink>
                 <NextLink href="/" passHref>
                   <Button
@@ -55,7 +53,7 @@ export default function TopNavbar() {
                     Logout
                   </Button>
                 </NextLink>
-              </>
+              </Stack>
             ) : (
               <>
                 <NextLink href="/login" passHref>
@@ -67,7 +65,7 @@ export default function TopNavbar() {
                     Login
                   </Button>
                 </NextLink>
-                <NextLink href="/signUp" passHref>
+                <NextLink href="/sign-up" passHref>
                   <Button variant="contained" color="primary">
                     Sign up
                   </Button>
