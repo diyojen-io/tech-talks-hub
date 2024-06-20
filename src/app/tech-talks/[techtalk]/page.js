@@ -1,27 +1,20 @@
 "use client";
-import { useState } from "react";
 import {
   Box,
   Stack,
-  Container,
   Avatar,
   Typography,
   Tooltip,
   IconButton,
-  TextField,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  InputAdornment,
+  Container,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
-import SendIcon from "@mui/icons-material/Send";
 import { TECH_TALK } from "../../../../constant";
 import Head from "next/head";
 import { styled } from "@mui/system";
 import NextLink from "next/link";
+import Comment from "../../components/Comment";
 
 const TechTalkBox = styled(Box)(({ theme }) => ({
   margin: "0 auto",
@@ -30,35 +23,10 @@ const TechTalkBox = styled(Box)(({ theme }) => ({
   alignItems: "center",
 }));
 
-const CommentSection = styled(Box)(({ theme }) => ({
-  width: "100%",
-  marginTop: theme.spacing(4),
-}));
-
-const CommentsList = styled(List)(({ theme }) => ({
-  width: "100%",
-  backgroundColor: theme.palette.background.paper,
-}));
-
 export default function Page({ params }) {
-  const [comments, setComments] = useState([]);
-  const [commentText, setCommentText] = useState("");
   const techtalk = TECH_TALK.find(
     (techtalk) => techtalk.id === params.techtalk
   );
-
-  const handleCommentSubmit = () => {
-    if (commentText.trim() === "") return;
-
-    const newComment = {
-      id: comments.length + 1,
-      text: commentText,
-      date: new Date().toLocaleString(),
-    };
-
-    setComments([...comments, newComment]);
-    setCommentText("");
-  };
 
   return (
     <>
@@ -122,75 +90,7 @@ export default function Page({ params }) {
             >
               {techtalk.contents}
             </Typography>
-
-            <CommentSection>
-              <Typography variant="h6" gutterBottom>
-                Comments
-              </Typography>
-              <Box
-                component="form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleCommentSubmit();
-                }}
-                display="flex"
-                flexDirection="column"
-                alignItems="flex-end"
-              >
-                <TextField
-                  label="Write a comment"
-                  fullWidth
-                  variant="outlined"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  multiline
-                  rows={4}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <Tooltip title="Join the organization.">
-                          <IconButton type="submit">
-                            <SendIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    ),
-                    sx: {
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "0",
-                      paddingRight: "7px",
-                    },
-                  }}
-                />
-              </Box>
-              <CommentsList>
-                {comments.map((comment) => (
-                  <ListItem key={comment.id} alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar
-                        alt={techtalk.title}
-                        src={techtalk.logo.src}
-                        sx={{
-                          width: "30px",
-                          height: "30px",
-                        }}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={comment.text}
-                      secondary={comment.date}
-                    />
-                  </ListItem>
-                ))}
-              </CommentsList>
-            </CommentSection>
+            <Comment />
           </TechTalkBox>
         )}
       </Container>
