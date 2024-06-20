@@ -15,6 +15,7 @@ const WrapperBox = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  padding: "10px 0",
 }));
 
 export default function TopNavbar() {
@@ -37,44 +38,40 @@ export default function TopNavbar() {
               </Typography>
             </NextLink>
           </Box>
-          <Stack direction="row" pt={2} pb={2}>
-            {isAuthenticated ? (
-              <>
-                <NextLink href="/organization/new" passHref>
-                  <Button sx={{ marginRight: "20px" }} variant="contained">
-                    Create Organization
-                  </Button>
-                </NextLink>
-                <NextLink href="/" passHref>
-                  <Button
-                    sx={{ marginRight: "5px" }}
-                    variant="outlined"
-                    color="primary"
-                    onClick={logout}
-                  >
-                    Logout
-                  </Button>
-                </NextLink>
-              </>
-            ) : (
-              <>
-                <NextLink href="/login" passHref>
-                  <Button
-                    sx={{ marginRight: "5px" }}
-                    variant="outlined"
-                    color="primary"
-                  >
-                    Login
-                  </Button>
-                </NextLink>
-                <NextLink href="/signUp" passHref>
-                  <Button variant="contained" color="primary">
-                    Sign up
-                  </Button>
-                </NextLink>
-              </>
-            )}  
-          </Stack>
+          {isAuthenticated ? (
+            <Stack direction="row" spacing={1}>
+              <NextLink href="/organization/new" passHref>
+                <Button variant="contained">Create Organization</Button>
+              </NextLink>
+              <NextLink href="/" passHref>
+                <Button
+                  sx={{ marginRight: "5px" }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </NextLink>
+            </Stack>
+          ) : (
+            <Stack direction="row" spacing={1}>
+              <NextLink href="/login" passHref>
+                <Button
+                  sx={{ marginRight: "5px" }}
+                  variant="outlined"
+                  color="primary"
+                >
+                  Login
+                </Button>
+              </NextLink>
+              <NextLink href="/sign-up" passHref>
+                <Button variant="contained" color="primary">
+                  Sign up
+                </Button>
+              </NextLink>
+            </Stack>
+          )}
         </WrapperBox>
       </Container>
     </NavbarBox>

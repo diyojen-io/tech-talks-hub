@@ -1,13 +1,19 @@
 "use client";
 import React from "react";
 import { Formik, Field, Form } from "formik";
-import { TextField, Button, Container, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import * as Yup from "yup";
-import { styled } from "@mui/material";
-import Head from "next/head";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Avatar,
+  Box,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
+import * as Yup from "yup";
+import { useDropzone } from "react-dropzone";
 
 const CreateBox = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -26,12 +32,29 @@ const organizationSchema = Yup.object().shape({
     .email("Invalid email format")
     .required("Email is required"),
   location: Yup.string().required("Location is required"),
-  items: Yup.array().of(
-    Yup.object().shape({
-      Logo: Yup.mixed().required("Logo is required"),
-    })
-  ),
+  logo: Yup.mixed().required("Logo is required"),
 });
+
+const Dropzone = ({ onDrop }) => {
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/*",
+  });
+
+  return (
+    <div
+      {...getRootProps()}
+      style={{
+        border: "2px dashed #0087F7",
+        padding: "20px",
+        textAlign: "center",
+      }}
+    >
+      <input {...getInputProps()} />
+      <p>Drag 'n' drop a logo here, or click to select one</p>
+    </div>
+  );
+};
 
 export default function CreateOrganizationForm() {
   const { enqueueSnackbar } = useSnackbar();
@@ -41,7 +64,7 @@ export default function CreateOrganizationForm() {
     organizationName: "",
     email: "",
     location: "",
-    items: [],
+    logo: null,
   };
 
   const submitCreateForm = async (values, { setSubmitting, resetForm }) => {
@@ -58,7 +81,7 @@ export default function CreateOrganizationForm() {
     } catch {
       console.log("error");
       setSubmitting(false);
-      enqueueSnackbar("Somethings went wrong", {
+      enqueueSnackbar("Something went wrong", {
         variant: "error",
       });
     }
@@ -76,32 +99,32 @@ export default function CreateOrganizationForm() {
           onSubmit={submitCreateForm}
           enableReinitialize
         >
-          {({ handleSubmit, isSubmitting, errors, touched }) => (
+          {({
+            handleSubmit,
+            isSubmitting,
+            errors,
+            touched,
+            setFieldValue,
+            values,
+          }) => (
             <Form onSubmit={handleSubmit} style={{ width: "60%" }}>
               <Box display="flex" flexDirection="column" gap={3}>
                 <Field name="logo">
-                  {({ field, form }) => (
-                    <input
-                      id="logo"
-                      name="logo"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => {
-                        form.setFieldValue(
-                          "logo",
-                          event.currentTarget.files[0]
-                        );
-                      }}
-                      style={{ display: "none" }}
+                  {() => (
+                    <Dropzone
+                      onDrop={(acceptedFiles) =>
+                        setFieldValue("logo", acceptedFiles[0])
+                      }
                     />
                   )}
                 </Field>
-
-                <label htmlFor="logo">
-                  <Button variant="contained" component="span">
-                    Upload Logo
-                  </Button>
-                </label>
+                {values.logo && (
+                  <Avatar
+                    src={URL.createObjectURL(values.logo)}
+                    alt="Logo"
+                    sx={{ width: 100, height: 100, margin: "0 auto" }}
+                  />
+                )}
                 {touched.logo && errors.logo && (
                   <Typography color="error">{errors.logo}</Typography>
                 )}
@@ -134,19 +157,6 @@ export default function CreateOrganizationForm() {
                       fullWidth
                       error={touched.email && Boolean(errors.email)}
                       helperText={touched.email && errors.email}
-                    />
-                  )}
-                </Field>
-                <Field name="occupation">
-                  {({ field }) => (
-                    <TextField
-                      {...field}
-                      id="occupation"
-                      label="Occupation"
-                      variant="outlined"
-                      fullWidth
-                      error={touched.occupation && Boolean(errors.occupation)}
-                      helperText={touched.occupation && errors.occupation}
                     />
                   )}
                 </Field>

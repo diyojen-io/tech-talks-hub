@@ -19,6 +19,7 @@ import { styled } from "@mui/system";
 import NextLink from "next/link";
 import { TECH_TALK } from "../../../constant";
 import { FEATURES } from "../../../constant";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const BoxStyle = styled(Box)(() => ({
   paddingBottom: "20px",
@@ -29,7 +30,7 @@ const BoxStyle = styled(Box)(() => ({
 }));
 
 export default function TechTalk() {
-  const [value, setValue] = React.useState("one");
+  const [value, setValue] = useLocalStorage("tabValue", "one");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
