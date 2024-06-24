@@ -22,11 +22,9 @@ import { FEATURES } from "../../../constant";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const BoxStyle = styled(Box)(() => ({
-  paddingBottom: "20px",
-  marginTop: "20px",
+  margin: "20px 0",
   display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
+  flexDirection: "column",
 }));
 
 export default function TechTalk() {
@@ -71,13 +69,20 @@ export default function TechTalk() {
       <Divider />
       {TECH_TALK.map(({ id, nickName, title, logo }, index) => (
         <BoxStyle key={index}>
-          <Box>
-            <Stack direction="row" justifyContent="space-between">
-              <Stack
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={1}
+          <Stack direction="row" justifyContent="space-between">
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={1}
+            >
+              <NextLink
+                href={`/organization/${id}`}
+                style={{
+                  display: "flex",
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
               >
                 <Avatar
                   alt={title}
@@ -88,31 +93,26 @@ export default function TechTalk() {
                     marginRight: "5px",
                   }}
                 />
-                <NextLink
-                  href={`/organization/${id}`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <Typography variant="body2">{nickName}</Typography>
-                </NextLink>
-              </Stack>
-              <Stack direction="row" spacing={1}>
-                <AddIcon fontSize="small" color="action" />
-                <ShareIcon fontSize="small" color="action" />
-              </Stack>
+                <Typography variant="body2">{nickName}</Typography>
+              </NextLink>
             </Stack>
-            <NextLink
-              href={`/tech-talks/${id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Typography variant="h5">{title}</Typography>
-            </NextLink>
-            <Typography variant="inherit">
-              Yazılım, bilgisayarların çalışmasını sağlayan programların ve
-              verilerin bir araya gelerek bir işlevi yerine getirmesini sağlayan
-              kodların genel adıdır. Bu kodlar, bir programın nasıl çalışacağını
-              belirleyen talimatlar içerir.
-            </Typography>
-          </Box>
+            <Stack direction="row" spacing={1}>
+              <AddIcon fontSize="small" color="action" />
+              <ShareIcon fontSize="small" color="action" />
+            </Stack>
+          </Stack>
+          <NextLink
+            href={`/tech-talks/${id}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Typography variant="h5">{title}</Typography>
+          </NextLink>
+          <Typography variant="inherit">
+            Yazılım, bilgisayarların çalışmasını sağlayan programların ve
+            verilerin bir araya gelerek bir işlevi yerine getirmesini sağlayan
+            kodların genel adıdır. Bu kodlar, bir programın nasıl çalışacağını
+            belirleyen talimatlar içerir.
+          </Typography>
         </BoxStyle>
       ))}
     </Container>

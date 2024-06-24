@@ -1,19 +1,12 @@
 "use client";
 import React from "react";
 import { Formik, Field, Form } from "formik";
-import {
-  TextField,
-  Button,
-  Container,
-  Typography,
-  Avatar,
-  Box,
-} from "@mui/material";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
 import * as Yup from "yup";
-import { useDropzone } from "react-dropzone";
+import AvatarUpload from "../../components/AvatarUpload";
 
 const CreateBox = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -34,27 +27,6 @@ const organizationSchema = Yup.object().shape({
   location: Yup.string().required("Location is required"),
   logo: Yup.mixed().required("Logo is required"),
 });
-
-const Dropzone = ({ onDrop }) => {
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: "image/*",
-  });
-
-  return (
-    <div
-      {...getRootProps()}
-      style={{
-        border: "2px dashed #0087F7",
-        padding: "20px",
-        textAlign: "center",
-      }}
-    >
-      <input {...getInputProps()} />
-      <p>Drag 'n' drop a logo here, or click to select one</p>
-    </div>
-  );
-};
 
 export default function CreateOrganizationForm() {
   const { enqueueSnackbar } = useSnackbar();
@@ -109,25 +81,19 @@ export default function CreateOrganizationForm() {
           }) => (
             <Form onSubmit={handleSubmit} style={{ width: "60%" }}>
               <Box display="flex" flexDirection="column" gap={3}>
-                <Field name="logo">
-                  {() => (
-                    <Dropzone
+                <Field
+                  name="logo"
+                  render={() => (
+                    <AvatarUpload
                       onDrop={(acceptedFiles) =>
                         setFieldValue("logo", acceptedFiles[0])
                       }
+                      logo={values.logo}
+                      error={errors.logo}
+                      touched={touched.logo}
                     />
                   )}
-                </Field>
-                {values.logo && (
-                  <Avatar
-                    src={URL.createObjectURL(values.logo)}
-                    alt="Logo"
-                    sx={{ width: 100, height: 100, margin: "0 auto" }}
-                  />
-                )}
-                {touched.logo && errors.logo && (
-                  <Typography color="error">{errors.logo}</Typography>
-                )}
+                />
                 <Field name="organizationName">
                   {({ field }) => (
                     <TextField

@@ -14,10 +14,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 
 const FormContainer = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(8),
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+  justifyContent: "center",
+  minHeight: `calc(100vh - 56px)`,
 }));
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
@@ -38,7 +39,7 @@ export default function Login() {
   const { login } = useAuth();
   const router = useRouter();
   return (
-    <FormContainer component="main" maxWidth="xs">
+    <FormContainer maxWidth="xs">
       <StyledAvatar>
         <LockOutlinedIcon />
       </StyledAvatar>
