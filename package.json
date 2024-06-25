@@ -16,8 +16,10 @@
     "@mui/material-nextjs": "^5.15.11",
     "formik": "^2.4.6",
     "next": "14.2.3",
+    "notistack": "^3.0.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "yup": "^1.4.0"
   },
   "devDependencies": {

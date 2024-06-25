@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { Formik, Field, Form } from "formik";
-import { TextField, Button, Container, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { useSnackbar } from "notistack";
+import { useRouter } from "next/navigation";
 import * as Yup from "yup";
-import { styled } from "@mui/material";
-import Head from "next/head";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import AvatarUpload from "../../components/AvatarUpload";
 
 const CreateBox = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -15,6 +15,8 @@ const CreateBox = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
+  borderRadius: "10px",
+  backgroundColor: theme.palette.background.neutral,
 }));
 
 const organizationSchema = Yup.object().shape({
@@ -23,51 +25,75 @@ const organizationSchema = Yup.object().shape({
     .email("Invalid email format")
     .required("Email is required"),
   location: Yup.string().required("Location is required"),
-  items: Yup.array().of(
-    Yup.object().shape({
-      Logo: Yup.mixed().required("Logo is required"),
-    })
-  ),
+  logo: Yup.mixed().required("Logo is required"),
 });
 
 export default function CreateOrganizationForm() {
-  const [organizationData, setOrganizationData] = useLocalStorage(
-    "organization",
-    {
-      organizationName: "",
-      occupation: "",
-      email: "",
-      location: "",
-      items: [{ Logo: null }],
-    }
-  );
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
-  const submitCreateForm = async (values, { setSubmitting }) => {
-    values.createdBy = "ozkan";
-    values.owner = "ozkan";
-    values.createdAt = new Date().toISOString();
-    setOrganizationData(values); // Yerel depolama işlemi
-    setSubmitting(false);
+  const initialValues = {
+    organizationName: "",
+    email: "",
+    location: "",
+    logo: null,
+  };
+
+  const submitCreateForm = async (values, { setSubmitting, resetForm }) => {
+    try {
+      values.owner = "ozkan";
+      values.createdAt = new Date().toISOString();
+      window.localStorage.setItem("organization", JSON.stringify(values));
+      enqueueSnackbar("Organization created successfully", {
+        variant: "success",
+      });
+      router.push("/");
+      setSubmitting(false);
+      resetForm();
+    } catch {
+      console.log("error");
+      setSubmitting(false);
+      enqueueSnackbar("Something went wrong", {
+        variant: "error",
+      });
+    }
   };
 
   return (
-    <>
-      <Head>
-        <title>Create Organization</title>
-      </Head>
+    <Container>
       <CreateBox>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography mb={5} variant="h4" component="h1" gutterBottom>
           Create Organization
         </Typography>
         <Formik
           validationSchema={organizationSchema}
-          initialValues={organizationData}
+          initialValues={initialValues}
           onSubmit={submitCreateForm}
           enableReinitialize
         >
-          {({ handleSubmit, isSubmitting, errors, touched }) => (
-            <Form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          {({
+            handleSubmit,
+            isSubmitting,
+            errors,
+            touched,
+            setFieldValue,
+            values,
+          }) => (
+            <Form onSubmit={handleSubmit} style={{ width: "60%" }}>
               <Box display="flex" flexDirection="column" gap={3}>
+                <Field
+                  name="logo"
+                  render={() => (
+                    <AvatarUpload
+                      onDrop={(acceptedFiles) =>
+                        setFieldValue("logo", acceptedFiles[0])
+                      }
+                      logo={values.logo}
+                      error={errors.logo}
+                      touched={touched.logo}
+                    />
+                  )}
+                />
                 <Field name="organizationName">
                   {({ field }) => (
                     <TextField
@@ -86,16 +112,17 @@ export default function CreateOrganizationForm() {
                     />
                   )}
                 </Field>
-                <Field name="occupation">
+                <Field name="email">
                   {({ field }) => (
                     <TextField
                       {...field}
-                      id="occupation"
-                      label="Occupation"
+                      id="email"
+                      label="Email"
                       variant="outlined"
+                      type="email"
                       fullWidth
-                      error={touched.occupation && Boolean(errors.occupation)}
-                      helperText={touched.occupation && errors.occupation}
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
                     />
                   )}
                 </Field>
@@ -112,33 +139,19 @@ export default function CreateOrganizationForm() {
                     />
                   )}
                 </Field>
-                <Field name="email">
-                  {({ field }) => (
-                    <TextField
-                      {...field}
-                      id="email"
-                      label="Email"
-                      variant="outlined"
-                      type="email"
-                      fullWidth
-                      error={touched.email && Boolean(errors.email)}
-                      helperText={touched.email && errors.email}
-                    />
-                  )}
-                </Field>
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   disabled={isSubmitting}
                 >
-                  Submit
+                  Create
                 </Button>
               </Box>
             </Form>
           )}
         </Formik>
       </CreateBox>
-    </>
+    </Container>
   );
 }
