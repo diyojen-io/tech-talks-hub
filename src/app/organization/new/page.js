@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
 import { Formik, Field, Form } from "formik";
-import { TextField, Button, Container, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import * as Yup from "yup";
-import { styled } from "@mui/material";
-import Head from "next/head";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
+import * as Yup from "yup";
+import AvatarUpload from "../../components/AvatarUpload";
 
 const CreateBox = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -26,11 +25,7 @@ const organizationSchema = Yup.object().shape({
     .email("Invalid email format")
     .required("Email is required"),
   location: Yup.string().required("Location is required"),
-  items: Yup.array().of(
-    Yup.object().shape({
-      Logo: Yup.mixed().required("Logo is required"),
-    })
-  ),
+  logo: Yup.mixed().required("Logo is required"),
 });
 
 export default function CreateOrganizationForm() {
@@ -41,7 +36,7 @@ export default function CreateOrganizationForm() {
     organizationName: "",
     email: "",
     location: "",
-    items: [],
+    logo: null,
   };
 
   const submitCreateForm = async (values, { setSubmitting, resetForm }) => {
@@ -58,7 +53,7 @@ export default function CreateOrganizationForm() {
     } catch {
       console.log("error");
       setSubmitting(false);
-      enqueueSnackbar("Somethings went wrong", {
+      enqueueSnackbar("Something went wrong", {
         variant: "error",
       });
     }
@@ -76,9 +71,29 @@ export default function CreateOrganizationForm() {
           onSubmit={submitCreateForm}
           enableReinitialize
         >
-          {({ handleSubmit, isSubmitting, errors, touched }) => (
+          {({
+            handleSubmit,
+            isSubmitting,
+            errors,
+            touched,
+            setFieldValue,
+            values,
+          }) => (
             <Form onSubmit={handleSubmit} style={{ width: "60%" }}>
               <Box display="flex" flexDirection="column" gap={3}>
+                <Field
+                  name="logo"
+                  render={() => (
+                    <AvatarUpload
+                      onDrop={(acceptedFiles) =>
+                        setFieldValue("logo", acceptedFiles[0])
+                      }
+                      logo={values.logo}
+                      error={errors.logo}
+                      touched={touched.logo}
+                    />
+                  )}
+                />
                 <Field name="organizationName">
                   {({ field }) => (
                     <TextField
@@ -97,16 +112,17 @@ export default function CreateOrganizationForm() {
                     />
                   )}
                 </Field>
-                <Field name="occupation">
+                <Field name="email">
                   {({ field }) => (
                     <TextField
                       {...field}
-                      id="occupation"
-                      label="Occupation"
+                      id="email"
+                      label="Email"
                       variant="outlined"
+                      type="email"
                       fullWidth
-                      error={touched.occupation && Boolean(errors.occupation)}
-                      helperText={touched.occupation && errors.occupation}
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
                     />
                   )}
                 </Field>
@@ -123,21 +139,6 @@ export default function CreateOrganizationForm() {
                     />
                   )}
                 </Field>
-                <Field name="email">
-                  {({ field }) => (
-                    <TextField
-                      {...field}
-                      id="email"
-                      label="Email"
-                      variant="outlined"
-                      type="email"
-                      fullWidth
-                      error={touched.email && Boolean(errors.email)}
-                      helperText={touched.email && errors.email}
-                    />
-                  )}
-                </Field>
-
                 <Button
                   type="submit"
                   variant="contained"

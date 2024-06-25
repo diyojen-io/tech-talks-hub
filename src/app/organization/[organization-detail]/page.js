@@ -5,33 +5,27 @@ import {
   Box,
   Typography,
   Stack,
-  Button,
   Link,
-  IconButton,
   Avatar,
   Tab,
   Tabs,
+  Grid,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import AddIcon from "@mui/icons-material/Add";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { styled } from "@mui/material";
 import Image from "next/image";
-import LOGO from "../../../../public/images/organization-logo.jpeg";
 import { TECH_TALK } from "../../../../constant";
+import LOGO from "../../../../public/images/organization-logo.jpeg";
 import NextLink from "next/link";
 
-const BgImage = styled(Container)(({ theme }) => ({
-  width: "100%",
-  height: "150px",
-  display: "flex",
-  borderRadius: "10px",
-  background: `no-repeat center/cover url(${"/images/main-images-1.jpg"})`,
-}));
-
 const ImageLogo = styled(Image)(({ theme }) => ({
-  transform: "translateY(-30px)",
   borderRadius: "20px",
 }));
 
@@ -47,13 +41,12 @@ const BoxStyle = styled(Box)(() => ({
   display: "flex",
 }));
 
-const OrganizationProfileContent = styled(Box)(() => ({
-  width: "70%",
-  marginTop: "50px",
+const OrganizationProfileContent = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "start",
+  padding: theme.spacing(0, 2, 0, 0),
 }));
 export default function Organization() {
   const [value, setValue] = React.useState("one");
@@ -64,97 +57,86 @@ export default function Organization() {
 
   return (
     <Container>
-      <BgImage />
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ margin: "0 30px" }}
-      >
-        <Stack>
-          <ImageLogo
-            src={LOGO}
-            alt="organization LOGO"
-            width={130}
-            height={130}
-          />
-        </Stack>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <ImageLogo
+          src={LOGO}
+          alt="organization LOGO"
+          width={130}
+          height={130}
+        />
         <Stack ml={5} flex="1">
           <Typography variant="h4">Teknoloji Dünyasi</Typography>
           <Typography variant="body1">members . 1903</Typography>
-        </Stack>
-        <Stack direction="row">
-          <Button sx={{ marginRight: "10px" }} variant="contained">
-            Follow
-          </Button>
-          <Button variant="contained" color="secondary">
-            Join
-          </Button>
+          <Stack direction="row">
+            <Tooltip title="Join the Organization">
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Follow the Organization">
+              <IconButton>
+                <FavoriteIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Stack>
       </Box>
-      <Stack direction="row">
-        <OrganizationProfileContent>
-          <Box sx={{ width: "100%", marginBottom: "30px" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              textColor="secondary"
-              indicatorColor="secondary"
-              aria-label="secondary tabs example"
-            >
-              <Tab value="one" label="Item One" />
-              <Tab value="two" label="Item Two" />
-              <Tab value="three" label="Item Three" />
-            </Tabs>
-          </Box>
-
-          {TECH_TALK.map(({ id, nickName, title, logo, img }, index) => (
-            <BoxStyle key={index}>
-              <Box mr={3}>
-                <NextLink href={`/tech-talks/${id}`}>
-                  <Image
-                    style={{
-                      cursor: "pointer",
-                      borderRadius: "5px",
-                    }}
-                    src={img.src}
-                    alt={img.alt}
-                    width={200}
-                    height={150}
-                  />
-                </NextLink>
-              </Box>
-              <Box>
-                <Stack direction="row">
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Avatar
-                      alt={title}
-                      src={logo.src}
-                      sx={{
-                        width: "20px",
-                        height: "20px",
-                        marginRight: "5px",
-                      }}
-                    />
-                    <Typography variant="body2">{nickName}</Typography>
+      <Grid container sx={{ display: "flex" }}>
+        <Grid item sm={12} md={8}>
+          <OrganizationProfileContent>
+            <Box sx={{ marginBottom: "30px" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                textColor="secondary"
+                indicatorColor="secondary"
+                aria-label="secondary tabs example"
+              >
+                <Tab value="one" label="All" />
+                <Tab value="two" label="Popular" />
+                <Tab value="three" label="New" />
+              </Tabs>
+            </Box>
+            {TECH_TALK.map(({ id, nickName, title, logo }, index) => (
+              <BoxStyle key={index}>
+                <Box>
+                  <Stack direction="row">
+                    <Stack
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Avatar
+                        alt={title}
+                        src={logo.src}
+                        sx={{
+                          width: "20px",
+                          height: "20px",
+                          marginRight: "5px",
+                        }}
+                      />
+                      <Typography variant="body2">{nickName}</Typography>
+                    </Stack>
                   </Stack>
-                </Stack>
-                <NextLink
-                  href={`/tech-talks/${id}`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <Typography variant="h5">{title}</Typography>
-                </NextLink>
-              </Box>
-            </BoxStyle>
-          ))}
-        </OrganizationProfileContent>
-        <Stack spacing={3} sx={{ width: "30%" }}>
+                  <NextLink
+                    href={`/tech-talks/${id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Typography variant="h5">{title}</Typography>
+                    <Typography variant="inherit">
+                      Yazılım, bilgisayarların çalışmasını sağlayan programların
+                      ve verilerin bir araya gelerek bir işlevi yerine
+                      getirmesini sağlayan kodların genel adıdır. Bu kodlar, bir
+                      programın nasıl çalışacağını belirleyen talimatlar içerir.
+                    </Typography>
+                  </NextLink>
+                </Box>
+              </BoxStyle>
+            ))}
+          </OrganizationProfileContent>
+        </Grid>
+        <Grid item sm={12} md={4}>
           <Box>
             <Typography mb={2} variant="h4">
               About
@@ -211,8 +193,8 @@ export default function Organization() {
               </IconButton>
             </Link>
           </IconContainer>
-        </Stack>
-      </Stack>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
