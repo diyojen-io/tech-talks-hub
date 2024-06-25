@@ -38,6 +38,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 export default function Login() {
   const { login } = useAuth();
   const router = useRouter();
+
   return (
     <FormContainer maxWidth="xs">
       <StyledAvatar>
@@ -48,8 +49,9 @@ export default function Login() {
       </Typography>
       <Formik
         initialValues={{ email: "", password: "" }}
-        onSubmit={(values) => {
-          login();
+        onSubmit={async (values) => {
+          console.log("values: ", values);
+          await login(values);
           router.push("/");
         }}
       >

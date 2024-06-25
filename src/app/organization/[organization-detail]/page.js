@@ -24,6 +24,7 @@ import Image from "next/image";
 import { TECH_TALK } from "../../../../constant";
 import LOGO from "../../../../public/images/organization-logo.jpeg";
 import NextLink from "next/link";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const ImageLogo = styled(Image)(({ theme }) => ({
   borderRadius: "20px",
@@ -49,7 +50,11 @@ const OrganizationProfileContent = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2, 0, 0),
 }));
 export default function Organization() {
+  const { user, isAuthenticated } = useAuth();
   const [value, setValue] = React.useState("one");
+
+  console.log("user: ", user);
+  console.log("isAuthenticated: ", isAuthenticated);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -67,18 +72,22 @@ export default function Organization() {
         <Stack ml={5} flex="1">
           <Typography variant="h4">Teknoloji Dünyasi</Typography>
           <Typography variant="body1">members . 1903</Typography>
-          <Stack direction="row">
-            <Tooltip title="Join the Organization">
-              <IconButton>
-                <AddIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Follow the Organization">
-              <IconButton>
-                <FavoriteIcon />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+          {user.role === "owner" ? (
+            <>settings</>
+          ) : (
+            <Stack direction="row">
+              <Tooltip title="Join the Organization">
+                <IconButton>
+                  <AddIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Follow the Organization">
+                <IconButton>
+                  <FavoriteIcon />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          )}
         </Stack>
       </Box>
       <Grid container sx={{ display: "flex" }}>
