@@ -13,7 +13,7 @@ import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 
-const FormContainer = styled(Container)(({ theme }) => ({
+const LoginContainer = styled(Container)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -38,8 +38,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 export default function Login() {
   const { login } = useAuth();
   const router = useRouter();
+
   return (
-    <FormContainer maxWidth="xs">
+    <LoginContainer maxWidth="xs">
       <StyledAvatar>
         <LockOutlinedIcon />
       </StyledAvatar>
@@ -48,8 +49,9 @@ export default function Login() {
       </Typography>
       <Formik
         initialValues={{ email: "", password: "" }}
-        onSubmit={(values) => {
-          login();
+        onSubmit={async (values) => {
+          console.log("values: ", values);
+          await login(values);
           router.push("/");
         }}
       >
@@ -88,6 +90,6 @@ export default function Login() {
           </StyledForm>
         )}
       </Formik>
-    </FormContainer>
+    </LoginContainer>
   );
 }

@@ -1,15 +1,36 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useReducer } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-const AuthContext = createContext();
+const initialState = {
+  user: null,
+  isAuthenticated: false,
+};
+
+const handlers = {
+  LOGIN: (state, { payload }) => ({
+    ...state,
+    user: { payload },
+  }),
+};
+
+const reducer = (state, action) =>
+  handlers[action.type] ? handlers[action.type](state, action) : state;
+
+const AuthContext = createContext({
+  ...initialState,
+  login: () => {},
+  logout: () => {},
+});
 
 export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [isAuthenticated, setIsAuthenticated] = useLocalStorage(
     "isAuthenticated",
     false
   );
 
-  const login = () => {
+  const login = async (data) => {
+    dispatch({ type: "LOGIN", payload: data.email });
     setIsAuthenticated(true);
   };
 
@@ -18,7 +39,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        ...state,
+        user: {
+          email: state.user,
+          role: "owner",
+        },
+        isAuthenticated,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
