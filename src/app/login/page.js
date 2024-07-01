@@ -13,7 +13,7 @@ import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 
-const FormContainer = styled(Container)(({ theme }) => ({
+const LoginContainer = styled(Container)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -40,7 +40,7 @@ export default function Login() {
   const router = useRouter();
 
   return (
-    <FormContainer maxWidth="xs">
+    <LoginContainer maxWidth="xs">
       <StyledAvatar>
         <LockOutlinedIcon />
       </StyledAvatar>
@@ -90,6 +90,6 @@ export default function Login() {
           </StyledForm>
         )}
       </Formik>
-    </FormContainer>
+    </LoginContainer>
   );
 }
