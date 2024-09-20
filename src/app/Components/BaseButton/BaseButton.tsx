@@ -1,9 +1,15 @@
 import React from 'react';
 import './BaseButton.scss';
 
-const BaseButton = ({ variant = 'primary', size = 'medium', label, ...props }) => {
+interface BaseButtonProps {
+    variant?: 'primary' | 'secondary' | 'teritary';
+    size?: 'small' | 'medium' | 'large';
+    label: string;
+}
+
+const BaseButton: React.FC<BaseButtonProps> = ({ variant = 'primary', size = 'medium', label }) => {
     return (
-        <button className={`btn btn-${variant} btn-${size}`} {...props}>
+        <button className={`btn btn-${variant} btn-${size}`}>
             {label}
         </button>
     );
