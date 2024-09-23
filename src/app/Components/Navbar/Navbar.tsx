@@ -5,7 +5,8 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <a href="/" className="navbar-logo">
-        <span className="logo-text">TechTalksHub</span>
+        TechTalks
+        <span>hub</span>
       </a>
       <div className="navbar-nav">
         <BaseButton variant="teritary-outline" size="large" label="Login" />
