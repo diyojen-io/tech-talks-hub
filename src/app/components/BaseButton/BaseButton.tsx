@@ -17,8 +17,9 @@ const BaseButton: React.FC<BaseButtonProps> = ({
   variant = "primary",
   size = "medium",
   label,
+  ...other
 }) => {
-  return <button className={`btn btn-${variant} btn-${size}`}>{label}</button>;
+  return <button className={`btn btn-${variant} btn-${size}`} {...other}>{label}</button>;
 };
 
 export default BaseButton;
