@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { sourceCodePro } from "./fonts";
 import "./styles/globals.css";
+import Navbar from "./Components/Navbar/Navbar";
 
 export const metadata: Metadata = {
   title: "Tech Talks Hub",
@@ -15,6 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <header>
+        <Navbar />
+      </header>
       <body className={sourceCodePro.className}>{children}</body>
     </html>
   );

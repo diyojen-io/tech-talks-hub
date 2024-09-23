@@ -10,15 +10,74 @@
     color: #ffffff;
   }
 
+  &-primary:hover {
+    background-color: #ff6700;
+    color: #ffffff;
+    opacity: 0.8;
+  }
+
+  &-primary-outline {
+    background-color: transparent;
+    color: #ff6700;
+    border: 1px solid #ff6700;
+  }
+
+  &-primary-outline:hover {
+    background-color: #ff6700;
+    color: #ffffff;
+    opacity: 0.8;
+    transition: background-color 0.3s;
+  }
+
   &-secondary {
     background-color: #000000;
     color: #ffffff;
+  }
+
+  &-secondary:hover {
+    background-color: #000000;
+    color: #ffffff;
+    opacity: 0.8;
+  }
+
+  &-secondary-outline {
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #000000;
+  }
+
+  &-secondary-outline:hover {
+    background-color: #000000;
+    color: #ffffff;
+    opacity: 0.8;
+    transition: background-color 0.3s;
   }
 
   &-teritary {
     background-color: #ffffff;
     color: #000000;
     border: 1px solid #000000;
+  }
+
+  &-teritary:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    opacity: 0.8;
+  }
+
+  &-teritary-outline {
+    background-color: #000000;
+    color: #ffffff;
+    border: 1px solid #000000;
+  }
+
+  &-teritary-outline:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    opacity: 0.8;
+    transition: background-color 0.3s;
   }
 
   &-small {
@@ -35,26 +94,4 @@
     font-size: 16px;
     padding: 8px 16px;
   }
-
-  &-primary:hover {
-    background-color: #ff6700;
-    color: #ffffff;
-    opacity: 0.8;
-  }
-
-  &-secondary:hover {
-    background-color: #000000;
-    color: #ffffff;
-    opacity: 0.8;
-  }
-
-  &-teritary:hover {
-    background-color: #ffffff;
-    color: #000000;
-    border: 1px solid #000000;
-    opacity: 0.8;
-  }
-
 }
-
-
