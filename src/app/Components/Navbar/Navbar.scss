@@ -1,0 +1,39 @@
+.navbar {
+  background-color: #fff;
+  padding: 16px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+
+  &-logo {
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: 1px;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    font-size: 32px;
+    font-weight: 500;
+    background-color: black;
+    padding: 5px 3px;
+
+    span {
+      background-color: #ff6700;
+      margin-right: 5px;
+      padding: 2px 5px;
+      font-weight: 600;
+      border-radius: 4px;
+      color: #000;
+    }
+  }
+
+  &-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+}
