@@ -37,3 +37,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.vscode/*
+!.vscode/extensions.json
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
