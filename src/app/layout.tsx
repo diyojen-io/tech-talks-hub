@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { sourceCodePro } from "./fonts";
 import "./styles/globals.css";
-import Navbar from "./Components/Navbar/Navbar";
+import Navbar from "@/app/components/Navbar/Navbar";
+import ModalContainer from "@/app/modals/ModalContainer";
+import { ModalProvider } from './context/ModalContext';
 
 export const metadata: Metadata = {
   title: "Tech Talks Hub",
@@ -17,10 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={sourceCodePro.className}>
+      <ModalProvider>
+        <ModalContainer />
         <header>
           <Navbar />
         </header>
         <main>{children}</main>
+      </ModalProvider>
       </body>
     </html>
   );
