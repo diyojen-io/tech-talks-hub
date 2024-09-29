@@ -1,19 +1,32 @@
-import PropTypes from 'prop-types';
-import { createContext, useEffect, useReducer, useState, useContext } from 'react';
-import { initializeApp } from 'firebase/app';
+"use client";
+import { ReactNode } from "react";
+import PropTypes from "prop-types";
+import {
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+  useContext,
+} from "react";
+import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-} from 'firebase/auth';
-import { getFirestore, collection, doc, getDoc, setDoc } from 'firebase/firestore';
+} from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 //
-import { FIREBASE_API, ADMIN_EMAILS } from '../../config';
+import { FIREBASE_API, ADMIN_EMAILS } from "../../config";
 
 // ----------------------------------------------------------------------
-
 
 const firebaseApp = initializeApp(FIREBASE_API);
 
@@ -27,8 +40,22 @@ const initialState = {
   user: null,
 };
 
-const reducer = (state, action) => {
-  if (action.type === 'INITIALISE') {
+interface AuthState {
+  isAuthenticated: boolean;
+  isInitialized: boolean;
+  user: any | null;
+}
+
+interface AuthAction {
+  type: string;
+  payload: {
+    isAuthenticated: boolean;
+    user: any | null;
+  };
+}
+
+const reducer = (state: AuthState, action: AuthAction): AuthState => {
+  if (action.type === "INITIALISE") {
     const { isAuthenticated, user } = action.payload;
     return {
       ...state,
@@ -41,11 +68,39 @@ const reducer = (state, action) => {
   return state;
 };
 
-const AuthContext = createContext({
+interface AuthContextType extends AuthState {
+  method: string;
+  user: {
+    id: string | null;
+    email: string | null;
+    photoURL: string | null;
+    displayName: string | null;
+    role: string;
+    phoneNumber: string;
+    country: string;
+    address: string;
+    state: string;
+    city: string;
+    zipCode: string;
+    about: string;
+    isPublic: boolean;
+  } | null;
+  login: (email: string, password: string) => Promise<any>;
+  register: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType>({
   ...initialState,
-  method: 'firebase',
-  login: () => Promise.resolve(),
-  register: () => Promise.resolve(),
+  method: "firebase",
+  user: null,
+  login: (email: string, password: string) => Promise.resolve(),
+  register: (username: string, email: string, password: string) =>
+    Promise.resolve(),
   logout: () => Promise.resolve(),
 });
 
@@ -55,16 +110,35 @@ AuthProvider.propTypes = {
   children: PropTypes.node,
 };
 
-function AuthProvider({ children }) {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [profile, setProfile] = useState(null);
+  interface UserProfile {
+    photoURL?: string;
+    displayName?: string;
+    username?: string;
+    phoneNumber?: string;
+    country?: string;
+    address?: string;
+    state?: string;
+    city?: string;
+    zipCode?: string;
+    about?: string;
+    isPublic?: boolean;
+  }
+
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(
     () =>
       onAuthStateChanged(AUTH, async (user) => {
         if (user) {
-          const userRef = doc(DB, 'users', user.uid);
+          console.log("user: ", user);
+          const userRef = doc(DB, "users", user.uid);
 
           const docSnap = await getDoc(userRef);
 
@@ -73,12 +147,12 @@ function AuthProvider({ children }) {
           }
 
           dispatch({
-            type: 'INITIALISE',
+            type: "INITIALISE",
             payload: { isAuthenticated: true, user },
           });
         } else {
           dispatch({
-            type: 'INITIALISE',
+            type: "INITIALISE",
             payload: { isAuthenticated: false, user: null },
           });
         }
@@ -86,16 +160,25 @@ function AuthProvider({ children }) {
     [dispatch]
   );
 
-  const login = (email, password) => signInWithEmailAndPassword(AUTH, email, password);
+  interface LoginFunction {
+    (email: string, password: string): Promise<any>;
+  }
 
-  const register = (email, password, firstName, lastName) =>
+  const login: LoginFunction = (email, password) =>
+    signInWithEmailAndPassword(AUTH, email, password);
+
+  interface RegisterFunction {
+    (username: string, email: string, password: string): Promise<any>;
+  }
+
+  const register: RegisterFunction = (username, email, password) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
-      const userRef = doc(collection(DB, 'users'), res.user?.uid);
+      const userRef = doc(collection(DB, "users"), res.user?.uid);
 
       await setDoc(userRef, {
         uid: res.user?.uid,
         email,
-        displayName: `${firstName} ${lastName}`,
+        username,
       });
     });
 
@@ -105,20 +188,20 @@ function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         ...state,
-        method: 'firebase',
+        method: "firebase",
         user: {
           id: state?.user?.uid,
           email: state?.user?.email,
           photoURL: state?.user?.photoURL || profile?.photoURL,
           displayName: state?.user?.displayName || profile?.displayName,
-          role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
-          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
-          country: profile?.country || '',
-          address: profile?.address || '',
-          state: profile?.state || '',
-          city: profile?.city || '',
-          zipCode: profile?.zipCode || '',
-          about: profile?.about || '',
+          role: ADMIN_EMAILS.includes(state?.user?.email) ? "admin" : "user",
+          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || "",
+          country: profile?.country || "",
+          address: profile?.address || "",
+          state: profile?.state || "",
+          city: profile?.city || "",
+          zipCode: profile?.zipCode || "",
+          about: profile?.about || "",
           isPublic: profile?.isPublic || false,
         },
         login,
@@ -133,14 +216,12 @@ function AuthProvider({ children }) {
 
 export { AuthContext, AuthProvider };
 
-
-
 // ----------------------------------------------------------------------
 
 const useAuth = () => {
   const context = useContext(AuthContext);
 
-  if (!context) throw new Error('Auth context must be use inside AuthProvider');
+  if (!context) throw new Error("Auth context must be use inside AuthProvider");
 
   return context;
 };

@@ -1,14 +1,14 @@
-.meetings-container {
+.events-container {
   display: flex;
   align-items: center;
   flex-direction: column;
   background-color: #f1f2f7;
+  padding: 50px 20%;
   &__header {
     color: #ff6700;
   }
   &__contents {
     display: flex;
-    width: 60%;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 2rem;

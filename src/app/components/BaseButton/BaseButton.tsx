@@ -11,15 +11,26 @@ interface BaseButtonProps {
     | "teritary-outline";
   size?: "small" | "medium" | "large";
   label: string;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
 const BaseButton: React.FC<BaseButtonProps> = ({
   variant = "primary",
   size = "medium",
   label,
+  onClick,
   ...other
 }) => {
-  return <button className={`btn btn-${variant} btn-${size}`} {...other}>{label}</button>;
+  return (
+    <button
+      className={`btn btn-${variant} btn-${size}`}
+      onClick={onClick}
+      {...other}
+    >
+      {label}
+    </button>
+  );
 };
 
 export default BaseButton;
