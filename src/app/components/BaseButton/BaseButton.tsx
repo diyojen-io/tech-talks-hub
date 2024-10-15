@@ -8,7 +8,8 @@ interface BaseButtonProps {
     | "teritary"
     | "primary-outline"
     | "secondary-outline"
-    | "teritary-outline";
+    | "teritary-outline"
+    | "login";
   size?: "small" | "medium" | "large";
   label: string;
   onClick?: () => void;

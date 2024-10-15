@@ -6,6 +6,7 @@ import BaseModal from "../BaseModal/BaseModal";
 import BaseButton from "@/app/components/BaseButton/BaseButton";
 import "./SignUpModal.scss";
 import useAuth from "@/app/context/AuthContext";
+import { useState,useEffect } from "react";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface SignUpModalProps {
 
 const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const { register } = useAuth();
+  const [error, setError] = useState<string | null>(null);
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -27,16 +29,33 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
       .required("Password is required"),
   });
 
-  const handleSubmit = (values: { username: string; email: string; password: string }) => {
-    register(values.username, values.email, values.password);
-    onClose();
+  const handleSubmit = async (values: { username: string; email: string; password: string }) => {
+    try {
+      setError(null);
+      await register(values.username, values.email, values.password);
+      onClose();
+    } catch (err) {
+      console.error("Registration failed:", err);
+      setError("Registration failed. Please try again.");
+    }
   };
- 
+  useEffect(() => {
+    if (isOpen) {
+      setError(null); 
+    }
+  }, [isOpen]);
+
+  const initialValues = {
+    username: "",
+    email: "",
+    password: "",
+  };
+
   return (
     <BaseModal isOpen={isOpen} onClose={onClose}>
       <h2 className="sign-up-modal__title">Sign Up</h2>
       <Formik
-        initialValues={{ username: "", email: "", password: "" }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -78,7 +97,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
               />
               <ErrorMessage component="div" className="sign-up-modal__error" name="password" />
             </div>
-            <BaseButton type="submit" label="Sign up" size="large"/>
+            {error && <div className="sign-up-modal__error">{error}</div>}
+            <BaseButton type="submit" label="Sign up" size="large" />
           </Form>
         )}
       </Formik>
