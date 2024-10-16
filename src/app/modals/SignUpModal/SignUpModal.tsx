@@ -6,7 +6,6 @@ import BaseModal from "../BaseModal/BaseModal";
 import BaseButton from "@/app/components/BaseButton/BaseButton";
 import "./SignUpModal.scss";
 import useAuth from "@/app/context/AuthContext";
-import { useState,useEffect } from "react";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -15,7 +14,6 @@ interface SignUpModalProps {
 
 const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const { register } = useAuth();
-  const [error, setError] = useState<string | null>(null);
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -29,21 +27,20 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
       .required("Password is required"),
   });
 
-  const handleSubmit = async (values: { username: string; email: string; password: string }) => {
+  const handleSubmit = async (
+    values: { username: string; email: string; password: string }, 
+    actions: any
+  ) => {
+    const { setSubmitting, setStatus } = actions;
     try {
-      setError(null);
       await register(values.username, values.email, values.password);
       onClose();
     } catch (err) {
       console.error("Registration failed:", err);
-      setError("Registration failed. Please try again.");
+      setStatus("Registration failed. Please try again.");
+      setSubmitting(false);
     }
   };
-  useEffect(() => {
-    if (isOpen) {
-      setError(null); 
-    }
-  }, [isOpen]);
 
   const initialValues = {
     username: "",
@@ -59,8 +56,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {() => (
+        {({ status }) => (
           <Form className="sign-up-modal__form">
+            {status && (
+              <div className="sign-up-modal__error sign-up-modal__error--general">
+                {status}
+              </div>
+            )}
             <div className="sign-up-modal__form-group">
               <label className="sign-up-modal__form-group__label" htmlFor="username">
                 Username
@@ -97,8 +99,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
               />
               <ErrorMessage component="div" className="sign-up-modal__error" name="password" />
             </div>
-            {error && <div className="sign-up-modal__error">{error}</div>}
-            <BaseButton type="submit" label="Sign up" size="large" />
+            <BaseButton 
+              type="submit" 
+              label="Sign up" 
+              size="large" 
+              style={{ width: "100%", marginTop: "16px" }} 
+            />
           </Form>
         )}
       </Formik>

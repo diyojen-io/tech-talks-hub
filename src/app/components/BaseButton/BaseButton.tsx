@@ -8,12 +8,13 @@ interface BaseButtonProps {
     | "teritary"
     | "primary-outline"
     | "secondary-outline"
-    | "teritary-outline"
-    | "login";
+    | "teritary-outline";
+    
   size?: "small" | "medium" | "large";
   label: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  style?: React.CSSProperties;
 }
 
 const BaseButton: React.FC<BaseButtonProps> = ({

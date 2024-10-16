@@ -52,31 +52,6 @@
     opacity: 0.8;
     transition: background-color 0.3s;
   }
-  &-login {
-    background-color: #ff6700;
-    color: #ffffff;
-    width: 100%;
-    margin-top: 16px;
-  }
-  
-  &-login:hover {
-    background-color: #ff6700;
-    color: #ffffff;
-    opacity: 0.8;
-  }
-  
-  &-login-outline {
-    background-color: transparent;
-    color: #ff6700;
-    border: 1px solid #ff6700;
-  }
-  
-  &-login-outline:hover {
-    background-color: #ff6700;
-    color: #ffffff;
-    opacity: 0.8;
-    transition: background-color 0.3s;
-  }
   &-teritary {
     background-color: #ffffff;
     color: #000000;
