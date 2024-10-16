@@ -9,10 +9,12 @@ interface BaseButtonProps {
     | "primary-outline"
     | "secondary-outline"
     | "teritary-outline";
+    
   size?: "small" | "medium" | "large";
   label: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  style?: React.CSSProperties;
 }
 
 const BaseButton: React.FC<BaseButtonProps> = ({
