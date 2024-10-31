@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { sourceCodePro } from "./fonts";
 import "./styles/globals.css";
-import Navbar from "@/app/components/Navbar/Navbar";
-import ModalContainer from "@/app/modals/ModalContainer";
-import { ModalProvider } from "./context/ModalContext";
-import { AuthProvider } from "./context/AuthContext";
+import ProviderLayout from "./layouts/ProviderLayout";
 
 export const metadata: Metadata = {
   title: "Tech Talks Hub",
@@ -20,15 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={sourceCodePro.className}>
-        <AuthProvider>
-          <ModalProvider>
-            <ModalContainer />
-            <header>
-              <Navbar />
-            </header>
-            <main>{children}</main>
-          </ModalProvider>
-        </AuthProvider>
+        <ProviderLayout>{children}</ProviderLayout>
       </body>
     </html>
   );
