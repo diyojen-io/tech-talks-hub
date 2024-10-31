@@ -25,14 +25,14 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
-      .min(5, "Username must be at least 5 characters")
-      .required("Username is required"),
+      .min(5, "Username must be at least 5 characters*")
+      .required("Username is required*"),
     email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
+      .email("Invalid email format*")
+      .required("Email is required*"),
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
+      .min(6, "Password must be at least 6 characters*")
+      .required("Password is required*"),
   });
 
   const handleSubmit = async (
@@ -62,7 +62,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
         {({ errors }) => (
           <Form className="sign-up-modal__form">
             {errors.afterSubmit && (
-              <div className="sign-up-modal__error sign-up-modal__error--general">
+              <div className="sign-up-modal__error__alert">
                 <p className="sign-up-modal__error__alert__text">
                   <Icon icon="material-symbols:warning" fontSize={20} />
                   {errors.afterSubmit}
@@ -70,7 +70,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
               </div>
             )}
             <div className="sign-up-modal__form-group">
-              <label className="sign-up-modal__form-group__label" htmlFor="username">
+              <label className="sign-up-modal__form-group__label"
+               htmlFor="username"
+               >
                 Username
               </label>
               <Field
@@ -79,10 +81,15 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 id="username"
                 name="username"
               />
-              <ErrorMessage component="div" className="sign-up-modal__error" name="username" />
+              <ErrorMessage
+               component="div"
+                className="sign-up-modal__error"
+                 name="username" />
             </div>
             <div className="sign-up-modal__form-group">
-              <label className="sign-up-modal__form-group__label" htmlFor="email">
+              <label className="sign-up-modal__form-group__label"
+               htmlFor="email"
+               >
                 Email
               </label>
               <Field
@@ -91,10 +98,16 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 id="email"
                 name="email"
               />
-              <ErrorMessage component="div" className="sign-up-modal__error" name="email" />
+              <ErrorMessage
+               component="div"
+                className="sign-up-modal__error"
+                 name="email" 
+                 />
             </div>
             <div className="sign-up-modal__form-group">
-              <label className="sign-up-modal__form-group__label" htmlFor="password">
+              <label className="sign-up-modal__form-group__label"
+              htmlFor="password"
+              >
                 Password
               </label>
               <Field
@@ -103,7 +116,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 id="password"
                 name="password"
               />
-              <ErrorMessage component="div" className="sign-up-modal__error" name="password" />
+              <ErrorMessage 
+              component="div" 
+              className="sign-up-modal__error"
+               name="password" 
+               />
             </div>
             <BaseButton 
               type="submit" 

@@ -32,7 +32,7 @@
   }
 
   &__error {
-    background-color: #d32f2f;
+    color: #d32f2f;
     font-size: 12px;
     margin-top: 0.5rem;
   }
@@ -43,7 +43,6 @@
     font-size: 12px;
     padding: 0;
     border-radius: 4px;
-    margin-top: 8px;
 
     &__text {
       display: flex;
@@ -51,6 +50,7 @@
       gap: 0.5rem;
       font-size: 0.75rem;
       color: #fff;
+      background-color: #d32f2f;
       margin-left: 1rem;
     }
   }
