@@ -1,12 +1,12 @@
 "use client";
-
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import BaseModal from "../BaseModal/BaseModal";
 import BaseButton from "@/app/components/BaseButton/BaseButton";
+import { Icon } from "@iconify/react";
+import { useSnackbar } from "notistack";
 import "./SignUpModal.scss";
 import useAuth from "@/app/context/AuthContext";
-
 interface SignUpModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +14,14 @@ interface SignUpModalProps {
 
 const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const { register } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const initialValues = {
+    username: "",
+    email: "",
+    password: "",
+    afterSubmit: "",
+  };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -28,24 +36,19 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   });
 
   const handleSubmit = async (
-    values: { username: string; email: string; password: string }, 
+    values: { username: string; email: string; password: string },
     actions: any
   ) => {
-    const { setSubmitting, setStatus } = actions;
+    const { setErrors, reset } = actions;
     try {
       await register(values.username, values.email, values.password);
+      enqueueSnackbar("Successfully signed up!", { variant: "success" });
       onClose();
-    } catch (err) {
-      console.error("Registration failed:", err);
-      setStatus("Registration failed. Please try again.");
-      setSubmitting(false);
+    } catch (err: any) {
+      setErrors({ afterSubmit: err.message });
+    } finally {
+      reset();
     }
-  };
-
-  const initialValues = {
-    username: "",
-    email: "",
-    password: "",
   };
 
   return (
@@ -56,11 +59,14 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ status }) => (
+        {({ errors }) => (
           <Form className="sign-up-modal__form">
-            {status && (
+            {errors.afterSubmit && (
               <div className="sign-up-modal__error sign-up-modal__error--general">
-                {status}
+                <p className="sign-up-modal__error__alert__text">
+                  <Icon icon="material-symbols:warning" fontSize={20} />
+                  {errors.afterSubmit}
+                </p>
               </div>
             )}
             <div className="sign-up-modal__form-group">
