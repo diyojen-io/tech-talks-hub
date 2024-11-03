@@ -193,7 +193,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           id: state?.user?.uid,
           email: state?.user?.email,
           photoURL: state?.user?.photoURL || profile?.photoURL,
-          displayName: state?.user?.displayName || profile?.displayName,
+          displayName: state?.user?.username || profile?.username,
           role: ADMIN_EMAILS.includes(state?.user?.email) ? "admin" : "user",
           phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || "",
           country: profile?.country || "",
