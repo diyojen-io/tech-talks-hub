@@ -11,8 +11,6 @@
     color: #fff;
     letter-spacing: 1px;
     text-decoration: none;
-    position: relative;
-    z-index: 1;
     font-size: 32px;
     font-weight: 500;
     background-color: black;
@@ -33,5 +31,63 @@
     flex-direction: row;
     align-items: center;
     gap: 16px;
+    color: #fff;
+
+    .navbar-user {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      cursor: default;
+      margin-right: 16px;
+
+      span {
+        font-size: 16px;
+        font-weight: 500;
+        color: #fff;
+        margin-top: 4px; 
+        text-align: center;
+      }
+
+      .popover {
+        position: absolute;
+        top: calc(100% + 10px); 
+        right: 50%;
+        transform: translateX(50%);
+        background-color: #333;
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        z-index: 10;
+        min-width: 160px;
+
+        .popover-item {
+          display: flex; 
+          align-items: center;
+          color: white;
+          background: none;
+          border: none;
+          padding: 8px 0;
+          cursor: pointer;
+          font-size: 16px;
+          transition: color 0.3s;
+         
+
+          &:hover {
+            color: #ff6700;
+          }
+        }
+
+        .divider {
+          height: 1px;
+          background-color: #555;
+          margin: 8px 0; 
+          width: 100%;
+        }
+      }
+    }
   }
 }
