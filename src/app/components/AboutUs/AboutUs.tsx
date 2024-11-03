@@ -1,6 +1,6 @@
-import React from "react";
-import BaseButton from "@/app/components/BaseButton/BaseButton";
-import "./AboutUs.scss";
+import React from 'react';
+import BaseButton from '@/app/components/BaseButton/BaseButton';
+import './AboutUs.scss';
 
 const AboutUs: React.FC = () => {
   return (

@@ -1,13 +1,13 @@
-import BaseButton from "../BaseButton/BaseButton";
-import "./Footer.scss";
+import BaseButton from '../BaseButton/BaseButton';
+import './Footer.scss';
 import {
   GithubIcon,
   WebsiteIcon,
   MailIcon,
-} from "../../../../public/assets/icons";
-import Iconify from "../Iconify";
-import Image from "next/image";
-import Logo from "../../../../public/assets/logos/logo.png";
+} from '../../../../public/assets/icons';
+import Iconify from '../Iconify';
+import Image from 'next/image';
+import Logo from '../../../../public/assets/logos/logo.png';
 
 export default function Footer() {
   return (
@@ -56,7 +56,7 @@ export default function Footer() {
           <Image src={Logo} alt="Diyojen io" width={24} height={24} />
 
           <p>
-            2024 ©{" "}
+            2024 ©{' '}
             <a
               href="https://github.com/diyojen-io"
               target="_blank"

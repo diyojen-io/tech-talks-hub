@@ -1,7 +1,7 @@
-import React from "react";
-import ContentCard from "../EventCard/EventCard";
-import "./EventsContainer.scss";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import React from 'react';
+import ContentCard from '../EventCard/EventCard';
+import './EventsContainer.scss';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
 interface EventsContainerProps {
   cards: {

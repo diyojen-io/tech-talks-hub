@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
-import { sourceCodePro } from "./fonts";
-import "./styles/globals.css";
-import ProviderLayout from "./layouts/ProviderLayout";
+import type { Metadata } from 'next';
+import { sourceCodePro } from './fonts';
+import './styles/globals.css';
+import ProviderLayout from './layouts/ProviderLayout';
 
 export const metadata: Metadata = {
-  title: "Tech Talks Hub",
+  title: 'Tech Talks Hub',
   description:
-    "Tech Talks Hub is an open-source platform designed to organize, host, and share tech talks, bringing together speakers, organizers, and attendees in a community-driven environment.",
+    'Tech Talks Hub is an open-source platform designed to organize, host, and share tech talks, bringing together speakers, organizers, and attendees in a community-driven environment.',
 };
 
 export default function RootLayout({
