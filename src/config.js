@@ -9,4 +9,4 @@ export const FIREBASE_API = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-export const ADMIN_EMAILS = ["ucemrecan@gmail.com"];
+export const ADMIN_EMAILS = ['ucemrecan@gmail.com'];

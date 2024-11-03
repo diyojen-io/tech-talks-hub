@@ -1,12 +1,12 @@
-"use client";
-import BaseButton from "@/app/components/BaseButton/BaseButton";
-import useAuth from "@/app/context/AuthContext";
-import { Icon } from "@iconify/react";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useSnackbar } from "notistack";
-import * as Yup from "yup";
-import BaseModal from "../BaseModal/BaseModal";
-import "./LoginModal.scss";
+'use client';
+import BaseButton from '@/app/components/BaseButton/BaseButton';
+import useAuth from '@/app/context/AuthContext';
+import { Icon } from '@iconify/react';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useSnackbar } from 'notistack';
+import * as Yup from 'yup';
+import BaseModal from '../BaseModal/BaseModal';
+import './LoginModal.scss';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,25 +18,25 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = {
-    email: "",
-    password: "",
-    afterSubmit: "",
+    email: '',
+    password: '',
+    afterSubmit: '',
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required("Email is required*"),
-    password: Yup.string().required("Password is required*"),
+    email: Yup.string().required('Email is required*'),
+    password: Yup.string().required('Password is required*'),
     afterSubmit: Yup.string(),
   });
 
   const handleSubmit = async (
     values: { email: string; password: string },
-    actions: any
+    actions: any,
   ) => {
     const { setErrors, reset } = actions;
     try {
       await login(values.email, values.password);
-      enqueueSnackbar("Successfully logged in", { variant: "success" });
+      enqueueSnackbar('Successfully logged in', { variant: 'success' });
       onClose();
     } catch (err: any) {
       setErrors({ afterSubmit: err.message });
@@ -103,7 +103,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               type="submit"
               label="Login"
               size="large"
-              style={{ width: "100%", marginTop: "16px" }}
+              style={{ width: '100%', marginTop: '16px' }}
             />
           </Form>
         )}

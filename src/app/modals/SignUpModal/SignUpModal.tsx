@@ -1,12 +1,12 @@
-"use client";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import BaseModal from "../BaseModal/BaseModal";
-import BaseButton from "@/app/components/BaseButton/BaseButton";
-import { Icon } from "@iconify/react";
-import { useSnackbar } from "notistack";
-import "./SignUpModal.scss";
-import useAuth from "@/app/context/AuthContext";
+'use client';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import BaseModal from '../BaseModal/BaseModal';
+import BaseButton from '@/app/components/BaseButton/BaseButton';
+import { Icon } from '@iconify/react';
+import { useSnackbar } from 'notistack';
+import './SignUpModal.scss';
+import useAuth from '@/app/context/AuthContext';
 interface SignUpModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,32 +17,32 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = {
-    username: "",
-    email: "",
-    password: "",
-    afterSubmit: "",
+    username: '',
+    email: '',
+    password: '',
+    afterSubmit: '',
   };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
-      .min(5, "Username must be at least 5 characters*")
-      .required("Username is required*"),
+      .min(5, 'Username must be at least 5 characters*')
+      .required('Username is required*'),
     email: Yup.string()
-      .email("Invalid email format*")
-      .required("Email is required*"),
+      .email('Invalid email format*')
+      .required('Email is required*'),
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters*")
-      .required("Password is required*"),
+      .min(6, 'Password must be at least 6 characters*')
+      .required('Password is required*'),
   });
 
   const handleSubmit = async (
     values: { username: string; email: string; password: string },
-    actions: any
+    actions: any,
   ) => {
     const { setErrors, reset } = actions;
     try {
       await register(values.username, values.email, values.password);
-      enqueueSnackbar("Successfully signed up!", { variant: "success" });
+      enqueueSnackbar('Successfully signed up!', { variant: 'success' });
       onClose();
     } catch (err: any) {
       setErrors({ afterSubmit: err.message });
@@ -70,9 +70,10 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
               </div>
             )}
             <div className="sign-up-modal__form-group">
-              <label className="sign-up-modal__form-group__label"
-               htmlFor="username"
-               >
+              <label
+                className="sign-up-modal__form-group__label"
+                htmlFor="username"
+              >
                 Username
               </label>
               <Field
@@ -82,14 +83,16 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 name="username"
               />
               <ErrorMessage
-               component="div"
+                component="div"
                 className="sign-up-modal__error"
-                 name="username" />
+                name="username"
+              />
             </div>
             <div className="sign-up-modal__form-group">
-              <label className="sign-up-modal__form-group__label"
-               htmlFor="email"
-               >
+              <label
+                className="sign-up-modal__form-group__label"
+                htmlFor="email"
+              >
                 Email
               </label>
               <Field
@@ -99,14 +102,15 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 name="email"
               />
               <ErrorMessage
-               component="div"
+                component="div"
                 className="sign-up-modal__error"
-                 name="email" 
-                 />
+                name="email"
+              />
             </div>
             <div className="sign-up-modal__form-group">
-              <label className="sign-up-modal__form-group__label"
-              htmlFor="password"
+              <label
+                className="sign-up-modal__form-group__label"
+                htmlFor="password"
               >
                 Password
               </label>
@@ -116,17 +120,17 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 id="password"
                 name="password"
               />
-              <ErrorMessage 
-              component="div" 
-              className="sign-up-modal__error"
-               name="password" 
-               />
+              <ErrorMessage
+                component="div"
+                className="sign-up-modal__error"
+                name="password"
+              />
             </div>
-            <BaseButton 
-              type="submit" 
-              label="Sign up" 
-              size="large" 
-              style={{ width: "100%", marginTop: "16px" }} 
+            <BaseButton
+              type="submit"
+              label="Sign up"
+              size="large"
+              style={{ width: '100%', marginTop: '16px' }}
             />
           </Form>
         )}

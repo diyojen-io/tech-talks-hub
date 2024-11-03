@@ -1,30 +1,30 @@
-"use client";
-import { ReactNode } from "react";
-import PropTypes from "prop-types";
+'use client';
+import { ReactNode } from 'react';
+import PropTypes from 'prop-types';
 import {
   createContext,
   useEffect,
   useReducer,
   useState,
   useContext,
-} from "react";
-import { initializeApp } from "firebase/app";
+} from 'react';
+import { initializeApp } from 'firebase/app';
 import {
   getAuth,
   signOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-} from "firebase/auth";
+} from 'firebase/auth';
 import {
   getFirestore,
   collection,
   doc,
   getDoc,
   setDoc,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 //
-import { FIREBASE_API, ADMIN_EMAILS } from "../../config";
+import { FIREBASE_API, ADMIN_EMAILS } from '../../config';
 
 // ----------------------------------------------------------------------
 
@@ -43,19 +43,34 @@ const initialState = {
 interface AuthState {
   isAuthenticated: boolean;
   isInitialized: boolean;
-  user: any | null;
+  user: IUser | null;
 }
 
 interface AuthAction {
   type: string;
   payload: {
     isAuthenticated: boolean;
-    user: any | null;
+    user: IUser | null;
   };
+}
+interface IUser {
+  id: string | null;
+  email: string | null;
+  photoURL: string | null;
+  displayName: string | null;
+  role: string;
+  phoneNumber: string;
+  country: string;
+  address: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  about: string;
+  isPublic: boolean;
 }
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
-  if (action.type === "INITIALISE") {
+  if (action.type === 'INITIALISE') {
     const { isAuthenticated, user } = action.payload;
     return {
       ...state,
@@ -70,33 +85,19 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
 
 interface AuthContextType extends AuthState {
   method: string;
-  user: {
-    id: string | null;
-    email: string | null;
-    photoURL: string | null;
-    displayName: string | null;
-    role: string;
-    phoneNumber: string;
-    country: string;
-    address: string;
-    state: string;
-    city: string;
-    zipCode: string;
-    about: string;
-    isPublic: boolean;
-  } | null;
-  login: (email: string, password: string) => Promise<any>;
+  user: IUser | null;
+  login: (email: string, password: string) => Promise<void>;
   register: (
     username: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
-  method: "firebase",
+  method: 'firebase',
   user: null,
   login: (email: string, password: string) => Promise.resolve(),
   register: (username: string, email: string, password: string) =>
@@ -137,8 +138,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     () =>
       onAuthStateChanged(AUTH, async (user) => {
         if (user) {
-          console.log("user: ", user);
-          const userRef = doc(DB, "users", user.uid);
+          const userRef = doc(DB, 'users', user.uid);
 
           const docSnap = await getDoc(userRef);
 
@@ -147,17 +147,17 @@ function AuthProvider({ children }: AuthProviderProps) {
           }
 
           dispatch({
-            type: "INITIALISE",
+            type: 'INITIALISE',
             payload: { isAuthenticated: true, user },
           });
         } else {
           dispatch({
-            type: "INITIALISE",
+            type: 'INITIALISE',
             payload: { isAuthenticated: false, user: null },
           });
         }
       }),
-    [dispatch]
+    [dispatch],
   );
 
   interface LoginFunction {
@@ -173,7 +173,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const register: RegisterFunction = (username, email, password) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
-      const userRef = doc(collection(DB, "users"), res.user?.uid);
+      const userRef = doc(collection(DB, 'users'), res.user?.uid);
 
       await setDoc(userRef, {
         uid: res.user?.uid,
@@ -188,20 +188,20 @@ function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         ...state,
-        method: "firebase",
+        method: 'firebase',
         user: {
           id: state?.user?.uid,
           email: state?.user?.email,
           photoURL: state?.user?.photoURL || profile?.photoURL,
           displayName: state?.user?.username || profile?.username,
-          role: ADMIN_EMAILS.includes(state?.user?.email) ? "admin" : "user",
-          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || "",
-          country: profile?.country || "",
-          address: profile?.address || "",
-          state: profile?.state || "",
-          city: profile?.city || "",
-          zipCode: profile?.zipCode || "",
-          about: profile?.about || "",
+          role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
+          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
+          country: profile?.country || '',
+          address: profile?.address || '',
+          state: profile?.state || '',
+          city: profile?.city || '',
+          zipCode: profile?.zipCode || '',
+          about: profile?.about || '',
           isPublic: profile?.isPublic || false,
         },
         login,
@@ -221,7 +221,7 @@ export { AuthContext, AuthProvider };
 const useAuth = () => {
   const context = useContext(AuthContext);
 
-  if (!context) throw new Error("Auth context must be use inside AuthProvider");
+  if (!context) throw new Error('Auth context must be use inside AuthProvider');
 
   return context;
 };

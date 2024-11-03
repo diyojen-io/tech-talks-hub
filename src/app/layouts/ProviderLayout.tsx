@@ -1,9 +1,9 @@
-"use client";
-import Navbar from "@/app/components/Navbar/Navbar";
-import ModalContainer from "@/app/modals/ModalContainer";
-import { ModalProvider } from "../context/ModalContext";
-import { AuthProvider } from "../context/AuthContext";
-import { SnackbarProvider } from "notistack";
+'use client';
+import Navbar from '@/app/components/Navbar/Navbar';
+import ModalContainer from '@/app/modals/ModalContainer';
+import { ModalProvider } from '../context/ModalContext';
+import { AuthProvider } from '../context/AuthContext';
+import { SnackbarProvider } from 'notistack';
 
 export default function ProviderLayout({
   children,
@@ -14,7 +14,7 @@ export default function ProviderLayout({
     <AuthProvider>
       <SnackbarProvider
         maxSnack={3}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <ModalProvider>
           <ModalContainer />

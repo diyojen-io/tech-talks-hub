@@ -1,4 +1,4 @@
-import "./MainContainer.scss";
+import './MainContainer.scss';
 
 export default function MainContainer({
   children,
