@@ -38,12 +38,14 @@ const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null,
+  isLoading: true, 
 };
 
 interface AuthState {
   isAuthenticated: boolean;
   isInitialized: boolean;
   user: IUser | null;
+  isLoading: boolean;
 }
 
 interface AuthAction {
@@ -51,6 +53,7 @@ interface AuthAction {
   payload: {
     isAuthenticated: boolean;
     user: IUser | null;
+    isLoading: boolean;
   };
 }
 interface IUser {
@@ -71,15 +74,16 @@ interface IUser {
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
   if (action.type === 'INITIALISE') {
-    const { isAuthenticated, user } = action.payload;
+    const { isAuthenticated, user, isLoading } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
+      isLoading,
     };
   }
-
+  
   return state;
 };
 
@@ -134,31 +138,36 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
-  useEffect(
-    () =>
-      onAuthStateChanged(AUTH, async (user) => {
-        if (user) {
-          const userRef = doc(DB, 'users', user.uid);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(AUTH, async (user) => {
+      dispatch({ 
+        type: 'INITIALISE',
+        payload: { isAuthenticated: false, user: null, isLoading: true }, 
+      });
 
-          const docSnap = await getDoc(userRef);
+      if (user) {
+        const userRef = doc(DB, 'users', user.uid);
 
-          if (docSnap.exists()) {
-            setProfile(docSnap.data());
-          }
+        const docSnap = await getDoc(userRef);
 
-          dispatch({
-            type: 'INITIALISE',
-            payload: { isAuthenticated: true, user },
-          });
-        } else {
-          dispatch({
-            type: 'INITIALISE',
-            payload: { isAuthenticated: false, user: null },
-          });
+        if (docSnap.exists()) {
+          setProfile(docSnap.data());
         }
-      }),
-    [dispatch],
-  );
+
+        dispatch({
+          type: 'INITIALISE',
+          payload: { isAuthenticated: true, user: AUTH.currentUser, isLoading: false },
+        });
+      } else {
+        dispatch({
+          type: 'INITIALISE',
+          payload: { isAuthenticated: false, user: null, isLoading: false },
+        });
+      }
+    });
+
+    return () => unsubscribe(); 
+  }, [dispatch]);
 
   interface LoginFunction {
     (email: string, password: string): Promise<any>;
@@ -171,7 +180,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     (username: string, email: string, password: string): Promise<any>;
   }
 
-  const register: RegisterFunction = (username, email, password) =>
+  const register:RegisterFunction = (username: string, email: string, password: string) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
       const userRef = doc(collection(DB, 'users'), res.user?.uid);
 
@@ -221,7 +230,7 @@ export { AuthContext, AuthProvider };
 const useAuth = () => {
   const context = useContext(AuthContext);
 
-  if (!context) throw new Error('Auth context must be use inside AuthProvider');
+  if (!context) throw new Error('Auth context must be used inside AuthProvider');
 
   return context;
 };
