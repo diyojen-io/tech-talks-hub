@@ -76,10 +76,20 @@
           font-size: 16px;
           transition: color 0.3s;
          
+          a{
+            color: white ;
+            text-decoration: none;
+          }
+          
+          a:hover{
+            color: #ff6700;
+          }
 
           &:hover {
             color: #ff6700;
           }
+     
+
         }
 
         .divider {
@@ -87,6 +97,8 @@
           background-color: #555;
           margin: 8px 0; 
           width: 100%;
+
+        
         }
       }
     }

@@ -10,6 +10,7 @@ import accountCircle from '@iconify/icons-ic/outline-account-circle';
 import settingsIcon from '@iconify/icons-ic/outline-settings';
 import logoutIcon from '@iconify/icons-ic/outline-logout'; 
 import profileIcon from '@iconify/icons-ic/outline-person';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Navbar = () => {
   const { openModal } = useModalContext();
@@ -36,7 +37,7 @@ const Navbar = () => {
       </a>
       <div className="navbar-nav">
         {isLoading ? ( 
-          <span>Loading...</span>
+          <CircularProgress color="inherit" />
         ) : isAuthenticated && user ? (
           <div className="navbar-user" ref={popoverRef}>
             <div onClick={togglePopover} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -48,10 +49,12 @@ const Navbar = () => {
             </div>
             {isPopoverOpen && (
               <div className="popover">
-                <button className="popover-item">
-                  <Icon icon={profileIcon} width="20" height="20" style={{ marginRight: '8px' }} />
-                  Profile
-                </button>
+                <a href={`/profile/`} target="_blank" rel="noreferrer">
+                  <button className="popover-item">
+                    <Icon icon={profileIcon} width="20" height="20" style={{ marginRight: '8px' }} />
+                    Profile
+                  </button>
+                </a>
                 <button className="popover-item">
                   <Icon icon={settingsIcon} width="20" height="20" style={{ marginRight: '8px' }} />
                   Settings
