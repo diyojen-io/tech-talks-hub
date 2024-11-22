@@ -11,10 +11,13 @@ import settingsIcon from '@iconify/icons-ic/outline-settings';
 import logoutIcon from '@iconify/icons-ic/outline-logout'; 
 import profileIcon from '@iconify/icons-ic/outline-person';
 import CircularProgress from '@mui/material/CircularProgress';
+import Link from 'next/link';
+import { useLoading } from '../../context/LoadingContext'; 
 
 const Navbar = () => {
   const { openModal } = useModalContext();
-  const { isAuthenticated, user, logout, isLoading } = useAuth(); 
+  const { isAuthenticated, user, logout, isLoading: authLoading } = useAuth();
+  const { isLoading, setIsLoading } = useLoading(); 
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
@@ -23,38 +26,62 @@ const Navbar = () => {
     setIsPopoverOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      setIsPopoverOpen(false);
+  const closePopover = (event: MouseEvent) => {
+    if (popoverRef.current && popoverRef.current.contains(event.target as Node)) {
+      return;
     }
-  }, [isAuthenticated]);
+    setIsPopoverOpen(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', closePopover);
+    return () => {
+      document.removeEventListener('mousedown', closePopover);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(authLoading); 
+  }, [authLoading, setIsLoading]);
 
   return (
     <nav className="navbar">
+      {isLoading ? (
+        <div className="global-loading">
+          <CircularProgress color="inherit" />
+        </div>
+      ) : null}
+
       <a href="/" className="navbar-logo">
         TechTalks
         <span>hub</span>
       </a>
       <div className="navbar-nav">
-        {isLoading ? ( 
+        {authLoading ? (
           <CircularProgress color="inherit" />
         ) : isAuthenticated && user ? (
           <div className="navbar-user" ref={popoverRef}>
             <div onClick={togglePopover} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-              {user?.photoURL ? (
-                <img src={user.photoURL} alt="User Profile" width="40" height="40" />
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="User Profile"
+                  width="40"
+                  height="40"
+                  style={{ borderRadius: '50%' }}
+                />
               ) : (
                 <Icon icon={accountCircle} width="40" height="40" />
               )}
             </div>
             {isPopoverOpen && (
               <div className="popover">
-                <a href={`/profile/`} target="_blank" rel="noreferrer">
+                <Link href="/profile" passHref>
                   <button className="popover-item">
                     <Icon icon={profileIcon} width="20" height="20" style={{ marginRight: '8px' }} />
                     Profile
                   </button>
-                </a>
+                </Link>
                 <button className="popover-item">
                   <Icon icon={settingsIcon} width="20" height="20" style={{ marginRight: '8px' }} />
                   Settings
