@@ -1,12 +1,13 @@
 'use client';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import BaseModal from '../BaseModal/BaseModal';
-import BaseButton from '@/app/components/BaseButton/BaseButton';
+import BaseButton from '@/components/BaseButton';
+import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
-import './SignUpModal.scss';
-import useAuth from '@/app/context/AuthContext';
+import * as Yup from 'yup';
+import BaseModal from '../BaseModal';
+import './index.scss';
+
 interface SignUpModalProps {
   isOpen: boolean;
   onClose: () => void;

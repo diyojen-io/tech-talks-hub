@@ -1,9 +1,9 @@
 'use client';
 
+import LoginModal from '@/components/modals/LoginModal';
+import SignUpModal from '@/components/modals/SignUpModal';
+import { useModalContext } from '@/context/ModalContext';
 import React from 'react';
-import { useModalContext } from '../context/ModalContext';
-import LoginModal from '@/app/modals/LoginModal/LoginModal';
-import SignUpModal from '@/app/modals/SignUpModal/SignUpModal';
 
 const ModalContainer: React.FC = () => {
   const { isModalOpen, closeModal } = useModalContext();

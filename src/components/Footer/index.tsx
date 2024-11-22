@@ -1,13 +1,9 @@
-import BaseButton from '../BaseButton/BaseButton';
-import './Footer.scss';
-import {
-  GithubIcon,
-  WebsiteIcon,
-  MailIcon,
-} from '../../../../public/assets/icons';
-import Iconify from '../Iconify';
+import { GithubIcon, MailIcon, WebsiteIcon } from '@/assets/icons';
+import Logo from '@/assets/logos/logo.png';
+import BaseButton from '@/components/BaseButton';
+import Iconify from '@/components/Iconify';
 import Image from 'next/image';
-import Logo from '../../../../public/assets/logos/logo.png';
+import './index.scss';
 
 export default function Footer() {
   return (

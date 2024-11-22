@@ -1,8 +1,8 @@
-import React from 'react';
-import BaseButton from '@/app/components/BaseButton/BaseButton';
-import './EventCard.scss';
-import Image from 'next/image';
+import BaseButton from '@/components/BaseButton';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import Image from 'next/image';
+import React from 'react';
+import './index.scss';
 
 interface ContentCardProps {
   imageUrl: StaticImport;
