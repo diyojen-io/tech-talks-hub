@@ -1,5 +1,5 @@
 import React from 'react';
-import './BaseButton.scss';
+import './index.scss';
 
 interface BaseButtonProps {
   variant?:

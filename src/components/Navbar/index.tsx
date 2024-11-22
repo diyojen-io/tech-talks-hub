@@ -1,23 +1,23 @@
 'use client';
 
-import BaseButton from "../BaseButton/BaseButton";
-import "./Navbar.scss";
-import { useModalContext } from '../../context/ModalContext';
-import useAuth from "../../context/AuthContext";
-import React, { useState, useRef, useEffect } from "react";
-import { Icon } from '@iconify/react';
+import useAuth from '@/context/AuthContext';
+import { useLoading } from '@/context/LoadingContext';
+import { useModalContext } from '@/context/ModalContext';
 import accountCircle from '@iconify/icons-ic/outline-account-circle';
-import settingsIcon from '@iconify/icons-ic/outline-settings';
-import logoutIcon from '@iconify/icons-ic/outline-logout'; 
+import logoutIcon from '@iconify/icons-ic/outline-logout';
 import profileIcon from '@iconify/icons-ic/outline-person';
+import settingsIcon from '@iconify/icons-ic/outline-settings';
+import { Icon } from '@iconify/react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from 'next/link';
-import { useLoading } from '../../context/LoadingContext'; 
+import { useEffect, useRef, useState } from 'react';
+import BaseButton from '../BaseButton';
+import './index.scss';
 
 const Navbar = () => {
   const { openModal } = useModalContext();
   const { isAuthenticated, user, logout, isLoading: authLoading } = useAuth();
-  const { isLoading, setIsLoading } = useLoading(); 
+  const { isLoading, setIsLoading } = useLoading();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
@@ -27,7 +27,10 @@ const Navbar = () => {
   };
 
   const closePopover = (event: MouseEvent) => {
-    if (popoverRef.current && popoverRef.current.contains(event.target as Node)) {
+    if (
+      popoverRef.current &&
+      popoverRef.current.contains(event.target as Node)
+    ) {
       return;
     }
     setIsPopoverOpen(false);
@@ -41,7 +44,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(authLoading); 
+    setIsLoading(authLoading);
   }, [authLoading, setIsLoading]);
 
   return (
@@ -61,7 +64,14 @@ const Navbar = () => {
           <CircularProgress color="inherit" />
         ) : isAuthenticated && user ? (
           <div className="navbar-user" ref={popoverRef}>
-            <div onClick={togglePopover} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+            <div
+              onClick={togglePopover}
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               {user.photoURL ? (
                 <img
                   src={user.photoURL}
@@ -78,27 +88,52 @@ const Navbar = () => {
               <div className="popover">
                 <Link href="/profile" passHref>
                   <button className="popover-item">
-                    <Icon icon={profileIcon} width="20" height="20" style={{ marginRight: '8px' }} />
+                    <Icon
+                      icon={profileIcon}
+                      width="20"
+                      height="20"
+                      style={{ marginRight: '8px' }}
+                    />
                     Profile
                   </button>
                 </Link>
                 <button className="popover-item">
-                  <Icon icon={settingsIcon} width="20" height="20" style={{ marginRight: '8px' }} />
+                  <Icon
+                    icon={settingsIcon}
+                    width="20"
+                    height="20"
+                    style={{ marginRight: '8px' }}
+                  />
                   Settings
                 </button>
                 <div className="divider"></div>
                 <button onClick={logout} className="popover-item">
-                  <Icon icon={logoutIcon} width="20" height="20" style={{ marginRight: '8px' }} />
+                  <Icon
+                    icon={logoutIcon}
+                    width="20"
+                    height="20"
+                    style={{ marginRight: '8px' }}
+                  />
                   Logout
                 </button>
               </div>
             )}
-            <span>{user?.displayName || "username"}</span>
+            <span>{user?.displayName || 'username'}</span>
           </div>
         ) : (
           <>
-            <BaseButton onClick={() => openModal('login')} variant="primary" size="large" label="Login" />
-            <BaseButton onClick={() => openModal('signup')} variant="primary-outline" size="large" label="Sign Up" />
+            <BaseButton
+              onClick={() => openModal('login')}
+              variant="primary"
+              size="large"
+              label="Login"
+            />
+            <BaseButton
+              onClick={() => openModal('signup')}
+              variant="primary-outline"
+              size="large"
+              label="Sign Up"
+            />
           </>
         )}
       </div>

@@ -1,7 +1,7 @@
+import ProviderLayout from '@/layouts/ProviderLayout';
+import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { sourceCodePro } from './fonts';
-import './styles/globals.css';
-import ProviderLayout from './layouts/ProviderLayout';
 
 export const metadata: Metadata = {
   title: 'Tech Talks Hub',

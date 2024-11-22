@@ -24,7 +24,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 //
-import { FIREBASE_API, ADMIN_EMAILS } from '../../config';
+import { FIREBASE_API, ADMIN_EMAILS } from '@/config';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null,
-  isLoading: true, 
+  isLoading: true,
 };
 
 interface AuthState {
@@ -83,7 +83,7 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
       isLoading,
     };
   }
-  
+
   return state;
 };
 
@@ -140,9 +140,9 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, async (user) => {
-      dispatch({ 
+      dispatch({
         type: 'INITIALISE',
-        payload: { isAuthenticated: false, user: null, isLoading: true }, 
+        payload: { isAuthenticated: false, user: null, isLoading: true },
       });
 
       if (user) {
@@ -156,7 +156,11 @@ function AuthProvider({ children }: AuthProviderProps) {
 
         dispatch({
           type: 'INITIALISE',
-          payload: { isAuthenticated: true, user: AUTH.currentUser, isLoading: false },
+          payload: {
+            isAuthenticated: true,
+            user: AUTH.currentUser,
+            isLoading: false,
+          },
         });
       } else {
         dispatch({
@@ -166,7 +170,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       }
     });
 
-    return () => unsubscribe(); 
+    return () => unsubscribe();
   }, [dispatch]);
 
   interface LoginFunction {
@@ -180,7 +184,11 @@ function AuthProvider({ children }: AuthProviderProps) {
     (username: string, email: string, password: string): Promise<any>;
   }
 
-  const register:RegisterFunction = (username: string, email: string, password: string) =>
+  const register: RegisterFunction = (
+    username: string,
+    email: string,
+    password: string,
+  ) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
       const userRef = doc(collection(DB, 'users'), res.user?.uid);
 
@@ -230,7 +238,8 @@ export { AuthContext, AuthProvider };
 const useAuth = () => {
   const context = useContext(AuthContext);
 
-  if (!context) throw new Error('Auth context must be used inside AuthProvider');
+  if (!context)
+    throw new Error('Auth context must be used inside AuthProvider');
 
   return context;
 };
