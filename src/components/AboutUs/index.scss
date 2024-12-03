@@ -1,8 +1,10 @@
+@import '../../styles/variables.module.scss';
+
 .about-us {
   box-sizing: border-box;
   text-align: center;
   padding: 50px 20%;
   &__header {
-    color: #ff6700;
+    color: $primary-color;
   }
 }

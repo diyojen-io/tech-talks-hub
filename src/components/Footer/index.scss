@@ -1,3 +1,5 @@
+@import '../../styles/variables.module.scss';
+
 .footer {
   background-color: #000;
   display: flex;
@@ -40,7 +42,7 @@
     }
     &:hover {
       a {
-        color: #ff6700;
+        color: $primary-color;
       }
     }
   }
@@ -50,7 +52,7 @@
     align-items: center;
     gap: 8px;
     padding: 16px 20%;
-    border-top: 1px solid #ff6700;
+    border-top: 1px solid $primary-color;
     p {
       font-size: 12px;
     }
@@ -59,7 +61,7 @@
       text-decoration: none;
     }
     a:hover {
-      color: #ff6700;
+      color: $primary-color;
     }
   }
 }
