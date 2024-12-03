@@ -1,10 +1,11 @@
 'use client';
+
 import Footer from '@/components/Footer';
-import ModalContainer from '@/components/modals/ModalContainer';
 import Navbar from '@/components/Navbar';
-import { AuthProvider } from '@/context/AuthContext';
-import { LoadingProvider } from '@/context/LoadingContext';
-import { ModalProvider } from '@/context/ModalContext';
+import ModalContainer from '@/components/modals/ModalContainer';
+import { ModalProvider } from '../context/ModalContext';
+import { AuthProvider } from '../context/AuthContext';
+import { LoadingProvider } from '../context/LoadingContext'; 
 import { SnackbarProvider } from 'notistack';
 
 export default function ProviderLayout({
