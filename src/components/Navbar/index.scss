@@ -8,19 +8,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   transition: background-color 0.3s;
 
-  .global-loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
   &-logo {
     color: #fff;
     letter-spacing: 1px;
@@ -59,13 +46,13 @@
         font-size: 16px;
         font-weight: 500;
         color: #fff;
-        margin-top: 4px; 
+        margin-top: 4px;
         text-align: center;
       }
 
       .popover {
         position: absolute;
-        top: calc(100% + 10px); 
+        top: calc(100% + 10px);
         right: 50%;
         transform: translateX(50%);
         background-color: #333;
@@ -79,7 +66,7 @@
         min-width: 160px;
 
         .popover-item {
-          display: flex; 
+          display: flex;
           align-items: center;
           color: white;
           background: none;
@@ -88,32 +75,26 @@
           cursor: pointer;
           font-size: 16px;
           transition: color 0.3s;
-         
-          a{
-            color: white ;
+
+          a {
+            color: white;
             text-decoration: none;
           }
-          
-          a:hover{
+
+          a:hover {
             color: #ff6700;
           }
 
           &:hover {
             color: #ff6700;
           }
-     
-
         }
 
         .divider {
           height: 1px;
           background-color: #555;
-          margin: 8px 0; 
+          margin: 8px 0;
           width: 100%;
-
-        
-          
-        
         }
       }
     }

@@ -1,30 +1,30 @@
 'use client';
-import { ReactNode } from 'react';
-import PropTypes from 'prop-types';
-import {
-  createContext,
-  useEffect,
-  useReducer,
-  useState,
-  useContext,
-} from 'react';
 import { initializeApp } from 'firebase/app';
 import {
+  createUserWithEmailAndPassword,
   getAuth,
-  signOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import {
-  getFirestore,
   collection,
   doc,
   getDoc,
+  getFirestore,
   setDoc,
 } from 'firebase/firestore';
+import PropTypes from 'prop-types';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 //
-import { FIREBASE_API, ADMIN_EMAILS } from '@/config';
+import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
 
 // ----------------------------------------------------------------------
 
@@ -38,14 +38,12 @@ const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null,
-  isLoading: true,
 };
 
 interface AuthState {
   isAuthenticated: boolean;
   isInitialized: boolean;
   user: IUser | null;
-  isLoading: boolean;
 }
 
 interface AuthAction {
@@ -53,7 +51,6 @@ interface AuthAction {
   payload: {
     isAuthenticated: boolean;
     user: IUser | null;
-    isLoading: boolean;
   };
 }
 interface IUser {
@@ -74,13 +71,13 @@ interface IUser {
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
   if (action.type === 'INITIALISE') {
-    const { isAuthenticated, user, isLoading } = action.payload;
+    const { isAuthenticated, user } = action.payload;
+    console.log('initialise calisti');
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
-      isLoading,
     };
   }
 
@@ -119,59 +116,54 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+interface UserProfile {
+  photoURL?: string;
+  displayName?: string;
+  username?: string;
+  phoneNumber?: string;
+  country?: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+  about?: string;
+  isPublic?: boolean;
+}
+
 function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  interface UserProfile {
-    photoURL?: string;
-    displayName?: string;
-    username?: string;
-    phoneNumber?: string;
-    country?: string;
-    address?: string;
-    state?: string;
-    city?: string;
-    zipCode?: string;
-    about?: string;
-    isPublic?: boolean;
-  }
-
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(AUTH, async (user) => {
-      dispatch({
-        type: 'INITIALISE',
-        payload: { isAuthenticated: false, user: null, isLoading: true },
-      });
+  useEffect(
+    () =>
+      onAuthStateChanged(AUTH, async (user: any) => {
+        console.log('burada');
+        if (user) {
+          const userRef = doc(DB, 'users', user.uid);
 
-      if (user) {
-        const userRef = doc(DB, 'users', user.uid);
+          const docSnap = await getDoc(userRef);
 
-        const docSnap = await getDoc(userRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data());
+          }
 
-        if (docSnap.exists()) {
-          setProfile(docSnap.data());
+          console.log('user if icinde');
+
+          dispatch({
+            type: 'INITIALISE',
+            payload: { isAuthenticated: true, user },
+          });
+        } else {
+          console.log('else');
+          dispatch({
+            type: 'INITIALISE',
+            payload: { isAuthenticated: false, user: null },
+          });
         }
-
-        dispatch({
-          type: 'INITIALISE',
-          payload: {
-            isAuthenticated: true,
-            user: AUTH.currentUser,
-            isLoading: false,
-          },
-        });
-      } else {
-        dispatch({
-          type: 'INITIALISE',
-          payload: { isAuthenticated: false, user: null, isLoading: false },
-        });
-      }
-    });
-
-    return () => unsubscribe();
-  }, [dispatch]);
+      }),
+    [dispatch],
+  );
 
   interface LoginFunction {
     (email: string, password: string): Promise<any>;

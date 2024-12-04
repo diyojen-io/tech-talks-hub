@@ -1,11 +1,9 @@
-'use client';
-import Footer from '@/components/Footer';
 import ModalContainer from '@/components/modals/ModalContainer';
-import Navbar from '@/components/Navbar';
 import { AuthProvider } from '@/context/AuthContext';
-import { LoadingProvider } from '@/context/LoadingContext';
 import { ModalProvider } from '@/context/ModalContext';
+import ThemeProvider from '@/theme';
 import { SnackbarProvider } from 'notistack';
+import AppLayout from './AppLayout';
 
 export default function ProviderLayout({
   children,
@@ -13,24 +11,18 @@ export default function ProviderLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <LoadingProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
         <SnackbarProvider
           maxSnack={3}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <ModalProvider>
             <ModalContainer />
-            <header>
-              <Navbar />
-            </header>
-            <main>{children}</main>
-            <footer>
-              <Footer />
-            </footer>
+            <AppLayout>{children}</AppLayout>
           </ModalProvider>
         </SnackbarProvider>
-      </AuthProvider>
-    </LoadingProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
