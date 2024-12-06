@@ -2,7 +2,7 @@
 import BaseButton from '@/components/BaseButton';
 import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import BaseModal from '../BaseModal';
@@ -13,11 +13,18 @@ interface SignUpModalProps {
   onClose: () => void;
 }
 
-const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
+const SignUpModal = ({ isOpen, onClose }: SignUpModalProps) => {
   const { register } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
-  const initialValues = {
+  type TSignUpForm = {
+    username: string;
+    email: string;
+    password: string;
+    afterSubmit: string;
+  };
+
+  const initialValues: TSignUpForm = {
     username: '',
     email: '',
     password: '',
@@ -37,25 +44,30 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   });
 
   const handleSubmit = async (
-    values: { username: string; email: string; password: string },
-    actions: any,
+    values: TSignUpForm,
+    actions: FormikHelpers<TSignUpForm>,
   ) => {
-    const { setErrors, reset } = actions;
+    const { setErrors, resetForm } = actions;
     try {
-      await register(values.username, values.email, values.password);
+      if (!register) return;
+
+      await register({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      });
       enqueueSnackbar('Successfully signed up!', { variant: 'success' });
       onClose();
+      resetForm();
     } catch (err: any) {
       setErrors({ afterSubmit: err.message });
-    } finally {
-      reset();
     }
   };
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose}>
       <h2 className="sign-up-modal__title">Sign Up</h2>
-      <Formik
+      <Formik<TSignUpForm>
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}

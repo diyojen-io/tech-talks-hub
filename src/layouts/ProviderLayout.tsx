@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import ModalContainer from '@/components/modals/ModalContainer';
 import { ModalProvider } from '../context/ModalContext';
 import { AuthProvider } from '../context/AuthContext';
-import { LoadingProvider } from '../context/LoadingContext'; 
+import { LoadingProvider } from '../context/LoadingContext';
 import { SnackbarProvider } from 'notistack';
 
 export default function ProviderLayout({

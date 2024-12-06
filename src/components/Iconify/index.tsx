@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import Image, { ImageProps } from 'next/image';
 
 interface IconifyProps {
   icon: string;
-  other?: any;
+  other?: ImageProps;
 }
 
 export default function Iconify({ icon, ...other }: IconifyProps) {

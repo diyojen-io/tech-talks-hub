@@ -36,7 +36,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   ) => {
     const { setErrors, reset } = actions;
     try {
-      await login(values.email, values.password);
+      if (!login) return;
+      await login({ email: values.email, password: values.password });
       enqueueSnackbar('Successfully logged in', { variant: 'success' });
       onClose();
     } catch (err: any) {

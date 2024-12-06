@@ -125,7 +125,7 @@ const Navbar = () => {
             <BaseButton
               onClick={() => openModal('login')}
               variant="primary"
-              size="large"
+              size={'large'}
               label="Login"
             />
             <BaseButton

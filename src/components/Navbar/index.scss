@@ -10,6 +10,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   transition: background-color 0.3s;
 
+  @media (max-width: 768px) {
+    padding: 8px 24px;
+  }
+
+
+
   .global-loading {
     position: fixed;
     top: 0;
@@ -39,6 +45,9 @@
       font-weight: 600;
       border-radius: 4px;
       color: #000;
+    }
+    @media (max-width: 768px) {
+      font-size: 16px;
     }
   }
 
