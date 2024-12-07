@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.scss';
+import Loading from '@/app/loading';
 
 interface BaseButtonProps {
   variant?:
@@ -15,6 +16,7 @@ interface BaseButtonProps {
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   style?: React.CSSProperties;
+  isLoading?: boolean;
 }
 
 const BaseButton: React.FC<BaseButtonProps> = ({
@@ -22,15 +24,17 @@ const BaseButton: React.FC<BaseButtonProps> = ({
   size = 'medium',
   label,
   onClick,
+  isLoading = false,
   ...other
 }) => {
   return (
     <button
       className={`btn btn-${variant} btn-${size}`}
-      onClick={onClick}
+      onClick={isLoading ? undefined : onClick}
+      disabled={isLoading}
       {...other}
     >
-      {label}
+      {isLoading ? <Loading /> : label}
     </button>
   );
 };

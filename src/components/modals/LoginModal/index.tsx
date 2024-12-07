@@ -1,12 +1,20 @@
 'use client';
+import React, { useState } from 'react';
 import BaseButton from '@/components/BaseButton';
 import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
+import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
 import BaseModal from '../BaseModal';
 import './index.scss';
+
+interface LoginValues{
+  email: string;
+  password: string;
+  afterSubmit: string;
+}
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,10 +23,11 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const { login } = useAuth();
-
   const { enqueueSnackbar } = useSnackbar();
 
-  const initialValues = {
+  const [isLoading, setIsLoading] = useState(false); 
+
+  const initialValues: LoginValues = {
     email: '',
     password: '',
     afterSubmit: '',
@@ -32,16 +41,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (
     values: { email: string; password: string },
-    actions: any,
+    actions: FormikHelpers<LoginValues>
   ) => {
     const { setErrors, reset } = actions;
+    setIsLoading(true);
     try {
       await login(values.email, values.password);
-      enqueueSnackbar('Successfully logged in', { variant: 'success' });
+      enqueueSnackbar('Successfully logged in', { variant: 'success'});
       onClose();
-    } catch (err: any) {
-      setErrors({ afterSubmit: err.message });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrors({ afterSubmit: err.message });
+      }
     } finally {
+      setIsLoading(false); 
       reset();
     }
   };
@@ -74,7 +87,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 id="email"
                 name="email"
               />
-
               <ErrorMessage
                 name="email"
                 component="div"
@@ -102,9 +114,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             </div>
             <BaseButton
               type="submit"
-              label="Login"
+              label={
+                isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Login'
+                )
+              }
               size="large"
-              style={{ width: '100%', marginTop: '16px' }}
+              style={{
+                width: '100%',
+                marginTop: '16px',
+                pointerEvents: isLoading ? 'none' : 'auto',
+              }}
+              disabled={isLoading} 
             />
           </Form>
         )}
