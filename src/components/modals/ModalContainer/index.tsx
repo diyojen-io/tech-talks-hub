@@ -1,7 +1,7 @@
 'use client';
 
-import LoginModal from '@/components/modals/LoginModal';
-import SignUpModal from '@/components/modals/SignUpModal';
+import LoginModal from '@/components/Modals/LoginModal';
+import SignUpModal from '@/components/Modals/SignUpModal';
 import { useModalContext } from '@/context/ModalContext';
 import React from 'react';
 
