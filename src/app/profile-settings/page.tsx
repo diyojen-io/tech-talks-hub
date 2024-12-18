@@ -8,7 +8,7 @@ import accountCircle from '@iconify/icons-ic/outline-account-circle';
 import CircularProgress from '@mui/material/CircularProgress';
 import BaseButton from '@/components/BaseButton';
 import { updateProfile, updateEmail, updatePassword } from 'firebase/auth';
-import { useDropzone } from 'react-dropzone';
+import Dropzone from '@/components/Dropzone'; // Dropzone bileşenini import ettik
 
 export default function Page() {
   const { isAuthenticated, user, isLoading: authLoading } = useAuth();
@@ -18,6 +18,7 @@ export default function Page() {
     password: '',
     confirmPassword: '',
     photoURL: '',
+    bio: '', // Yeni alan ekliyoruz
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -29,6 +30,7 @@ export default function Page() {
         username: user.displayName || '',
         email: user.email || '',
         photoURL: user.photoURL || '',
+        bio: user.bio || '', // Biyografi bilgisi de alınabilir
       });
     }
   }, [user]);
@@ -36,24 +38,18 @@ export default function Page() {
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
-    
+
     reader.onload = () => {
       setUserInfo((prevInfo) => ({
         ...prevInfo,
-        photoURL: reader.result, 
+        photoURL: reader.result,
       }));
     };
-    
+
     if (file) {
       reader.readAsDataURL(file);
     }
   }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: 'image/*',
-    maxFiles: 1,
-  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,7 +64,7 @@ export default function Page() {
     setError(null);
     setSuccess(null);
 
-    const { username, email, password, confirmPassword, photoURL } = userInfo;
+    const { username, email, password, confirmPassword, photoURL, bio } = userInfo;
 
     if (!username || !email) {
       setError('Username and email cannot be empty.');
@@ -99,6 +95,11 @@ export default function Page() {
           await updateProfile(user, { photoURL });
         }
 
+        if (bio !== user.bio) {
+          // Biyografi güncelleme işlemi yapılabilir.
+          await updateProfile(user, { bio });
+        }
+
         setSuccess('Profile successfully updated.');
       }
     } catch (err) {
@@ -119,26 +120,31 @@ export default function Page() {
         user && (
           <div className="profile">
             <div className="profile__header">
-              <div className="profile__photo-container" {...getRootProps()}>
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                  <p>Drop the image here...</p>
-                ) : userInfo.photoURL ? (
-                  <img
-                    src={userInfo.photoURL}
-                    alt=""
-                    width="80"
-                    height="80"
-                    className="profile__photo"
-                  />
-                ) : (
-                  <Icon icon={accountCircle} width="80" height="80" />
-                )}
-              </div>
+              <Dropzone
+                onDrop={onDrop}
+                photoURL={userInfo.photoURL} 
+                isDragActive={false}
+              />
               <h1 className="profile__name">{userInfo.username || 'Username not provided'}</h1>
               <p className="profile__email">{userInfo.email || 'Email not provided'}</p>
+            
+              <textarea
+                id="bio"
+                name="bio"
+                value={userInfo.bio}
+                onChange={handleInputChange}
+                placeholder="Tell us something about yourself"
+                style={{
+                  width: '350px',     
+                  height: '70%',    
+                  padding: '10px',   
+                  fontSize: '1rem',   
+                  border: '1px solid #ccc', 
+                  borderRadius: '5px', 
+                }}
+              />
             </div>
-
+                       
             {error && <p className="error-message">{error}</p>}
             {success && <p className="success-message">{success}</p>}
 
@@ -183,7 +189,7 @@ export default function Page() {
                 placeholder="Confirm your new password"
               />
 
-              <BaseButton type="submit" label="Update Profile" size="medium" style={{ width: '15%',marginTop:'0.5rem' }}/>
+              <BaseButton type="submit" label="Update Profile" size="medium" style={{ width: '35%',height:'10%', marginTop: '0.5rem' }} />
             </form>
           </div>
         )
