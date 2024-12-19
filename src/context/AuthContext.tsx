@@ -1,30 +1,31 @@
 'use client';
-import { ReactNode } from 'react';
-import PropTypes from 'prop-types';
-import {
-  createContext,
-  useEffect,
-  useReducer,
-  useState,
-  useContext,
-} from 'react';
+
 import { initializeApp } from 'firebase/app';
 import {
+  createUserWithEmailAndPassword,
   getAuth,
-  signOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import {
-  getFirestore,
   collection,
   doc,
   getDoc,
+  getFirestore,
   setDoc,
 } from 'firebase/firestore';
+import PropTypes from 'prop-types';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 //
-import { FIREBASE_API, ADMIN_EMAILS } from '@/config';
+import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
 
 // ----------------------------------------------------------------------
 
@@ -97,6 +98,7 @@ interface AuthContextType extends AuthState {
     password: string,
   ) => Promise<void>;
   logout: () => Promise<void>;
+  create: (collectionName: string, data: any) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -107,6 +109,7 @@ const AuthContext = createContext<AuthContextType>({
   register: (username: string, email: string, password: string) =>
     Promise.resolve(),
   logout: () => Promise.resolve(),
+  create: (collectionName: string, data: any) => Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -201,6 +204,12 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = () => signOut(AUTH);
 
+  const create = async (collectionName: string, data: any) => {
+    const collectionRef = doc(collection(DB, collectionName));
+
+    await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -224,6 +233,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         login,
         register,
         logout,
+        create,
       }}
     >
       {children}

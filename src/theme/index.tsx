@@ -1,5 +1,5 @@
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
-import React, { ReactElement, ReactNode } from 'react';
+import { ReactElement } from 'react';
 import { theme } from './theme';
 
 interface ThemeConfigProps {
