@@ -1,8 +1,13 @@
 import { TypographyOptions } from '@mui/material/styles/createTypography';
+<<<<<<< Updated upstream
 import { sourceCodePro } from '@/app/fonts';
 
 const FONT_PRIMARY = sourceCodePro.style.fontFamily;
 // const FONT_SECONDARY = poppins.style.fontFamily;
+=======
+
+const FONT_PRIMARY = 'popins, source code pro';
+>>>>>>> Stashed changes
 
 function pxToRem(value: number) {
   return `${value / 16}rem`;
