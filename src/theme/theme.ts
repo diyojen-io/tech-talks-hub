@@ -3,14 +3,10 @@ import { createTheme } from '@mui/material/styles';
 import typography from './typography';
 import palette from './palette';
 import shape from './shape';
-<<<<<<< Updated upstream
 import { Button, TextField, InputLabel, MenuItem } from './overrides';
-=======
-import buttons from './buttons';
->>>>>>> Stashed changes
 
 export const theme = createTheme({
-  spacing: 4,
+  spacing: 8,
   palette: palette,
   breakpoints: {
     values: {
@@ -34,13 +30,9 @@ export const theme = createTheme({
   },
   typography: typography,
   components: {
-<<<<<<< Updated upstream
     MuiButton: Button,
     MuiTextField: TextField,
     MuiInputLabel: InputLabel,
     MuiMenuItem: MenuItem,
-=======
-    MuiButton: buttons,
->>>>>>> Stashed changes
   },
 });

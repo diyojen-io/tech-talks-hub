@@ -5,7 +5,6 @@ declare module '@mui/material/Button' {
     primary: true;
   }
 }
-<<<<<<< Updated upstream
 
 import type {} from '@mui/material/TextField';
 
@@ -14,5 +13,3 @@ declare module '@mui/material/TextField' {
     primary: true;
   }
 }
-=======
->>>>>>> Stashed changes
