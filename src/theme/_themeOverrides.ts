@@ -5,3 +5,11 @@ declare module '@mui/material/Button' {
     primary: true;
   }
 }
+
+import type {} from '@mui/material/TextField';
+
+declare module '@mui/material/TextField' {
+  interface TextFieldPropsVariantOverrides {
+    primary: true;
+  }
+}
