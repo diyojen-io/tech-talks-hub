@@ -29,8 +29,8 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
 
-  const handleProfile = () => {
-    router.push('/profile');
+  const handleSettings = () => {
+    router.push('/profile-settings');
     handleClose();
   };
 
@@ -79,7 +79,6 @@ export default function AccountMenu() {
             sx: {
               overflow: 'visible',
               width: 160,
-
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
               mt: 1.5,
               '& .MuiAvatar-root': {
@@ -106,11 +105,12 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleProfile}>
-          <Avatar /> Profile
+        <MenuItem>
+          <Avatar />
+          Profile
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleSettings}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>

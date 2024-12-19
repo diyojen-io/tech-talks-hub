@@ -99,6 +99,12 @@ interface AuthContextType extends AuthState {
   ) => Promise<void>;
   logout: () => Promise<void>;
   create: (collectionName: string, data: any) => Promise<void>;
+  update: (
+    collectionName: string,
+    id: string,
+    data: any,
+    merge?: boolean,
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -110,6 +116,8 @@ const AuthContext = createContext<AuthContextType>({
     Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
+  update: (collectionName: string, id: string, data: any, merge = true) =>
+    Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -210,6 +218,16 @@ function AuthProvider({ children }: AuthProviderProps) {
     await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
   };
 
+  const update = async (collectionName, id, data, merge = true) => {
+    const collectionDataRef = doc(collection(DB, collectionName), id);
+
+    await setDoc(
+      collectionDataRef,
+      { ...data, updatedAt: new Date().getTime() },
+      { merge },
+    );
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -234,6 +252,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         register,
         logout,
         create,
+        update,
       }}
     >
       {children}
