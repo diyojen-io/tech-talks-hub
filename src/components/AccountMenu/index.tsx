@@ -107,10 +107,10 @@ export default function AccountMenu() {
       >
         <MenuItem>
           <Avatar />
-           Profile
+          Profile
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleSettings}> 
+        <MenuItem onClick={handleSettings}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
