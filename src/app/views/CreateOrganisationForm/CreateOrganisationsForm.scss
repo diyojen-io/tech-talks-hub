@@ -1,0 +1,31 @@
+.form {
+  &__container {
+    padding: 2rem 10%;
+    margin: 0 auto;
+    background-color: #fff;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff6700;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  &__input,
+  &__textarea,
+  &__select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #d1d9e6;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #495057;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+}
