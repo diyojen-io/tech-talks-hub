@@ -1,11 +1,11 @@
 'use client';
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import BaseButton from '@/components/BaseButton';
 import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
-import CircularProgress from '@mui/material/CircularProgress'; 
+import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
 import BaseModal from '../BaseModal';
 import './index.scss';
@@ -19,7 +19,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const { register } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues = {
     username: '',
@@ -45,7 +45,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
     actions: any,
   ) => {
     const { setErrors, reset } = actions;
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       await register(values.username, values.email, values.password);
       enqueueSnackbar('Successfully signed up!', { variant: 'success' });
@@ -53,7 +53,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
     } catch (err: any) {
       setErrors({ afterSubmit: err.message });
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
       reset();
     }
   };
@@ -135,11 +135,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
             </div>
             <BaseButton
               type="submit"
-              label={isLoading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                'Sign up'
-              )}
+              label={
+                isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Sign up'
+                )
+              }
               size="large"
               style={{
                 width: '100%',

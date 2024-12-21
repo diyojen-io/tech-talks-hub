@@ -19,7 +19,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const { login } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues = {
     email: '',
@@ -46,7 +46,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     } catch (err: any) {
       setErrors({ afterSubmit: err.message });
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
       reset();
     }
   };
@@ -119,7 +119,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 marginTop: '16px',
                 pointerEvents: isLoading ? 'none' : 'auto',
               }}
-              disabled={isLoading} 
+              disabled={isLoading}
             />
           </Form>
         )}
