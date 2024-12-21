@@ -2,7 +2,7 @@
 
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-import ModalContainer from '@/components/Modals/ModalContainer';
+import ModalContainer from '@/components/modals/ModalContainer';
 import { ModalProvider } from '../context/ModalContext';
 import { AuthProvider } from '../context/AuthContext';
 import { SnackbarProvider } from 'notistack';
