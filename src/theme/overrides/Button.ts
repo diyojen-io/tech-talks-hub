@@ -1,5 +1,5 @@
 import { Components } from '@mui/material';
-import shape from './shape';
+import shape from '../shape';
 
 const buttons: Components['MuiButton'] = {
   defaultProps: {
@@ -9,20 +9,9 @@ const buttons: Components['MuiButton'] = {
     root: {
       borderRadius: shape.borderRadius,
       textTransform: 'none',
+      color: '#fff',
     },
   },
-  variants: [
-    {
-      props: { variant: 'primary' },
-      style: {
-        backgroundColor: '#ff6700',
-        color: '#fff',
-        '&:hover': {
-          backgroundColor: '#cc5200',
-        },
-      },
-    },
-  ],
 };
 
 export default buttons;
