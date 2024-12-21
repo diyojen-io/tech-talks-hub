@@ -2,9 +2,9 @@
 
 import useAuth from '@/context/AuthContext';
 import { useModalContext } from '@/context/ModalContext';
-import BaseButton from '../BaseButton';
 import './index.scss';
 import AccountMenu from '../AccountMenu';
+import Button from '../Button';
 
 const Navbar = () => {
   const { openModal } = useModalContext();
@@ -21,18 +21,15 @@ const Navbar = () => {
           <AccountMenu />
         ) : (
           <>
-            <BaseButton
-              onClick={() => openModal('login')}
-              variant="primary"
-              size="large"
-              label="Login"
-            />
-            <BaseButton
+            <Button onClick={() => openModal('login')} variant="primary">
+              Login
+            </Button>
+            <Button
               onClick={() => openModal('signup')}
-              variant="primary-outline"
-              size="large"
-              label="Sign Up"
-            />
+              variant="primary_outlined"
+            >
+              SignUp
+            </Button>
           </>
         )}
       </div>

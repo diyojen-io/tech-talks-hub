@@ -1,7 +1,7 @@
 import { TypographyOptions } from '@mui/material/styles/createTypography';
-import { sourceCodePro } from '@/app/fonts';
+import { poppins, sourceCodePro } from '@/app/fonts';
 
-const FONT_PRIMARY = sourceCodePro.style.fontFamily;
+const FONT_PRIMARY = poppins.style.fontFamily;
 // const FONT_SECONDARY = poppins.style.fontFamily;
 
 function pxToRem(value: number) {

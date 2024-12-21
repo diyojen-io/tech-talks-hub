@@ -1,10 +1,10 @@
 'use client';
 import React from 'react';
-import BaseButton from '@/components/BaseButton';
 import './index.scss';
 import { useRouter } from 'next/navigation';
+import Button from '../Button';
 
-const AboutUs: React.FC = () => {
+const AboutUs = () => {
   const router = useRouter();
 
   const handleClick = () => {
@@ -19,11 +19,9 @@ const AboutUs: React.FC = () => {
         high-quality web applications. Our mission is to deliver solutions that
         help our clients succeed in the digital world.
       </p>
-      <BaseButton
-        size="large"
-        label="Create Organization"
-        onClick={handleClick}
-      />
+      <Button size="large" variant="primary" onClick={handleClick}>
+        Create Organization
+      </Button>
     </div>
   );
 };

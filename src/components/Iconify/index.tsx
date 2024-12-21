@@ -1,10 +1,9 @@
-import Image from 'next/image';
+import Image, { ImageProps } from 'next/image';
 
-interface IconifyProps {
+interface IconifyProps extends Omit<ImageProps, 'src' | 'alt'> {
   icon: string;
-  other?: any;
 }
 
-export default function Iconify({ icon, ...other }: IconifyProps) {
-  return <Image src={icon} alt="Iconify" width={24} height={24} {...other} />;
+export default function Iconify({ icon, ...rest }: IconifyProps) {
+  return <Image src={icon} alt="Iconify" width={24} height={24} {...rest} />;
 }

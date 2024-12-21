@@ -1,14 +1,14 @@
 'use client';
 import React, { useState } from 'react';
-import BaseButton from '@/components/BaseButton';
 import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
-import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
 import BaseModal from '../BaseModal';
 import './index.scss';
+import Button from '@/components/Button';
+import { IError } from '@/data/global';
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -50,8 +50,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
       await register(values.username, values.email, values.password);
       enqueueSnackbar('Successfully signed up!', { variant: 'success' });
       onClose();
-    } catch (err: any) {
-      setErrors({ afterSubmit: err.message });
+    } catch (err: unknown) {
+      setErrors({ afterSubmit: (err as IError).message });
     } finally {
       setIsLoading(false);
       reset();
@@ -133,23 +133,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
                 name="password"
               />
             </div>
-            <BaseButton
-              type="submit"
-              label={
-                isLoading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  'Sign up'
-                )
-              }
-              size="large"
-              style={{
-                width: '100%',
-                marginTop: '16px',
-                pointerEvents: isLoading ? 'none' : 'auto',
-              }}
-              disabled={isLoading}
-            />
+            <Button fullWidth disabled={isLoading}>
+              SignUp
+            </Button>
           </Form>
         )}
       </Formik>

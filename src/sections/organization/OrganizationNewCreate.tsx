@@ -1,11 +1,11 @@
 'use client';
 
+import { Button } from '@/components';
 import { FormProvider, RHFTextField } from '@/components/hook-form';
 import useAuth from '@/context/AuthContext';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -128,7 +128,7 @@ export default function OrganizationNewCreate() {
       enqueueSnackbar('Organization created', { variant: 'success' });
       router.push('/');
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -191,9 +191,8 @@ export default function OrganizationNewCreate() {
             <Grid item xs={12}>
               <Box display="flex" justifyContent="flex-end">
                 <Button
+                  variant="primary_outlined"
                   type="submit"
-                  variant="contained"
-                  color="primary"
                   disabled={isSubmitting}
                 >
                   Create
