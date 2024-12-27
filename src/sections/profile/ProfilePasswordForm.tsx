@@ -24,7 +24,7 @@ import {
   VisibilityOff,
   CheckCircleIcon,
   CancelIcon,
-} from '@/app/icons';
+} from '@/assets/icons';
 
 interface ChangePasswordFormValues {
   currentPassword: string;
@@ -33,7 +33,7 @@ interface ChangePasswordFormValues {
 }
 
 export default function ChangePasswordForm() {
-  const { updatePassword } = useAuth();
+  const { updatePassword } = useAuth(); 
   const { enqueueSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -66,13 +66,15 @@ export default function ChangePasswordForm() {
   } = methods;
 
   const newPassword = useWatch({ name: 'newPassword', control: methods.control });
+
   const onSubmit = async (values: ChangePasswordFormValues) => {
     try {
-      console.log('Password Change Values: ', values);
+     
+      await updatePassword(values.currentPassword, values.newPassword); 
+
       enqueueSnackbar('Password successfully updated!', { variant: 'success' });
-      reset(defaultValues);
-    } catch (error) {
-      console.error(error);
+      reset(defaultValues); 
+    } catch (error:any) {
       enqueueSnackbar('Failed to update password. Please try again.', { variant: 'error' });
     }
   };
@@ -83,15 +85,23 @@ export default function ChangePasswordForm() {
   const hasUpperAndLowerCase = /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword);
   const hasNumberOrSpecialChar = /[0-9]/.test(newPassword) || /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
 
+  const requirements = [
+    { requirement: 'At least 6 characters', met: isAtLeast6Chars },
+    { requirement: 'Contains uppercase and lowercase letters', met: hasUpperAndLowerCase },
+    { requirement: 'Includes a number or special character', met: hasNumberOrSpecialChar },
+  ];
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          <Card  sx={{p: 3,borderRadius: 2,boxShadow: 3,}}>
-
-             <Typography variant="h4" fontWeight="bold" mb={1}> Change Your Password</Typography>
-            <Typography variant="body1" mb={1}> Please update your password details below</Typography>
-
+          <Card sx={{ p: 3, borderRadius: 2, boxShadow: 3 }}>
+            <Typography variant="h4" fontWeight="bold" mb={1}>
+              Change Your Password
+            </Typography>
+            <Typography variant="body1" mb={1}>
+              Please update your password details below
+            </Typography>
             <Box sx={{ borderBottom: '1px solid #ddd', mb: 2 }} />
             <CardContent>
               <Grid container spacing={2}>
@@ -162,14 +172,10 @@ export default function ChangePasswordForm() {
               Password Requirements
             </Typography>
             <Box>
-              {[
-                { requirement: 'At least 6 characters', met: isAtLeast6Chars },
-                { requirement: 'Contains uppercase and lowercase letters', met: hasUpperAndLowerCase },
-                { requirement: 'Includes a number or special character', met: hasNumberOrSpecialChar },
-              ].map((item, index) => (
+              {requirements.map((item, index) => (
                 <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   {item.met ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />}
-                  <Typography variant='body1'>{item.requirement}</Typography>
+                  <Typography variant="body1">{item.requirement}</Typography>
                 </Box>
               ))}
             </Box>

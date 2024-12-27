@@ -1,17 +1,19 @@
-'use client';
-
 import { initializeApp } from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  reauthenticateWithCredential,
   signOut,
+  updatePassword as firebaseUpdatePassword,
+  EmailAuthProvider,
 } from 'firebase/auth';
 import {
   collection,
   doc,
   getDoc,
+  updateDoc,
   getFirestore,
   setDoc,
 } from 'firebase/firestore';
@@ -24,7 +26,6 @@ import {
   useReducer,
   useState,
 } from 'react';
-//
 import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
 
 // ----------------------------------------------------------------------
@@ -32,7 +33,6 @@ import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
 const firebaseApp = initializeApp(FIREBASE_API);
 
 const AUTH = getAuth(firebaseApp);
-
 const DB = getFirestore(firebaseApp);
 
 const initialState = {
@@ -57,6 +57,7 @@ interface AuthAction {
     isLoading: boolean;
   };
 }
+
 interface IUser {
   id: string | null;
   email: string | null;
@@ -92,19 +93,11 @@ interface AuthContextType extends AuthState {
   method: string;
   user: IUser | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (
-    username: string,
-    email: string,
-    password: string,
-  ) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   create: (collectionName: string, data: any) => Promise<void>;
-  update: (
-    collectionName: string,
-    id: string,
-    data: any,
-    merge?: boolean,
-  ) => Promise<void>;
+  update: (collectionName: string, id: string, data: any, merge?: boolean) => Promise<void>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -112,12 +105,11 @@ const AuthContext = createContext<AuthContextType>({
   method: 'firebase',
   user: null,
   login: (email: string, password: string) => Promise.resolve(),
-  register: (username: string, email: string, password: string) =>
-    Promise.resolve(),
+  register: (username: string, email: string, password: string) => Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
-  update: (collectionName: string, id: string, data: any, merge = true) =>
-    Promise.resolve(),
+  update: (collectionName: string, id: string, data: any, merge = true) => Promise.resolve(),
+  updatePassword: (currentPassword: string, newPassword: string) => Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -158,7 +150,6 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       if (user) {
         const userRef = doc(DB, 'users', user.uid);
-
         const docSnap = await getDoc(userRef);
 
         if (docSnap.exists()) {
@@ -202,7 +193,6 @@ function AuthProvider({ children }: AuthProviderProps) {
   ) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
       const userRef = doc(collection(DB, 'users'), res.user?.uid);
-
       await setDoc(userRef, {
         uid: res.user?.uid,
         email,
@@ -214,18 +204,28 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const create = async (collectionName: string, data: any) => {
     const collectionRef = doc(collection(DB, collectionName));
-
     await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
   };
 
   const update = async (collectionName, id, data, merge = true) => {
     const collectionDataRef = doc(collection(DB, collectionName), id);
+    await updateDoc(collectionDataRef, { ...data, updatedAt: new Date().getTime() }, { merge });
+  };
 
-    await setDoc(
-      collectionDataRef,
-      { ...data, updatedAt: new Date().getTime() },
-      { merge },
-    );
+  const updatePassword = async (currentPassword: string, newPassword: string) => {
+    const user = AUTH.currentUser;
+    if (!user) {
+      throw new Error('User is not authenticated');
+    }
+
+    try {
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential); 
+
+      await firebaseUpdatePassword(user, newPassword);  
+     } 
+     catch (error: any) {
+    }
   };
 
   return (
@@ -253,6 +253,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         logout,
         create,
         update,
+        updatePassword,  
       }}
     >
       {children}

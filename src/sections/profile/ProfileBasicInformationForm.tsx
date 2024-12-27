@@ -28,7 +28,8 @@ import {
   LinkedInIcon,
   InfoIcon,
   GitHubIcon,
-} from '@/app/icons';
+} from '@/assets/icons';
+import { useEffect } from 'react';
 
 interface BasicInformationFormValues {
   email: string;
@@ -37,7 +38,44 @@ interface BasicInformationFormValues {
   birthDay: string;
   location: string;
   about: string;
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  linkedin?: string;
+  github?: string;
 }
+
+const InputField = ({ name, label, icon }) => (
+  <Grid item xs={12} md={6}>
+    <InputLabel required>{label}</InputLabel>
+    <RHFTextField
+      name={name}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            {icon}
+          </InputAdornment>
+        ),
+      }}
+    />
+  </Grid>
+);
+
+const SocialInputField = ({ name, label, icon }) => (
+  <Grid item xs={12}>
+    <InputLabel>{label}</InputLabel>
+    <RHFTextField
+      name={name}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            {icon}
+          </InputAdornment>
+        ),
+      }}
+    />
+  </Grid>
+);
 
 export default function ProfileBasicInformationForm() {
   const { update, user } = useAuth();
@@ -50,6 +88,11 @@ export default function ProfileBasicInformationForm() {
     birthDay: Yup.string().required(),
     location: Yup.string().required(),
     about: Yup.string(),
+    facebook: Yup.string(),
+    twitter: Yup.string(),
+    instagram: Yup.string(),
+    linkedin: Yup.string(),
+    github: Yup.string(),
   });
 
   const defaultValues = {
@@ -59,6 +102,11 @@ export default function ProfileBasicInformationForm() {
     birthDay: '',
     location: '',
     about: '',
+    facebook: '',
+    twitter: '',
+    instagram: '',
+    linkedin: '',
+    github: '',
   };
 
   const methods = useForm({
@@ -72,13 +120,32 @@ export default function ProfileBasicInformationForm() {
     formState: { isSubmitting },
   } = methods;
 
+  useEffect(() => {
+    if (user) {
+      reset({
+        email: user.email || '',
+        displayName: user.displayName || '',
+        username: user.username || '',
+        birthDay: user.birthDay || '',
+        location: user.location || '',
+        about: user.about || '',
+        facebook: user.social?.facebook || '',
+        twitter: user.social?.twitter || '',
+        instagram: user.social?.instagram || '',
+        linkedin: user.social?.linkedin || '',
+        github: user.social?.github || '',
+      });
+    }
+  }, [user, reset]);
+
   const onSubmit = async (values: BasicInformationFormValues) => {
     try {
       console.log('values: ', values);
-      // await update('users', '23432', values);
-      // reset(defaultValues);
+      await update('users', user.id, values);
+      enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('An error occurred while updating the profile', { variant: 'error' });
     }
   };
 
@@ -110,58 +177,10 @@ export default function ProfileBasicInformationForm() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <InputLabel required>Display Name</InputLabel>
-                  <RHFTextField
-                    name="displayName"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccountCircleIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <InputLabel required>Username</InputLabel>
-                  <RHFTextField
-                    name="username"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <InputLabel required>Birth Day</InputLabel>
-                  <RHFTextField
-                    name="birthDay"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <CalendarTodayIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <InputLabel required>Location</InputLabel>
-                  <RHFTextField
-                    name="location"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LocationOnIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
+                <InputField name="displayName" label="Display Name" icon={<AccountCircleIcon />} />
+                <InputField name="username" label="Username" icon={<PersonIcon />} />
+                <InputField name="birthDay" label="Birth Day" icon={<CalendarTodayIcon />} />
+                <InputField name="location" label="Location" icon={<LocationOnIcon />} />
                 <Grid item xs={12}>
                   <InputLabel>About</InputLabel>
                   <RHFTextField
@@ -192,75 +211,16 @@ export default function ProfileBasicInformationForm() {
             <CardHeader title="Socials" />
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <InputLabel>Facebook</InputLabel>
-                  <RHFTextField
-                    name="facebook"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <FacebookIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <InputLabel>Twitter</InputLabel>
-                  <RHFTextField
-                    name="twitter"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <TwitterIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <InputLabel>Instagram</InputLabel>
-                  <RHFTextField
-                    name="instagram"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <InstagramIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <InputLabel>LinkedIn</InputLabel>
-                  <RHFTextField
-                    name="linkedin"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LinkedInIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <InputLabel>Github</InputLabel>
-                  <RHFTextField
-                    name="linkedin"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <GitHubIcon/>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
+                <SocialInputField name="facebook" label="Facebook" icon={<FacebookIcon />} />
+                <SocialInputField name="twitter" label="Twitter" icon={<TwitterIcon />} />
+                <SocialInputField name="instagram" label="Instagram" icon={<InstagramIcon />} />
+                <SocialInputField name="linkedin" label="LinkedIn" icon={<LinkedInIcon />} />
+                <SocialInputField name="github" label="Github" icon={<GitHubIcon />} />
               </Grid>
             </CardContent>
           </Card>
         </Grid>
+
         <Box width="100%" display="flex" justifyContent="flex-end" mt={4}>
           <Button type="submit" disabled={isSubmitting}>
             Save Changes
