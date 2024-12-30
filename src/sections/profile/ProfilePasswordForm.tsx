@@ -19,12 +19,12 @@ import * as Yup from 'yup';
 import useAuth from '@/context/AuthContext';
 import { useState } from 'react';
 import { useSnackbar } from 'notistack';
-import {
-  Visibility,
-  VisibilityOff,
-  CheckCircleIcon,
-  CancelIcon,
-} from '@/assets/icons';
+import { LoadingButton } from '@mui/lab';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+
 
 interface ChangePasswordFormValues {
   currentPassword: string;
@@ -151,9 +151,13 @@ export default function ChangePasswordForm() {
                 </Grid>
               </Grid>
               <Box width="100%" display="flex" justifyContent="flex-end" mt={3}>
-                <Button type="submit" disabled={isSubmitting} variant="contained">
+               <LoadingButton
+                type="submit"
+                loading={isSubmitting}
+                variant="contained" 
+                > 
                   Save Changes
-                </Button>
+               </LoadingButton>
               </Box>
             </CardContent>
           </Card>

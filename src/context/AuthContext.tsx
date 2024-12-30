@@ -96,7 +96,7 @@ interface AuthContextType extends AuthState {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   create: (collectionName: string, data: any) => Promise<void>;
-  update: (collectionName: string, id: string, data: any, merge?: boolean) => Promise<void>;
+  updateBasicInformation: (collectionName: string, id: string, data: any, merge?: boolean) => Promise<void>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
@@ -108,7 +108,7 @@ const AuthContext = createContext<AuthContextType>({
   register: (username: string, email: string, password: string) => Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
-  update: (collectionName: string, id: string, data: any, merge = true) => Promise.resolve(),
+  updateBasicInformation: (collectionName: string, id: string, data: any, merge = true) => Promise.resolve(),
   updatePassword: (currentPassword: string, newPassword: string) => Promise.resolve(),
 });
 
@@ -207,7 +207,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
   };
 
-  const update = async (collectionName, id, data, merge = true) => {
+  const updateBasicInformation = async (collectionName, id, data, merge = true) => {
     const collectionDataRef = doc(collection(DB, collectionName), id);
     await updateDoc(collectionDataRef, { ...data, updatedAt: new Date().getTime() }, { merge });
   };
@@ -217,17 +217,9 @@ function AuthProvider({ children }: AuthProviderProps) {
     if (!user) {
       throw new Error('User is not authenticated');
     }
-
-    try {
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, credential); 
-
-      await firebaseUpdatePassword(user, newPassword);  
-     } 
-     catch (error: any) {
-    }
+    await signInWithEmailAndPassword(AUTH, user.email, currentPassword);
+    await firebaseUpdatePassword(user, newPassword);
   };
-
   return (
     <AuthContext.Provider
       value={{
@@ -252,7 +244,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         register,
         logout,
         create,
-        update,
+        updateBasicInformation,
         updatePassword,  
       }}
     >
