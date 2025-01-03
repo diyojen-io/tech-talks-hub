@@ -1,5 +1,5 @@
 import { GithubIcon, MailIcon, WebsiteIcon } from '@/assets/icons';
-import Logo from '@/assets/logos/logo.png';
+import Logo from '@/assets/logos/diyojen.png';
 import BaseButton from '@/components/BaseButton';
 import Iconify from '@/components/Iconify';
 import Image from 'next/image';
