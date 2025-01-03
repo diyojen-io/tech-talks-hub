@@ -1,14 +1,21 @@
 'use client';
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import BaseButton from '@/components/BaseButton';
 import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
-import CircularProgress from '@mui/material/CircularProgress'; 
+import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
 import BaseModal from '../BaseModal';
 import './index.scss';
+
+interface SignUpFormValues {
+  username: string;
+  email: string;
+  password: string;
+  afterSubmit?: string;
+}
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -19,9 +26,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const { register } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
-  const initialValues = {
+  const initialValues: SignUpFormValues = {
     username: '',
     email: '',
     password: '',
@@ -41,19 +48,21 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   });
 
   const handleSubmit = async (
-    values: { username: string; email: string; password: string },
-    actions: any,
+    values: SignUpFormValues,
+    actions: FormikHelpers<SignUpFormValues>
   ) => {
     const { setErrors, reset } = actions;
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       await register(values.username, values.email, values.password);
-      enqueueSnackbar('Successfully signed up!', { variant: 'success' });
+      enqueueSnackbar('Successfully signed up!', { variant: 'success', vertical:'bottom' });
       onClose();
-    } catch (err: any) {
-      setErrors({ afterSubmit: err.message });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrors({ afterSubmit: err.message });
+      }
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
       reset();
     }
   };
@@ -135,11 +144,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
             </div>
             <BaseButton
               type="submit"
-              label={isLoading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                'Sign up'
-              )}
+              label={
+                isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Sign up'
+                )
+              }
               size="large"
               style={{
                 width: '100%',
