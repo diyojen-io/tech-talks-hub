@@ -6,7 +6,7 @@ import shape from './shape';
 import { Button, TextField, InputLabel, MenuItem } from './overrides';
 
 export const theme = createTheme({
-  spacing: 4,
+  spacing: 8,
   palette: palette,
   breakpoints: {
     values: {

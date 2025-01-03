@@ -9,7 +9,6 @@ const buttons: Components['MuiButton'] = {
     root: {
       borderRadius: shape.borderRadius,
       textTransform: 'none',
-      color: '#fff',
     },
   },
 };
