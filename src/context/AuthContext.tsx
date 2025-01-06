@@ -4,11 +4,10 @@ import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  reauthenticateWithCredential,
   signOut,
   updatePassword as firebaseUpdatePassword,
-  EmailAuthProvider,
 } from 'firebase/auth';
+import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import {
   collection,
   doc,
@@ -53,7 +52,7 @@ interface AuthAction {
   type: string;
   payload: {
     isAuthenticated: boolean;
-    user: IUser | null;
+    user: IUser;
     isLoading: boolean;
   };
 }
@@ -63,6 +62,15 @@ interface IUser {
   email: string | null;
   photoURL: string | null;
   displayName: string | null;
+  username: string | null;
+  birthDay: Date | null;
+  location: string | null;
+  social: {
+    twitter?: string | null;
+    instagram?: string | null;
+    linkedin?: string | null;
+    github?: string | null;
+  };
   role: string;
   phoneNumber: string;
   country: string;
@@ -93,11 +101,28 @@ interface AuthContextType extends AuthState {
   method: string;
   user: IUser | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   logout: () => Promise<void>;
   create: (collectionName: string, data: any) => Promise<void>;
-  updateBasicInformation: (collectionName: string, id: string, data: any, merge?: boolean) => Promise<void>;
-  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  updateBasic: (
+    collectionName: string,
+    id: string,
+    data: any,
+    merge?: boolean,
+  ) => Promise<void>;
+  updatePassword: (
+    currentPassword: string,
+    newPassword: string,
+  ) => Promise<void>;
+  updateSocial: (
+    collectionName: string,
+    id: string,
+    data: any,
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -105,11 +130,16 @@ const AuthContext = createContext<AuthContextType>({
   method: 'firebase',
   user: null,
   login: (email: string, password: string) => Promise.resolve(),
-  register: (username: string, email: string, password: string) => Promise.resolve(),
+  register: (username: string, email: string, password: string) =>
+    Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
-  updateBasicInformation: (collectionName: string, id: string, data: any, merge = true) => Promise.resolve(),
-  updatePassword: (currentPassword: string, newPassword: string) => Promise.resolve(),
+  updateBasic: (collectionName: string, id: string, data: any, merge = true) =>
+    Promise.resolve(),
+  updatePassword: (currentPassword: string, newPassword: string) =>
+    Promise.resolve(),
+  updateSocial: (collectionName: string, id: string, data: any) =>
+    Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -130,6 +160,15 @@ function AuthProvider({ children }: AuthProviderProps) {
     displayName?: string;
     username?: string;
     phoneNumber?: string;
+    email?: string;
+    birthDay?: Date;
+    location?: string;
+    social?: {
+      twitter?: string;
+      instagram?: string;
+      linkedin?: string;
+      github?: string;
+    };
     country?: string;
     address?: string;
     state?: string;
@@ -207,19 +246,45 @@ function AuthProvider({ children }: AuthProviderProps) {
     await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
   };
 
-  const updateBasicInformation = async (collectionName, id, data, merge = true) => {
+  const updateBasic = async (collectionName, id, data, merge = true) => {
     const collectionDataRef = doc(collection(DB, collectionName), id);
-    await updateDoc(collectionDataRef, { ...data, updatedAt: new Date().getTime() }, { merge });
+    await updateDoc(
+      collectionDataRef,
+      { ...data, updatedAt: new Date().getTime() },
+      { merge },
+    );
+  };
+  const updatePassword = async (
+    currentPassword: string,
+    newPassword: string,
+  ) => {
+    const user = AUTH.currentUser;
+
+    if (!user) {
+      return;
+    }
+
+    const credential = EmailAuthProvider.credential(
+      user.email!,
+      currentPassword,
+    );
+    await reauthenticateWithCredential(user, credential).then(() =>
+      firebaseUpdatePassword(user, newPassword),
+    );
   };
 
-  const updatePassword = async (currentPassword: string, newPassword: string) => {
-    const user = AUTH.currentUser;
-    if (!user) {
-      throw new Error('User is not authenticated');
-    }
-    await signInWithEmailAndPassword(AUTH, user.email, currentPassword);
-    await firebaseUpdatePassword(user, newPassword);
+  const updateSocial = async (
+    collectionName: string,
+    id: string,
+    data: any,
+  ) => {
+    const collectionDataRef = doc(collection(DB, collectionName), id);
+    await updateDoc(collectionDataRef, {
+      ...data,
+      updatedAt: new Date().getTime(),
+    });
   };
+
   return (
     <AuthContext.Provider
       value={{
@@ -229,7 +294,10 @@ function AuthProvider({ children }: AuthProviderProps) {
           id: state?.user?.uid,
           email: state?.user?.email,
           photoURL: state?.user?.photoURL || profile?.photoURL,
-          displayName: state?.user?.username || profile?.username,
+          displayName: state?.user?.displayName || profile?.displayName,
+          username: state?.user?.username || profile?.username,
+          birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
+          location: profile?.location || '',
           role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
           phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
           country: profile?.country || '',
@@ -239,13 +307,20 @@ function AuthProvider({ children }: AuthProviderProps) {
           zipCode: profile?.zipCode || '',
           about: profile?.about || '',
           isPublic: profile?.isPublic || false,
+          social: {
+            twitter: profile?.social?.twitter || null,
+            instagram: profile?.social?.instagram || null,
+            linkedin: profile?.social?.linkedin || null,
+            github: profile?.social?.github || null,
+          },
         },
         login,
         register,
         logout,
         create,
-        updateBasicInformation,
-        updatePassword,  
+        updateBasic,
+        updatePassword,
+        updateSocial,
       }}
     >
       {children}

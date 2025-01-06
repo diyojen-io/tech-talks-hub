@@ -1,10 +1,9 @@
-'use client';
-
-import { FormProvider, RHFTextField } from '@/components/hook-form';
+import React, { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Grid,
@@ -14,17 +13,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useForm, useWatch } from 'react-hook-form';
-import * as Yup from 'yup';
-import useAuth from '@/context/AuthContext';
-import { useState } from 'react';
-import { useSnackbar } from 'notistack';
+import * as Icons from '@mui/icons-material';
+
 import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-
+import { useSnackbar } from 'notistack';
+import { FormProvider, RHFTextField } from '@/components/hook-form';
+import useAuth from '@/context/AuthContext';
 
 interface ChangePasswordFormValues {
   currentPassword: string;
@@ -32,10 +30,11 @@ interface ChangePasswordFormValues {
   confirmNewPassword: string;
 }
 
-export default function ChangePasswordForm() {
-  const { updatePassword } = useAuth(); 
+const ChangePasswordForm: React.FC = () => {
+  const { updatePassword } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const PasswordChangeSchema = Yup.object().shape({
     currentPassword: Yup.string().required('Current password is required'),
@@ -48,7 +47,7 @@ export default function ChangePasswordForm() {
       .required('Please confirm your new password'),
   });
 
-  const defaultValues = {
+  const defaultValues: ChangePasswordFormValues = {
     currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
@@ -61,34 +60,39 @@ export default function ChangePasswordForm() {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     reset,
   } = methods;
 
-  const newPassword = useWatch({ name: 'newPassword', control: methods.control });
+  const newPassword = useWatch({
+    name: 'newPassword',
+    control: methods.control,
+  });
 
   const onSubmit = async (values: ChangePasswordFormValues) => {
     try {
-     
-      await updatePassword(values.currentPassword, values.newPassword); 
-
+      await updatePassword(values.currentPassword, values.newPassword);
       enqueueSnackbar('Password successfully updated!', { variant: 'success' });
-      reset(defaultValues); 
-    } catch (error:any) {
-      enqueueSnackbar('Failed to update password. Please try again.', { variant: 'error' });
+      reset(defaultValues);
+      setSubmitError(null);
+    } catch (error: any) {
+      setSubmitError('Failed to update password. Please try again.');
     }
   };
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-  const isAtLeast6Chars = newPassword.length >= 6;
-  const hasUpperAndLowerCase = /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword);
-  const hasNumberOrSpecialChar = /[0-9]/.test(newPassword) || /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
-
-  const requirements = [
-    { requirement: 'At least 6 characters', met: isAtLeast6Chars },
-    { requirement: 'Contains uppercase and lowercase letters', met: hasUpperAndLowerCase },
-    { requirement: 'Includes a number or special character', met: hasNumberOrSpecialChar },
+  const passwordRequirements = [
+    { label: 'At least 6 characters', requirementMet: newPassword.length >= 6 },
+    {
+      label: 'Contains uppercase and lowercase letters',
+      requirementMet: /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword),
+    },
+    {
+      label: 'Includes a number or special character',
+      requirementMet:
+        /[0-9]/.test(newPassword) || /[!@#$%^&*(),.?":{}|<>]/.test(newPassword),
+    },
   ];
 
   return (
@@ -99,7 +103,7 @@ export default function ChangePasswordForm() {
             <Typography variant="h4" fontWeight="bold" mb={1}>
               Change Your Password
             </Typography>
-            <Typography variant="body1" mb={1}>
+            <Typography variant="body2" mb={1}>
               Please update your password details below
             </Typography>
             <Box sx={{ borderBottom: '1px solid #ddd', mb: 2 }} />
@@ -107,21 +111,39 @@ export default function ChangePasswordForm() {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <InputLabel required>Current Password</InputLabel>
-                  <RHFTextField name="currentPassword" type="password" fullWidth />
+                  <RHFTextField
+                    name="currentPassword"
+                    type="password"
+                    fullWidth
+                    error={!!errors.currentPassword}
+                    helperText={errors.currentPassword?.message}
+                  />
                 </Grid>
-
                 <Grid item xs={12} sm={6}>
                   <InputLabel required>New Password</InputLabel>
                   <RHFTextField
                     name="newPassword"
                     type={showPassword ? 'text' : 'password'}
                     fullWidth
+                    error={!!errors.newPassword}
+                    helperText={errors.newPassword?.message}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <Tooltip title={showPassword ? 'Hide password' : 'Show password'}>
-                            <IconButton onClick={togglePasswordVisibility}>
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                          <Tooltip
+                            title={
+                              showPassword ? 'Hide password' : 'Show password'
+                            }
+                          >
+                            <IconButton
+                              onClick={togglePasswordVisibility}
+                              aria-label="toggle password visibility"
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
                             </IconButton>
                           </Tooltip>
                         </InputAdornment>
@@ -129,19 +151,31 @@ export default function ChangePasswordForm() {
                     }}
                   />
                 </Grid>
-
                 <Grid item xs={12} sm={6}>
                   <InputLabel required>Confirm New Password</InputLabel>
                   <RHFTextField
                     name="confirmNewPassword"
                     type={showPassword ? 'text' : 'password'}
                     fullWidth
+                    error={!!errors.confirmNewPassword}
+                    helperText={errors.confirmNewPassword?.message}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <Tooltip title={showPassword ? 'Hide password' : 'Show password'}>
-                            <IconButton onClick={togglePasswordVisibility}>
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                          <Tooltip
+                            title={
+                              showPassword ? 'Hide password' : 'Show password'
+                            }
+                          >
+                            <IconButton
+                              onClick={togglePasswordVisibility}
+                              aria-label="toggle password visibility"
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
                             </IconButton>
                           </Tooltip>
                         </InputAdornment>
@@ -150,14 +184,19 @@ export default function ChangePasswordForm() {
                   />
                 </Grid>
               </Grid>
-              <Box width="100%" display="flex" justifyContent="flex-end" mt={3}>
-               <LoadingButton
-                type="submit"
-                loading={isSubmitting}
-                variant="contained" 
-                > 
+              {submitError && (
+                <Typography variant="body2" color="error" mt={2}>
+                  {submitError}
+                </Typography>
+              )}
+              <Box display="flex" justifyContent="flex-end" mt={3}>
+                <LoadingButton
+                  type="submit"
+                  loading={isSubmitting}
+                  variant="contained"
+                >
                   Save Changes
-               </LoadingButton>
+                </LoadingButton>
               </Box>
             </CardContent>
           </Card>
@@ -176,10 +215,17 @@ export default function ChangePasswordForm() {
               Password Requirements
             </Typography>
             <Box>
-              {requirements.map((item, index) => (
-                <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  {item.met ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />}
-                  <Typography variant="body1">{item.requirement}</Typography>
+              {passwordRequirements.map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
+                >
+                  {item.requirementMet ? (
+                    <CheckCircleIcon color="success" />
+                  ) : (
+                    <CancelIcon color="error" />
+                  )}
+                  <Typography variant="body2">{item.label}</Typography>
                 </Box>
               ))}
             </Box>
@@ -188,4 +234,6 @@ export default function ChangePasswordForm() {
       </Grid>
     </FormProvider>
   );
-}
+};
+
+export default ChangePasswordForm;

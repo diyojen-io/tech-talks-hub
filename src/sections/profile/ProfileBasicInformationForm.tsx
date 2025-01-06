@@ -10,24 +10,17 @@ import {
   Grid,
   InputLabel,
   InputAdornment,
+  Typography,
+  Alert,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import useAuth from '@/context/AuthContext';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
-import EmailIcon from '@mui/icons-material/Email';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Person from '@mui/icons-material/Person';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import LocationOn from '@mui/icons-material/LocationOn';
-import Facebook from '@mui/icons-material/Facebook';
-import Twitter from '@mui/icons-material/Twitter';
-import Instagram from '@mui/icons-material/Instagram';
-import LinkedIn from '@mui/icons-material/LinkedIn';
-import GitHub from '@mui/icons-material/GitHub';
-import Info from '@mui/icons-material/Info';
+import * as Icons from '@mui/icons-material';
 import FormInputField from '@/components/FormInputField';
+import { useState } from 'react';
 
 interface BasicInformationFormValues {
   email: string;
@@ -36,7 +29,6 @@ interface BasicInformationFormValues {
   birthDay: string;
   location: string;
   about: string;
-  facebook?: string;
   twitter?: string;
   instagram?: string;
   linkedin?: string;
@@ -44,38 +36,39 @@ interface BasicInformationFormValues {
 }
 
 export default function ProfileBasicInformationForm() {
-  const { update, user } = useAuth();
+  const { updateBasic, updateSocial, user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
+  const [formError, setFormError] = useState<string | null>(null);
 
   const BasicInformationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    displayName: Yup.string().required(),
-    username: Yup.string().required(),
-    birthDay: Yup.string().required(),
-    location: Yup.string().required(),
+    email: Yup.string()
+      .email('Please enter a valid email')
+      .required('Email is required'),
+    displayName: Yup.string().required('Display Name is required'),
+    username: Yup.string().required('Username is required'),
+    birthDay: Yup.string().required('Birth Day is required'),
+    location: Yup.string().required('Location is required'),
     about: Yup.string(),
-    facebook: Yup.string(),
     twitter: Yup.string(),
     instagram: Yup.string(),
     linkedin: Yup.string(),
     github: Yup.string(),
   });
 
-  const defaultValues = {
+  const defaultValues: BasicInformationFormValues = {
     email: user?.email || '',
     displayName: user?.displayName || '',
     username: user?.username || '',
     birthDay: user?.birthDay || '',
     location: user?.location || '',
     about: user?.about || '',
-    facebook: user?.social?.facebook || '',
     twitter: user?.social?.twitter || '',
     instagram: user?.social?.instagram || '',
     linkedin: user?.social?.linkedin || '',
     github: user?.social?.github || '',
   };
 
-  const methods = useForm({
+  const methods = useForm<BasicInformationFormValues>({
     resolver: yupResolver(BasicInformationSchema),
     defaultValues,
   });
@@ -87,53 +80,86 @@ export default function ProfileBasicInformationForm() {
 
   const onSubmit = async (values: BasicInformationFormValues) => {
     try {
-      await update('users', user.id, values);
+      setFormError(null);
+      await updateBasic('users', user?.id!, values);
+      await updateSocial('users', user?.id!, values);
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' });
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setFormError(errorMessage);
     }
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={4}>
-        <Grid item xs={8}>
-          <Card sx={{ p: 3, borderRadius: 2, boxShadow: 1, maxWidth: 800 }}>
+        <Grid item xs={12}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 1,
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          >
             <CardHeader title="Basic Information" />
             <CardContent>
+              {formError && (
+                <Box mb={2}>
+                  <Alert severity="error">{formError}</Alert>
+                </Box>
+              )}
+
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <InputLabel required>Email</InputLabel>
                   <RHFTextField
                     name="email"
+                    type="email"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <EmailIcon />
+                          <Icons.Email sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
                   />
                 </Grid>
-                <FormInputField name="displayName" label="Display Name" icon={<AccountCircle />} />
-                <FormInputField name="username" label="Username" icon={<Person />} />
-                <FormInputField name="birthDay" label="Birth Day" icon={<CalendarToday />} />
-                <FormInputField name="location" label="Location" icon={<LocationOn />} />
+
+                <FormInputField
+                  name="username"
+                  label="Username"
+                  icon={<Icons.AccountCircle sx={{ fontSize: '16px' }} />}
+                />
+
+                <FormInputField
+                  name="displayName"
+                  label="Display Name"
+                  icon={<Icons.Person sx={{ fontSize: '16px' }} />}
+                />
+
+                <FormInputField
+                  name="birthDay"
+                  label="Birth Day"
+                  icon={<Icons.CalendarToday sx={{ fontSize: '16px' }} />}
+                  isDatePicker
+                />
+
+                <FormInputField
+                  name="location"
+                  label="Location"
+                  icon={<Icons.LocationOn sx={{ fontSize: '16px' }} />}
+                />
 
                 <Grid item xs={12}>
                   <InputLabel>About</InputLabel>
                   <RHFTextField
                     name="about"
                     multiline
-                    rows={3}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Info />
-                        </InputAdornment>
-                      ),
-                    }}
+                    rows={4}
+                    placeholder="Tell us something about you."
                   />
                 </Grid>
               </Grid>
@@ -141,23 +167,65 @@ export default function ProfileBasicInformationForm() {
           </Card>
         </Grid>
 
-        <Grid item xs={4}>
-          <Card sx={{ p: 3, borderRadius: 2, boxShadow: 1 }}>
+        <Grid item xs={12}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 1,
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          >
             <CardHeader title="Socials" />
             <CardContent>
-              <Grid container spacing={2}>
-                <FormInputField name="facebook" label="Facebook" icon={<Facebook />} isSocial />
-                <FormInputField name="twitter" label="Twitter" icon={<Twitter />} isSocial />
-                <FormInputField name="instagram" label="Instagram" icon={<Instagram />} isSocial />
-                <FormInputField name="linkedin" label="LinkedIn" icon={<LinkedIn />} isSocial />
-                <FormInputField name="github" label="Github" icon={<GitHub />} isSocial />
+              <Grid container spacing={4}>
+                <Grid item xs={6}>
+                  <FormInputField
+                    name="twitter"
+                    label="Twitter"
+                    icon={<Icons.Twitter sx={{ fontSize: '16px' }} />}
+                    isSocial
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <FormInputField
+                    name="instagram"
+                    label="Instagram"
+                    icon={<Icons.Instagram sx={{ fontSize: '16px' }} />}
+                    isSocial
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <FormInputField
+                    name="linkedin"
+                    label="LinkedIn"
+                    icon={<Icons.LinkedIn sx={{ fontSize: '16px' }} />}
+                    isSocial
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <FormInputField
+                    name="github"
+                    label="Github"
+                    icon={<Icons.GitHub sx={{ fontSize: '16px' }} />}
+                    isSocial
+                  />
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
         </Grid>
 
         <Box width="100%" display="flex" justifyContent="flex-end" mt={4}>
-          <LoadingButton type="submit" loading={isSubmitting} variant="contained">
+          <LoadingButton
+            type="submit"
+            loading={isSubmitting}
+            variant="contained"
+          >
             Save Changes
           </LoadingButton>
         </Box>

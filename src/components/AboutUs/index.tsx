@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-const CommunityLanding: React.FC = () => {
+const AboutUs: React.FC = () => {
   const router = useRouter();
 
   const handleClick = () => {
@@ -99,5 +99,4 @@ const CommunityLanding: React.FC = () => {
     </Box>
   );
 };
-
-export default CommunityLanding;
+export default AboutUs;
