@@ -65,12 +65,10 @@ interface IUser {
   username: string | null;
   birthDay: Date | null;
   location: string | null;
-  social: {
-    twitter?: string | null;
-    instagram?: string | null;
-    linkedin?: string | null;
-    github?: string | null;
-  };
+  twitter?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  github?: string | null;
   role: string;
   phoneNumber: string;
   country: string;
@@ -108,20 +106,16 @@ interface AuthContextType extends AuthState {
   ) => Promise<void>;
   logout: () => Promise<void>;
   create: (collectionName: string, data: any) => Promise<void>;
-  updateBasic: (
+  update: (
     collectionName: string,
     id: string,
     data: any,
     merge?: boolean,
+    isPasswordUpdate?: boolean,
   ) => Promise<void>;
   updatePassword: (
     currentPassword: string,
     newPassword: string,
-  ) => Promise<void>;
-  updateSocial: (
-    collectionName: string,
-    id: string,
-    data: any,
   ) => Promise<void>;
 }
 
@@ -134,11 +128,9 @@ const AuthContext = createContext<AuthContextType>({
     Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
-  updateBasic: (collectionName: string, id: string, data: any, merge = true) =>
+  update: (collectionName: string, id: string, data: any, merge = true) =>
     Promise.resolve(),
   updatePassword: (currentPassword: string, newPassword: string) =>
-    Promise.resolve(),
-  updateSocial: (collectionName: string, id: string, data: any) =>
     Promise.resolve(),
 });
 
@@ -163,12 +155,10 @@ function AuthProvider({ children }: AuthProviderProps) {
     email?: string;
     birthDay?: Date;
     location?: string;
-    social?: {
-      twitter?: string;
-      instagram?: string;
-      linkedin?: string;
-      github?: string;
-    };
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+    github?: string;
     country?: string;
     address?: string;
     state?: string;
@@ -246,19 +236,34 @@ function AuthProvider({ children }: AuthProviderProps) {
     await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
   };
 
-  const updateBasic = async (collectionName, id, data, merge = true) => {
+  const update = async (
+    collectionName: string,
+    id: string,
+    data: any,
+    merge = true,
+    isPasswordUpdate = false,
+  ) => {
     const collectionDataRef = doc(collection(DB, collectionName), id);
-    await updateDoc(
-      collectionDataRef,
-      { ...data, updatedAt: new Date().getTime() },
-      { merge },
-    );
+    if (isPasswordUpdate) {
+      await updateDoc(
+        collectionDataRef,
+        { password: data.password, updatedAt: new Date().getTime() },
+        { merge },
+      );
+    } else {
+      await updateDoc(
+        collectionDataRef,
+        { ...data, updatedAt: new Date().getTime() },
+        { merge },
+      );
+    }
   };
+
   const updatePassword = async (
     currentPassword: string,
     newPassword: string,
   ) => {
-    const user = AUTH.currentUser;
+    const user = AUTH.currentUser || null;
 
     if (!user) {
       return;
@@ -271,18 +276,6 @@ function AuthProvider({ children }: AuthProviderProps) {
     await reauthenticateWithCredential(user, credential).then(() =>
       firebaseUpdatePassword(user, newPassword),
     );
-  };
-
-  const updateSocial = async (
-    collectionName: string,
-    id: string,
-    data: any,
-  ) => {
-    const collectionDataRef = doc(collection(DB, collectionName), id);
-    await updateDoc(collectionDataRef, {
-      ...data,
-      updatedAt: new Date().getTime(),
-    });
   };
 
   return (
@@ -307,20 +300,17 @@ function AuthProvider({ children }: AuthProviderProps) {
           zipCode: profile?.zipCode || '',
           about: profile?.about || '',
           isPublic: profile?.isPublic || false,
-          social: {
-            twitter: profile?.social?.twitter || null,
-            instagram: profile?.social?.instagram || null,
-            linkedin: profile?.social?.linkedin || null,
-            github: profile?.social?.github || null,
-          },
+          twitter: profile?.twitter || null,
+          instagram: profile?.instagram || null,
+          linkedin: profile?.linkedin || null,
+          github: profile?.github || null,
         },
         login,
         register,
         logout,
         create,
-        updateBasic,
+        update,
         updatePassword,
-        updateSocial,
       }}
     >
       {children}

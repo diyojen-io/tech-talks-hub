@@ -20,7 +20,6 @@ import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
 import * as Icons from '@mui/icons-material';
 import FormInputField from '@/components/FormInputField';
-import { useState } from 'react';
 
 interface BasicInformationFormValues {
   email: string;
@@ -36,9 +35,8 @@ interface BasicInformationFormValues {
 }
 
 export default function ProfileBasicInformationForm() {
-  const { updateBasic, updateSocial, user } = useAuth();
+  const { update, user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
-  const [formError, setFormError] = useState<string | null>(null);
 
   const BasicInformationSchema = Yup.object().shape({
     email: Yup.string()
@@ -62,10 +60,10 @@ export default function ProfileBasicInformationForm() {
     birthDay: user?.birthDay || '',
     location: user?.location || '',
     about: user?.about || '',
-    twitter: user?.social?.twitter || '',
-    instagram: user?.social?.instagram || '',
-    linkedin: user?.social?.linkedin || '',
-    github: user?.social?.github || '',
+    twitter: user?.twitter || '',
+    instagram: user?.instagram || '',
+    linkedin: user?.linkedin || '',
+    github: user?.github || '',
   };
 
   const methods = useForm<BasicInformationFormValues>({
@@ -75,19 +73,20 @@ export default function ProfileBasicInformationForm() {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
   } = methods;
 
   const onSubmit = async (values: BasicInformationFormValues) => {
     try {
-      setFormError(null);
-      await updateBasic('users', user?.id!, values);
-      await updateSocial('users', user?.id!, values);
+      clearErrors();
+      await update('users', user?.id!, values);
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setFormError(errorMessage);
+      setError('email', { type: 'manual', message: errorMessage });
     }
   };
 
@@ -106,9 +105,11 @@ export default function ProfileBasicInformationForm() {
           >
             <CardHeader title="Basic Information" />
             <CardContent>
-              {formError && (
+              {Object.keys(errors).length > 0 && (
                 <Box mb={2}>
-                  <Alert severity="error">{formError}</Alert>
+                  <Alert severity="error">
+                    {errors.email?.message || 'Please fix the form errors.'}
+                  </Alert>
                 </Box>
               )}
 
