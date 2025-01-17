@@ -17,6 +17,8 @@ import {
   Twitter,
   Email,
   CalendarToday,
+  Instagram,
+  LinkedIn,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/context/AuthContext';
@@ -56,23 +58,47 @@ const ProfilePage = () => {
             sx={{
               p: 4,
               borderRadius: 2,
+              bgcolor: 'background.paper',
+              boxShadow: 1,
             }}
           >
             <Box sx={{ position: 'relative', textAlign: 'center', mb: 3 }}>
               <Avatar
-                src={profileImage || user?.profileImage || undefined}
+                src={profileImage || user?.profileImage}
                 sx={{
                   width: 120,
                   height: 120,
-                  bgcolor: '#e0f7fa',
                   fontSize: '2.5rem',
                   margin: '0 auto',
+                  color: 'white',
+                  position: 'relative',
                 }}
               >
-                {!profileImage && !user?.profileImage && (
-                  <Dropzone onDrop={handleFileUpload} />
-                )}
+                {!profileImage &&
+                  !user?.profileImage &&
+                  user?.displayName?.[0]?.toUpperCase()}
               </Avatar>
+
+              {!profileImage && !user?.profileImage && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    background: 'rgba(255, 255, 255, 0.7)',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Dropzone onDrop={handleFileUpload} />
+                </Box>
+              )}
+
               <IconButton
                 size="small"
                 sx={{
@@ -81,9 +107,10 @@ const ProfilePage = () => {
                   top: '0%',
                   transform: 'translateY(-50%)',
                   bgcolor: 'background.paper',
-                  border: '1px solid #e0e0e0',
+                  border: '1px solid',
+                  borderColor: 'divider',
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-                  '&:hover': { bgcolor: '#f5f5f5' },
+                  '&:hover': { bgcolor: 'grey.200' },
                 }}
                 onClick={handleSettings}
               >
@@ -103,13 +130,11 @@ const ProfilePage = () => {
                 Contact Information
               </Typography>
               <Box sx={contactBoxStyle}>
-                <Email sx={iconStyle} />
-                <Typography variant="body2">
-                  {user?.email || 'john.doe@example.com'}
-                </Typography>
+                <Email sx={iconStyle} color="primary" />
+                <Typography variant="body2">{user?.email}</Typography>
               </Box>
               <Box sx={contactBoxStyle}>
-                <CalendarToday sx={iconStyle} />
+                <CalendarToday sx={iconStyle} color="primary" />
                 <Typography variant="body2">
                   BirthDay{' '}
                   {user?.birthDay
@@ -122,21 +147,24 @@ const ProfilePage = () => {
                 Social
               </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-                <IconButton size="small">
+                <IconButton size="small" color="primary">
                   <GitHub sx={{ fontSize: 20 }} />
                 </IconButton>
-                <IconButton size="small">
+                <IconButton size="small" color="primary">
                   <Twitter sx={{ fontSize: 20 }} />
                 </IconButton>
-                <IconButton size="small">
-                  <Email sx={{ fontSize: 20 }} />
+                <IconButton size="small" color="primary">
+                  <Instagram sx={{ fontSize: 20 }} />
+                </IconButton>
+                <IconButton size="small" color="primary">
+                  <LinkedIn sx={{ fontSize: 20 }} />
                 </IconButton>
               </Box>
             </Box>
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={8} sx={{ mb: 4 }}>
+        <Grid item xs={12} md={8}>
           <Card>
             <Tabs value={tabValue} onChange={handleTabChange} sx={tabsStyle}>
               <Tab label="About" />
@@ -144,7 +172,7 @@ const ProfilePage = () => {
               <Tab label="Activity" />
             </Tabs>
 
-            <Box sx={{ p: 4 }}>
+            <Box sx={{ p: 2 }}>
               {tabValue === 0 && (
                 <>
                   <Typography variant="h6" gutterBottom>
