@@ -1,6 +1,5 @@
 import React from 'react';
 import './index.scss';
-import LoadingIndicator from '@/app/loading';
 import Loading from '@/app/loading';
 
 interface BaseButtonProps {
