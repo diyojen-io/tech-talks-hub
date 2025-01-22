@@ -6,6 +6,7 @@ import {
   Avatar,
   Typography,
   Box,
+  Stack,
   Tabs,
   Tab,
   Card,
@@ -22,12 +23,10 @@ import {
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/context/AuthContext';
-import Dropzone from '@/components/Dropzone';
 
 const ProfilePage = () => {
   const { user } = useAuth();
   const [tabValue, setTabValue] = useState(0);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -39,17 +38,6 @@ const ProfilePage = () => {
     router.push('/profile-settings');
   };
 
-  const handleFileUpload = (files: File[]) => {
-    if (files.length > 0) {
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   return (
     <Container maxWidth="lg" sx={{ pt: 4 }}>
       <Grid container spacing={4}>
@@ -58,13 +46,12 @@ const ProfilePage = () => {
             sx={{
               p: 4,
               borderRadius: 2,
-              bgcolor: 'background.paper',
+              bgcolor: 'grey.0',
               boxShadow: 1,
             }}
           >
             <Box sx={{ position: 'relative', textAlign: 'center', mb: 3 }}>
               <Avatar
-                src={profileImage || user?.profileImage}
                 sx={{
                   width: 120,
                   height: 120,
@@ -72,32 +59,11 @@ const ProfilePage = () => {
                   margin: '0 auto',
                   color: 'white',
                   position: 'relative',
+                  bgcolor: 'grey.300',
                 }}
               >
-                {!profileImage &&
-                  !user?.profileImage &&
-                  user?.displayName?.[0]?.toUpperCase()}
+                {user?.displayName?.[0]?.toUpperCase()}
               </Avatar>
-
-              {!profileImage && !user?.profileImage && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Dropzone onDrop={handleFileUpload} />
-                </Box>
-              )}
 
               <IconButton
                 size="small"
@@ -106,11 +72,11 @@ const ProfilePage = () => {
                   right: -8,
                   top: '0%',
                   transform: 'translateY(-50%)',
-                  bgcolor: 'background.paper',
+                  bgcolor: 'grey.100',
                   border: '1px solid',
                   borderColor: 'divider',
-                  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-                  '&:hover': { bgcolor: 'grey.200' },
+                  boxShadow: '0px 2px 4px #0000002a',
+                  '&:hover': { bgcolor: 'grey.300' },
                 }}
                 onClick={handleSettings}
               >
@@ -130,11 +96,11 @@ const ProfilePage = () => {
                 Contact Information
               </Typography>
               <Box sx={contactBoxStyle}>
-                <Email sx={iconStyle} color="primary" />
+                <Email sx={{ ...iconStyle, color: 'primary.main' }} />
                 <Typography variant="body2">{user?.email}</Typography>
               </Box>
               <Box sx={contactBoxStyle}>
-                <CalendarToday sx={iconStyle} color="primary" />
+                <CalendarToday sx={{ ...iconStyle, color: 'primary.main' }} />
                 <Typography variant="body2">
                   BirthDay{' '}
                   {user?.birthDay
@@ -147,16 +113,16 @@ const ProfilePage = () => {
                 Social
               </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-                <IconButton size="small" color="primary">
+                <IconButton size="small" sx={{ color: 'primary.main' }}>
                   <GitHub sx={{ fontSize: 20 }} />
                 </IconButton>
-                <IconButton size="small" color="primary">
+                <IconButton size="small" sx={{ color: 'primary.main' }}>
                   <Twitter sx={{ fontSize: 20 }} />
                 </IconButton>
-                <IconButton size="small" color="primary">
+                <IconButton size="small" sx={{ color: 'primary.main' }}>
                   <Instagram sx={{ fontSize: 20 }} />
                 </IconButton>
-                <IconButton size="small" color="primary">
+                <IconButton size="small" sx={{ color: 'primary.main' }}>
                   <LinkedIn sx={{ fontSize: 20 }} />
                 </IconButton>
               </Box>
@@ -172,26 +138,23 @@ const ProfilePage = () => {
               <Tab label="Activity" />
             </Tabs>
 
-            <Box sx={{ p: 2 }}>
-              {tabValue === 0 && (
-                <>
-                  <Typography variant="h6" gutterBottom>
-                    About Me
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      mb: 4,
-                      lineHeight: 1.7,
-                      wordBreak: 'break-word',
-                      overflowWrap: 'break-word',
-                    }}
-                  >
-                    {user?.about}
-                  </Typography>
-                </>
-              )}
-            </Box>
+            {tabValue === 0 && (
+              <Stack spacing={2} sx={{ p: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  About Me
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    lineHeight: 1.7,
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
+                  }}
+                >
+                  {user?.about}
+                </Typography>
+              </Stack>
+            )}
           </Card>
         </Grid>
       </Grid>
