@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -13,8 +13,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import * as Icons from '@mui/icons-material';
-
 import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -25,7 +23,6 @@ import { FormProvider, RHFTextField } from '@/components/hook-form';
 import useAuth from '@/context/AuthContext';
 
 interface ChangePasswordFormValues {
-  currentPassword: string;
   newPassword: string;
   confirmNewPassword: string;
 }
@@ -35,9 +32,9 @@ const ChangePasswordForm: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
   const PasswordChangeSchema = Yup.object().shape({
-    currentPassword: Yup.string().required('Current password is required'),
     newPassword: Yup.string()
       .required('New password is required')
       .min(6, 'Password must be at least 6 characters long')
@@ -48,7 +45,6 @@ const ChangePasswordForm: React.FC = () => {
   });
 
   const defaultValues: ChangePasswordFormValues = {
-    currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
   };
@@ -69,9 +65,19 @@ const ChangePasswordForm: React.FC = () => {
     control: methods.control,
   });
 
+  useEffect(() => {
+    const passwordRequirements = [
+      newPassword.length >= 6,
+      /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword),
+      /[0-9]/.test(newPassword) || /[!@#$%^&*(),.?":{}|<>]/.test(newPassword),
+    ];
+
+    setIsPasswordValid(passwordRequirements.every(Boolean));
+  }, [newPassword]);
+
   const onSubmit = async (values: ChangePasswordFormValues) => {
     try {
-      await updatePassword(values.currentPassword, values.newPassword);
+      await updatePassword(values.newPassword);
       enqueueSnackbar('Password successfully updated!', { variant: 'success' });
       reset(defaultValues);
       setSubmitError(null);
@@ -109,16 +115,6 @@ const ChangePasswordForm: React.FC = () => {
             <Box sx={{ borderBottom: '1px solid #ddd', mb: 2 }} />
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <InputLabel required>Current Password</InputLabel>
-                  <RHFTextField
-                    name="currentPassword"
-                    type="password"
-                    fullWidth
-                    error={!!errors.currentPassword}
-                    helperText={errors.currentPassword?.message}
-                  />
-                </Grid>
                 <Grid item xs={12} sm={6}>
                   <InputLabel required>New Password</InputLabel>
                   <RHFTextField
@@ -194,6 +190,7 @@ const ChangePasswordForm: React.FC = () => {
                   type="submit"
                   loading={isSubmitting}
                   variant="contained"
+                  disabled={!isPasswordValid || isSubmitting}
                 >
                   Save Changes
                 </LoadingButton>

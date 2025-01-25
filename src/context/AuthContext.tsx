@@ -6,8 +6,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updatePassword as firebaseUpdatePassword,
+  updateProfile as firebaseUpdateProfile,
 } from 'firebase/auth';
-import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import {
   collection,
   doc,
@@ -52,7 +52,7 @@ interface AuthAction {
   type: string;
   payload: {
     isAuthenticated: boolean;
-    user: IUser;
+    user: IUser | null;
     isLoading: boolean;
   };
 }
@@ -60,40 +60,25 @@ interface AuthAction {
 interface IUser {
   id: string | null;
   email: string | null;
-  photoURL: string | null;
-  displayName: string | null;
-  username: string | null;
-  birthDay: Date | null;
-  location: string | null;
+  photoURL?: string | null;
+  displayName?: string | null;
+  username?: string | null;
+  birthDay?: Date | null;
+  location?: string | null;
   twitter?: string | null;
   instagram?: string | null;
   linkedin?: string | null;
   github?: string | null;
-  role: string;
-  phoneNumber: string;
-  country: string;
-  address: string;
-  state: string;
-  city: string;
-  zipCode: string;
-  about: string;
-  isPublic: boolean;
+  role?: string;
+  phoneNumber?: string;
+  country?: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+  about?: string;
+  isPublic?: boolean;
 }
-
-const reducer = (state: AuthState, action: AuthAction): AuthState => {
-  if (action.type === 'INITIALISE') {
-    const { isAuthenticated, user, isLoading } = action.payload;
-    return {
-      ...state,
-      isAuthenticated,
-      isInitialized: true,
-      user,
-      isLoading,
-    };
-  }
-
-  return state;
-};
 
 interface AuthContextType extends AuthState {
   method: string;
@@ -113,11 +98,24 @@ interface AuthContextType extends AuthState {
     merge?: boolean,
     isPasswordUpdate?: boolean,
   ) => Promise<void>;
-  updatePassword: (
-    currentPassword: string,
-    newPassword: string,
-  ) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
+  updateProfile: (data: Partial<IUser>) => Promise<void>;
 }
+
+const reducer = (state: AuthState, action: AuthAction): AuthState => {
+  if (action.type === 'INITIALISE') {
+    const { isAuthenticated, user, isLoading } = action.payload;
+    return {
+      ...state,
+      isAuthenticated,
+      isInitialized: true,
+      user,
+      isLoading,
+    };
+  }
+
+  return state;
+};
 
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
@@ -130,8 +128,8 @@ const AuthContext = createContext<AuthContextType>({
   create: (collectionName: string, data: any) => Promise.resolve(),
   update: (collectionName: string, id: string, data: any, merge = true) =>
     Promise.resolve(),
-  updatePassword: (currentPassword: string, newPassword: string) =>
-    Promise.resolve(),
+  updatePassword: (newPassword: string) => Promise.resolve(),
+  updateProfile: (data: any) => Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -147,28 +145,7 @@ interface AuthProviderProps {
 function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  interface UserProfile {
-    photoURL?: string;
-    displayName?: string;
-    username?: string;
-    phoneNumber?: string;
-    email?: string;
-    birthDay?: Date;
-    location?: string;
-    twitter?: string;
-    instagram?: string;
-    linkedin?: string;
-    github?: string;
-    country?: string;
-    address?: string;
-    state?: string;
-    city?: string;
-    zipCode?: string;
-    about?: string;
-    isPublic?: boolean;
-  }
-
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<IUser | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, async (user) => {
@@ -182,7 +159,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         const docSnap = await getDoc(userRef);
 
         if (docSnap.exists()) {
-          setProfile(docSnap.data());
+          setProfile(docSnap.data() as IUser);
         }
 
         dispatch({
@@ -204,22 +181,11 @@ function AuthProvider({ children }: AuthProviderProps) {
     return () => unsubscribe();
   }, [dispatch]);
 
-  interface LoginFunction {
-    (email: string, password: string): Promise<any>;
-  }
+  const login = async (email: string, password: string): Promise<void> => {
+    await signInWithEmailAndPassword(AUTH, email, password);
+  };
 
-  const login: LoginFunction = (email, password) =>
-    signInWithEmailAndPassword(AUTH, email, password);
-
-  interface RegisterFunction {
-    (username: string, email: string, password: string): Promise<any>;
-  }
-
-  const register: RegisterFunction = (
-    username: string,
-    email: string,
-    password: string,
-  ) =>
+  const register = (username: string, email: string, password: string) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
       const userRef = doc(collection(DB, 'users'), res.user?.uid);
       await setDoc(userRef, {
@@ -245,13 +211,13 @@ function AuthProvider({ children }: AuthProviderProps) {
   ) => {
     const collectionDataRef = doc(collection(DB, collectionName), id);
     if (isPasswordUpdate) {
-      await updateDoc(
+      await setDoc(
         collectionDataRef,
         { password: data.password, updatedAt: new Date().getTime() },
         { merge },
       );
     } else {
-      await updateDoc(
+      await setDoc(
         collectionDataRef,
         { ...data, updatedAt: new Date().getTime() },
         { merge },
@@ -259,23 +225,22 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const updatePassword = async (
-    currentPassword: string,
-    newPassword: string,
-  ) => {
-    const user = AUTH.currentUser || null;
+  const updatePassword = async (newPassword: string) => {
+    const user = AUTH.currentUser;
 
     if (!user) {
       return;
     }
 
-    const credential = EmailAuthProvider.credential(
-      user.email!,
-      currentPassword,
-    );
-    await reauthenticateWithCredential(user, credential).then(() =>
-      firebaseUpdatePassword(user, newPassword),
-    );
+    await firebaseUpdatePassword(user, newPassword);
+  };
+
+  const updateProfile = async (data: Partial<IUser>) => {
+    const user = AUTH.currentUser;
+    if (user) {
+      await firebaseUpdateProfile(user, data);
+      setProfile((prev) => ({ ...prev, ...data }));
+    }
   };
 
   return (
@@ -285,7 +250,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         method: 'firebase',
         user: {
           id: state?.user?.uid,
-          email: state?.user?.email,
+          email: state?.user?.email || null,
           photoURL: state?.user?.photoURL || profile?.photoURL,
           displayName: state?.user?.displayName || profile?.displayName,
           username: state?.user?.username || profile?.username,
@@ -311,6 +276,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         create,
         update,
         updatePassword,
+        updateProfile,
       }}
     >
       {children}

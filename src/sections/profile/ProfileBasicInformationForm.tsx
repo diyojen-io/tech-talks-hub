@@ -1,6 +1,7 @@
 'use client';
 
 import { FormProvider, RHFTextField } from '@/components/hook-form';
+import RHFDatePicker from '@/components/hook-form/RHFDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
@@ -10,16 +11,14 @@ import {
   Grid,
   InputLabel,
   InputAdornment,
-  Typography,
   Alert,
 } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 import useAuth from '@/context/AuthContext';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
 import * as Icons from '@mui/icons-material';
-import FormInputField from '@/components/FormInputField';
 
 interface BasicInformationFormValues {
   email: string;
@@ -75,8 +74,16 @@ export default function ProfileBasicInformationForm() {
     handleSubmit,
     setError,
     clearErrors,
+    control,
     formState: { errors, isSubmitting },
   } = methods;
+
+  const requiredFields = useWatch({
+    control,
+    name: ['email', 'displayName', 'username', 'birthDay', 'location'],
+  });
+
+  const isDisabled = requiredFields.some((value) => !value);
 
   const onSubmit = async (values: BasicInformationFormValues) => {
     try {
@@ -129,30 +136,61 @@ export default function ProfileBasicInformationForm() {
                   />
                 </Grid>
 
-                <FormInputField
-                  name="username"
-                  label="Username"
-                  icon={<Icons.AccountCircle sx={{ fontSize: '16px' }} />}
-                />
+                <Grid item xs={6}>
+                  <InputLabel required>Username</InputLabel>
+                  <RHFTextField
+                    name="username"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.AccountCircle sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
 
-                <FormInputField
-                  name="displayName"
-                  label="Display Name"
-                  icon={<Icons.Person sx={{ fontSize: '16px' }} />}
-                />
+                <Grid item xs={6}>
+                  <InputLabel required>Display Name</InputLabel>
+                  <RHFTextField
+                    name="displayName"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.Person sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
 
-                <FormInputField
-                  name="birthDay"
-                  label="Birth Day"
-                  icon={<Icons.CalendarToday sx={{ fontSize: '16px' }} />}
-                  isDatePicker
-                />
+                <Grid item xs={6}>
+                  <InputLabel required>Birth Day</InputLabel>
+                  <RHFDatePicker
+                    name="birthDay"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.CalendarToday sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
 
-                <FormInputField
-                  name="location"
-                  label="Location"
-                  icon={<Icons.LocationOn sx={{ fontSize: '16px' }} />}
-                />
+                <Grid item xs={6}>
+                  <InputLabel required>Location</InputLabel>
+                  <RHFTextField
+                    name="location"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.LocationOn sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
 
                 <Grid item xs={12}>
                   <InputLabel>About</InputLabel>
@@ -180,40 +218,60 @@ export default function ProfileBasicInformationForm() {
           >
             <CardHeader title="Socials" />
             <CardContent>
-              <Grid container spacing={4}>
+              <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <FormInputField
+                  <InputLabel>Twitter</InputLabel>
+                  <RHFTextField
                     name="twitter"
-                    label="Twitter"
-                    icon={<Icons.Twitter sx={{ fontSize: '16px' }} />}
-                    isSocial
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.Twitter sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
 
                 <Grid item xs={6}>
-                  <FormInputField
+                  <InputLabel>Instagram</InputLabel>
+                  <RHFTextField
                     name="instagram"
-                    label="Instagram"
-                    icon={<Icons.Instagram sx={{ fontSize: '16px' }} />}
-                    isSocial
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.Instagram sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
 
                 <Grid item xs={6}>
-                  <FormInputField
+                  <InputLabel>Linkedin</InputLabel>
+                  <RHFTextField
                     name="linkedin"
-                    label="LinkedIn"
-                    icon={<Icons.LinkedIn sx={{ fontSize: '16px' }} />}
-                    isSocial
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.LinkedIn sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
 
                 <Grid item xs={6}>
-                  <FormInputField
+                  <InputLabel>Github</InputLabel>
+                  <RHFTextField
                     name="github"
-                    label="Github"
-                    icon={<Icons.GitHub sx={{ fontSize: '16px' }} />}
-                    isSocial
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.GitHub sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -226,6 +284,7 @@ export default function ProfileBasicInformationForm() {
             type="submit"
             loading={isSubmitting}
             variant="contained"
+            disabled={isDisabled}
           >
             Save Changes
           </LoadingButton>
