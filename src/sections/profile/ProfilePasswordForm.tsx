@@ -181,7 +181,7 @@ const ChangePasswordForm: React.FC = () => {
                 </Grid>
               </Grid>
               {submitError && (
-                <Typography variant="body2" color="error" mt={2}>
+                <Typography variant="body2" sx={{ color: 'error.main' }} mt={2}>
                   {submitError}
                 </Typography>
               )}
@@ -218,9 +218,9 @@ const ChangePasswordForm: React.FC = () => {
                   sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
                 >
                   {item.requirementMet ? (
-                    <CheckCircleIcon color="success" />
+                    <CheckCircleIcon sx={{ color: 'success.main' }} />
                   ) : (
-                    <CancelIcon color="error" />
+                    <CancelIcon sx={{ color: 'error.main' }} />
                   )}
                   <Typography variant="body2">{item.label}</Typography>
                 </Box>

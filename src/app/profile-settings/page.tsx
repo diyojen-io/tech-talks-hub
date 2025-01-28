@@ -37,7 +37,7 @@ function TabsProvider() {
     <Box
       sx={{
         width: '100%',
-        bgcolor: '#f1f2f7',
+        bgcolor: 'grey.200',
         p: 4,
         borderRadius: 4,
         boxShadow: 1,
@@ -57,7 +57,7 @@ function TabsProvider() {
         <ProfileBasicInformationForm />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <ProfilPasswordForm/>
+        <ProfilPasswordForm />
       </CustomTabPanel>
     </Box>
   );
