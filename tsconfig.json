@@ -21,6 +21,13 @@
       "@/*": ["./src/*", "./public/*"]
     }
   },
-  "include": ["src/_themeOverrides.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "src/_themeOverrides.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/components/hook-form/RHFDatePicker.js"
+  ],
   "exclude": ["node_modules"]
 }

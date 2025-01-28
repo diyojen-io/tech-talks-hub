@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
 export default function AccountMenu() {
   const { user, logout } = useAuth();
   const router = useRouter();
@@ -27,6 +26,11 @@ export default function AccountMenu() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleProfile = () => {
+    router.push('/profile');
+    handleClose();
   };
 
   const handleSettings = () => {
@@ -105,7 +109,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleProfile}>
           <Avatar />
           Profile
         </MenuItem>

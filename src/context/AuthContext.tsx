@@ -4,10 +4,9 @@ import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  reauthenticateWithCredential,
   signOut,
   updatePassword as firebaseUpdatePassword,
-  EmailAuthProvider,
+  updateProfile as firebaseUpdateProfile,
 } from 'firebase/auth';
 import {
   collection,
@@ -61,17 +60,46 @@ interface AuthAction {
 interface IUser {
   id: string | null;
   email: string | null;
-  photoURL: string | null;
-  displayName: string | null;
-  role: string;
-  phoneNumber: string;
-  country: string;
-  address: string;
-  state: string;
-  city: string;
-  zipCode: string;
-  about: string;
-  isPublic: boolean;
+  photoURL?: string | null;
+  displayName?: string | null;
+  username?: string | null;
+  birthDay?: Date | null;
+  location?: string | null;
+  twitter?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  github?: string | null;
+  role?: string;
+  phoneNumber?: string;
+  country?: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+  about?: string;
+  isPublic?: boolean;
+}
+
+interface AuthContextType extends AuthState {
+  method: string;
+  user: IUser | null;
+  login: (email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
+  logout: () => Promise<void>;
+  create: (collectionName: string, data: any) => Promise<void>;
+  update: (
+    collectionName: string,
+    id: string,
+    data: any,
+    merge?: boolean,
+    isPasswordUpdate?: boolean,
+  ) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
+  updateProfile: (data: Partial<IUser>) => Promise<void>;
 }
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -89,27 +117,19 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
   return state;
 };
 
-interface AuthContextType extends AuthState {
-  method: string;
-  user: IUser | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  create: (collectionName: string, data: any) => Promise<void>;
-  updateBasicInformation: (collectionName: string, id: string, data: any, merge?: boolean) => Promise<void>;
-  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
-}
-
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
   method: 'firebase',
   user: null,
   login: (email: string, password: string) => Promise.resolve(),
-  register: (username: string, email: string, password: string) => Promise.resolve(),
+  register: (username: string, email: string, password: string) =>
+    Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
-  updateBasicInformation: (collectionName: string, id: string, data: any, merge = true) => Promise.resolve(),
-  updatePassword: (currentPassword: string, newPassword: string) => Promise.resolve(),
+  update: (collectionName: string, id: string, data: any, merge = true) =>
+    Promise.resolve(),
+  updatePassword: (newPassword: string) => Promise.resolve(),
+  updateProfile: (data: any) => Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -125,21 +145,7 @@ interface AuthProviderProps {
 function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  interface UserProfile {
-    photoURL?: string;
-    displayName?: string;
-    username?: string;
-    phoneNumber?: string;
-    country?: string;
-    address?: string;
-    state?: string;
-    city?: string;
-    zipCode?: string;
-    about?: string;
-    isPublic?: boolean;
-  }
-
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<IUser | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, async (user) => {
@@ -153,7 +159,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         const docSnap = await getDoc(userRef);
 
         if (docSnap.exists()) {
-          setProfile(docSnap.data());
+          setProfile(docSnap.data() as IUser);
         }
 
         dispatch({
@@ -175,22 +181,11 @@ function AuthProvider({ children }: AuthProviderProps) {
     return () => unsubscribe();
   }, [dispatch]);
 
-  interface LoginFunction {
-    (email: string, password: string): Promise<any>;
-  }
+  const login = async (email: string, password: string): Promise<void> => {
+    await signInWithEmailAndPassword(AUTH, email, password);
+  };
 
-  const login: LoginFunction = (email, password) =>
-    signInWithEmailAndPassword(AUTH, email, password);
-
-  interface RegisterFunction {
-    (username: string, email: string, password: string): Promise<any>;
-  }
-
-  const register: RegisterFunction = (
-    username: string,
-    email: string,
-    password: string,
-  ) =>
+  const register = (username: string, email: string, password: string) =>
     createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
       const userRef = doc(collection(DB, 'users'), res.user?.uid);
       await setDoc(userRef, {
@@ -207,19 +202,47 @@ function AuthProvider({ children }: AuthProviderProps) {
     await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
   };
 
-  const updateBasicInformation = async (collectionName, id, data, merge = true) => {
+  const update = async (
+    collectionName: string,
+    id: string,
+    data: any,
+    merge = true,
+    isPasswordUpdate = false,
+  ) => {
     const collectionDataRef = doc(collection(DB, collectionName), id);
-    await updateDoc(collectionDataRef, { ...data, updatedAt: new Date().getTime() }, { merge });
+    if (isPasswordUpdate) {
+      await setDoc(
+        collectionDataRef,
+        { password: data.password, updatedAt: new Date().getTime() },
+        { merge },
+      );
+    } else {
+      await setDoc(
+        collectionDataRef,
+        { ...data, updatedAt: new Date().getTime() },
+        { merge },
+      );
+    }
   };
 
-  const updatePassword = async (currentPassword: string, newPassword: string) => {
+  const updatePassword = async (newPassword: string) => {
     const user = AUTH.currentUser;
+
     if (!user) {
-      throw new Error('User is not authenticated');
+      return;
     }
-    await signInWithEmailAndPassword(AUTH, user.email, currentPassword);
+
     await firebaseUpdatePassword(user, newPassword);
   };
+
+  const updateProfile = async (data: Partial<IUser>) => {
+    const user = AUTH.currentUser;
+    if (user) {
+      await firebaseUpdateProfile(user, data);
+      setProfile((prev) => ({ ...prev, ...data }));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -227,9 +250,12 @@ function AuthProvider({ children }: AuthProviderProps) {
         method: 'firebase',
         user: {
           id: state?.user?.uid,
-          email: state?.user?.email,
+          email: state?.user?.email || null,
           photoURL: state?.user?.photoURL || profile?.photoURL,
-          displayName: state?.user?.username || profile?.username,
+          displayName: state?.user?.displayName || profile?.displayName,
+          username: state?.user?.username || profile?.username,
+          birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
+          location: profile?.location || '',
           role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
           phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
           country: profile?.country || '',
@@ -239,13 +265,18 @@ function AuthProvider({ children }: AuthProviderProps) {
           zipCode: profile?.zipCode || '',
           about: profile?.about || '',
           isPublic: profile?.isPublic || false,
+          twitter: profile?.twitter || null,
+          instagram: profile?.instagram || null,
+          linkedin: profile?.linkedin || null,
+          github: profile?.github || null,
         },
         login,
         register,
         logout,
         create,
-        updateBasicInformation,
-        updatePassword,  
+        update,
+        updatePassword,
+        updateProfile,
       }}
     >
       {children}

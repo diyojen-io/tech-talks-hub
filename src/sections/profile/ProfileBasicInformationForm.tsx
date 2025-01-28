@@ -1,6 +1,7 @@
 'use client';
 
 import { FormProvider, RHFTextField } from '@/components/hook-form';
+import RHFDatePicker from '@/components/hook-form/RHFDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
@@ -10,24 +11,14 @@ import {
   Grid,
   InputLabel,
   InputAdornment,
+  Alert,
 } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 import useAuth from '@/context/AuthContext';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
-import EmailIcon from '@mui/icons-material/Email';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Person from '@mui/icons-material/Person';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import LocationOn from '@mui/icons-material/LocationOn';
-import Facebook from '@mui/icons-material/Facebook';
-import Twitter from '@mui/icons-material/Twitter';
-import Instagram from '@mui/icons-material/Instagram';
-import LinkedIn from '@mui/icons-material/LinkedIn';
-import GitHub from '@mui/icons-material/GitHub';
-import Info from '@mui/icons-material/Info';
-import FormInputField from '@/components/FormInputField';
+import * as Icons from '@mui/icons-material';
 
 interface BasicInformationFormValues {
   email: string;
@@ -36,7 +27,6 @@ interface BasicInformationFormValues {
   birthDay: string;
   location: string;
   about: string;
-  facebook?: string;
   twitter?: string;
   instagram?: string;
   linkedin?: string;
@@ -48,89 +38,237 @@ export default function ProfileBasicInformationForm() {
   const { enqueueSnackbar } = useSnackbar();
 
   const BasicInformationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    displayName: Yup.string().required(),
-    username: Yup.string().required(),
-    birthDay: Yup.string().required(),
-    location: Yup.string().required(),
+    email: Yup.string()
+      .email('Please enter a valid email')
+      .required('Email is required'),
+    displayName: Yup.string().required('Display Name is required'),
+    username: Yup.string().required('Username is required'),
+    birthDay: Yup.string().required('Birth Day is required'),
+    location: Yup.string().required('Location is required'),
     about: Yup.string(),
-    facebook: Yup.string(),
     twitter: Yup.string(),
     instagram: Yup.string(),
     linkedin: Yup.string(),
     github: Yup.string(),
   });
 
-  const defaultValues = {
+  const defaultValues: BasicInformationFormValues = {
     email: user?.email || '',
     displayName: user?.displayName || '',
     username: user?.username || '',
     birthDay: user?.birthDay || '',
     location: user?.location || '',
     about: user?.about || '',
-    facebook: user?.social?.facebook || '',
-    twitter: user?.social?.twitter || '',
-    instagram: user?.social?.instagram || '',
-    linkedin: user?.social?.linkedin || '',
-    github: user?.social?.github || '',
+    twitter: user?.twitter || '',
+    instagram: user?.instagram || '',
+    linkedin: user?.linkedin || '',
+    github: user?.github || '',
   };
 
-  const methods = useForm({
+  const methods = useForm<BasicInformationFormValues>({
     resolver: yupResolver(BasicInformationSchema),
     defaultValues,
   });
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    setError,
+    clearErrors,
+    control,
+    formState: { errors, isSubmitting },
   } = methods;
+
+  const requiredFields = useWatch({
+    control,
+    name: ['email', 'displayName', 'username', 'birthDay', 'location'],
+  });
+
+  const isDisabled = requiredFields.some((value) => !value);
 
   const onSubmit = async (values: BasicInformationFormValues) => {
     try {
-      await update('users', user.id, values);
+      clearErrors();
+      await update('users', user?.id!, values);
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' });
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setError('email', { type: 'manual', message: errorMessage });
     }
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={4}>
-        <Grid item xs={8}>
-          <Card sx={{ p: 3, borderRadius: 2, boxShadow: 1, maxWidth: 800 }}>
+        <Grid item xs={12}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 1,
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          >
             <CardHeader title="Basic Information" />
             <CardContent>
+              {Object.keys(errors).length > 0 && (
+                <Box mb={2}>
+                  <Alert severity="error">
+                    {errors.email?.message || 'Please fix the form errors.'}
+                  </Alert>
+                </Box>
+              )}
+
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <InputLabel required>Email</InputLabel>
                   <RHFTextField
                     name="email"
+                    type="email"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <EmailIcon />
+                          <Icons.Email sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
                   />
                 </Grid>
-                <FormInputField name="displayName" label="Display Name" icon={<AccountCircle />} />
-                <FormInputField name="username" label="Username" icon={<Person />} />
-                <FormInputField name="birthDay" label="Birth Day" icon={<CalendarToday />} />
-                <FormInputField name="location" label="Location" icon={<LocationOn />} />
+
+                <Grid item xs={6}>
+                  <InputLabel required>Username</InputLabel>
+                  <RHFTextField
+                    name="username"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.AccountCircle sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputLabel required>Display Name</InputLabel>
+                  <RHFTextField
+                    name="displayName"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.Person sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputLabel required>Birth Day</InputLabel>
+                  <RHFDatePicker
+                    name="birthDay"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.CalendarToday sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputLabel required>Location</InputLabel>
+                  <RHFTextField
+                    name="location"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.LocationOn sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
 
                 <Grid item xs={12}>
                   <InputLabel>About</InputLabel>
                   <RHFTextField
                     name="about"
                     multiline
-                    rows={3}
+                    rows={4}
+                    placeholder="Tell us something about you."
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 1,
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          >
+            <CardHeader title="Socials" />
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <InputLabel>Twitter</InputLabel>
+                  <RHFTextField
+                    name="twitter"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Info />
+                          <Icons.Twitter sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputLabel>Instagram</InputLabel>
+                  <RHFTextField
+                    name="instagram"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.Instagram sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputLabel>Linkedin</InputLabel>
+                  <RHFTextField
+                    name="linkedin"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.LinkedIn sx={{ fontSize: '16px' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputLabel>Github</InputLabel>
+                  <RHFTextField
+                    name="github"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icons.GitHub sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -141,23 +279,13 @@ export default function ProfileBasicInformationForm() {
           </Card>
         </Grid>
 
-        <Grid item xs={4}>
-          <Card sx={{ p: 3, borderRadius: 2, boxShadow: 1 }}>
-            <CardHeader title="Socials" />
-            <CardContent>
-              <Grid container spacing={2}>
-                <FormInputField name="facebook" label="Facebook" icon={<Facebook />} isSocial />
-                <FormInputField name="twitter" label="Twitter" icon={<Twitter />} isSocial />
-                <FormInputField name="instagram" label="Instagram" icon={<Instagram />} isSocial />
-                <FormInputField name="linkedin" label="LinkedIn" icon={<LinkedIn />} isSocial />
-                <FormInputField name="github" label="Github" icon={<GitHub />} isSocial />
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-
         <Box width="100%" display="flex" justifyContent="flex-end" mt={4}>
-          <LoadingButton type="submit" loading={isSubmitting} variant="contained">
+          <LoadingButton
+            type="submit"
+            loading={isSubmitting}
+            variant="contained"
+            disabled={isDisabled}
+          >
             Save Changes
           </LoadingButton>
         </Box>
