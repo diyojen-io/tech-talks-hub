@@ -4,6 +4,7 @@ import { Box, Typography, Button, Grid, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import OrganizationCover from '@/assets/organization-cover.png';
 
 const AboutUs: React.FC = () => {
   const router = useRouter();
@@ -35,10 +36,8 @@ const AboutUs: React.FC = () => {
         }}
       >
         <Image
-          src="/Organization.png"
-          alt="Organization"
-          layout="fill"
-          objectFit="cover"
+          src={OrganizationCover}
+          alt="organization cover"
           priority
           style={{ opacity: 0.4 }}
         />
