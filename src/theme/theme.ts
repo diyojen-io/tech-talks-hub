@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles';
 import typography from './typography';
 import palette from './palette';
 import shape from './shape';
-import { Button, TextField, InputLabel, MenuItem } from './overrides';
+import { buttons, TextField, InputLabel, MenuItem } from './overrides';
 
 export const theme = createTheme({
   spacing: 8,
@@ -30,7 +30,7 @@ export const theme = createTheme({
   },
   typography: typography,
   components: {
-    MuiButton: Button,
+    MuiButton: buttons,
     MuiTextField: TextField,
     MuiInputLabel: InputLabel,
     MuiMenuItem: MenuItem,

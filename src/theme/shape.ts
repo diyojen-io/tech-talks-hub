@@ -1,7 +1,7 @@
 const shape = {
-  borderRadius: 2,
-  borderRadiusMd: 3,
-  borderRadiusLg: 4,
+  borderRadius: 6,
+  borderRadiusMd: 8,
+  borderRadiusLg: 12,
 };
 
 export default shape;

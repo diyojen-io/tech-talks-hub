@@ -4,6 +4,7 @@ import BaseButton from '@/components/BaseButton';
 import Iconify from '@/components/Iconify';
 import Image from 'next/image';
 import './index.scss';
+import Button from '../Button/Button';
 
 export default function Footer() {
   return (
@@ -13,7 +14,7 @@ export default function Footer() {
           <div className="footer-newsletter">
             <h3>Newsletter</h3>
             <input type="text" placeholder="Type your email address" />
-            <BaseButton variant="primary" size="large" label="Subscribe" />
+            <Button>Subscribe</Button>
           </div>
 
           <div className="footer-contact-us">
