@@ -1,10 +1,11 @@
 'use client';
 import React from 'react';
-import { Box, Typography, Button, Grid, Stack } from '@mui/material';
+import { Box, Typography, Grid, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import OrganizationCover from '@/assets/organization-cover.png';
+import Button from '../Button/Button';
 
 const AboutUs: React.FC = () => {
   const router = useRouter();
