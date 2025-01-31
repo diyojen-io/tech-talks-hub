@@ -7,10 +7,10 @@ import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
 import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
-import BaseModal from '../BaseModal';
 import './index.scss';
+import BaseModal from '../BaseModal';
 
-interface LoginValues{
+interface LoginValues {
   email: string;
   password: string;
   afterSubmit: string;
@@ -25,7 +25,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const { login } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: LoginValues = {
     email: '',
@@ -41,20 +41,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (
     values: { email: string; password: string },
-    actions: FormikHelpers<LoginValues>
+    actions: FormikHelpers<LoginValues>,
   ) => {
     const { setErrors, reset } = actions;
     setIsLoading(true);
     try {
       await login(values.email, values.password);
-      enqueueSnackbar('Successfully logged in', { variant: 'success'});
+      enqueueSnackbar('Successfully logged in', { variant: 'success' });
       onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrors({ afterSubmit: err.message });
       }
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
       reset();
     }
   };
@@ -127,7 +127,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 marginTop: '16px',
                 pointerEvents: isLoading ? 'none' : 'auto',
               }}
-              disabled={isLoading} 
+              disabled={isLoading}
             />
           </Form>
         )}

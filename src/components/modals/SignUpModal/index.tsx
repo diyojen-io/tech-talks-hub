@@ -7,8 +7,8 @@ import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
 import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
-import BaseModal from '../BaseModal';
 import './index.scss';
+import BaseModal from '../BaseModal';
 
 interface SignUpFormValues {
   username: string;
@@ -49,13 +49,16 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (
     values: SignUpFormValues,
-    actions: FormikHelpers<SignUpFormValues>
+    actions: FormikHelpers<SignUpFormValues>,
   ) => {
     const { setErrors, reset } = actions;
     setIsLoading(true);
     try {
       await register(values.username, values.email, values.password);
-      enqueueSnackbar('Successfully signed up!', { variant: 'success', vertical:'bottom' });
+      enqueueSnackbar('Successfully signed up!', {
+        variant: 'success',
+        vertical: 'bottom',
+      });
       onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {

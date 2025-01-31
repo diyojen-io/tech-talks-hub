@@ -33,6 +33,7 @@ export default function RHFDatePicker({ name, label, InputProps }) {
                 fullWidth
                 error={!!error}
                 helperText={error?.message}
+                {...InputProps}
               />
             )}
           />
