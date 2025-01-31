@@ -88,7 +88,11 @@ export default function ProfileBasicInformationForm() {
   const onSubmit = async (values: BasicInformationFormValues) => {
     try {
       clearErrors();
-      await update('users', user?.id!, values);
+      if (user?.id) {
+        await update('users', user.id, values);
+      } else {
+        throw new Error('User ID is not defined');
+      }
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (error) {
       const errorMessage =

@@ -12,11 +12,9 @@ import {
   collection,
   doc,
   getDoc,
-  updateDoc,
   getFirestore,
   setDoc,
 } from 'firebase/firestore';
-import PropTypes from 'prop-types';
 import {
   createContext,
   ReactNode,
@@ -26,6 +24,7 @@ import {
   useState,
 } from 'react';
 import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
+import { AuthAction, AuthState, IUser } from './data';
 
 // ----------------------------------------------------------------------
 
@@ -40,45 +39,6 @@ const initialState = {
   user: null,
   isLoading: true,
 };
-
-interface AuthState {
-  isAuthenticated: boolean;
-  isInitialized: boolean;
-  user: IUser | null;
-  isLoading: boolean;
-}
-
-interface AuthAction {
-  type: string;
-  payload: {
-    isAuthenticated: boolean;
-    user: IUser | null;
-    isLoading: boolean;
-  };
-}
-
-interface IUser {
-  id: string | null;
-  email: string | null;
-  photoURL?: string | null;
-  displayName?: string | null;
-  username?: string | null;
-  birthDay?: Date | null;
-  location?: string | null;
-  twitter?: string | null;
-  instagram?: string | null;
-  linkedin?: string | null;
-  github?: string | null;
-  role?: string;
-  phoneNumber?: string;
-  country?: string;
-  address?: string;
-  state?: string;
-  city?: string;
-  zipCode?: string;
-  about?: string;
-  isPublic?: boolean;
-}
 
 interface AuthContextType extends AuthState {
   method: string;
@@ -119,24 +79,9 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
 
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
-  method: 'firebase',
-  user: null,
-  login: (email: string, password: string) => Promise.resolve(),
-  register: (username: string, email: string, password: string) =>
-    Promise.resolve(),
-  logout: () => Promise.resolve(),
-  create: (collectionName: string, data: any) => Promise.resolve(),
-  update: (collectionName: string, id: string, data: any, merge = true) =>
-    Promise.resolve(),
-  updatePassword: (newPassword: string) => Promise.resolve(),
-  updateProfile: (data: any) => Promise.resolve(),
-});
+} as AuthContextType);
 
 // ----------------------------------------------------------------------
-
-AuthProvider.propTypes = {
-  children: PropTypes.node,
-};
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -166,7 +111,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           type: 'INITIALISE',
           payload: {
             isAuthenticated: true,
-            user: AUTH.currentUser,
+            user: AUTH.currentUser as IUser,
             isLoading: false,
           },
         });
@@ -239,7 +184,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     const user = AUTH.currentUser;
     if (user) {
       await firebaseUpdateProfile(user, data);
-      setProfile((prev) => ({ ...prev, ...data }));
+      setProfile((prev) => ({ ...prev, ...data }) as IUser);
     }
   };
 
@@ -256,7 +201,9 @@ function AuthProvider({ children }: AuthProviderProps) {
           username: state?.user?.username || profile?.username,
           birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
           location: profile?.location || '',
-          role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
+          role: ADMIN_EMAILS.includes(state?.user?.email || 'undefined')
+            ? 'admin'
+            : 'user',
           phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
           country: profile?.country || '',
           address: profile?.address || '',
