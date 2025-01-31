@@ -111,6 +111,16 @@ const typography: TypographyOptions = {
     fontSize: pxToRem(14),
     textTransform: 'capitalize',
   },
+
+  buttonOutlined: {
+    fontWeight: 700,
+    lineHeight: 24 / 14,
+    fontSize: pxToRem(14),
+    textTransform: 'uppercase',
+    border: '1px solid currentColor',
+    borderRadius: '4px',
+    padding: '6px 16px',
+  },
 };
 
 export default typography;
