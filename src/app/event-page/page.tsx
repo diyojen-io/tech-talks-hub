@@ -1,30 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import {
+  RHFDatePicker,
+  RHFTimePicker,
+} from '@/components/hook-form/RHFDatePicker';
+import { FormProvider, RHFTextField } from '@/components/hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
-  TextField,
-  Button,
   Card,
   CardContent,
   InputLabel,
+  InputAdornment,
   Typography,
+  Alert,
   Grid,
   Box,
-  Snackbar,
-  Alert,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
+import { LoadingButton } from '@mui/lab';
+import * as Icons from '@mui/icons-material';
 
-import {
-  LocalizationProvider,
-  DatePicker,
-  TimePicker,
-} from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+interface EventFormValues {
+  title: string;
+  date: Date | null;
+  time: Date | null;
+  location: string;
+  description: string;
+}
 
-const schema = yup.object().shape({
+const EventInformationSchema = yup.object().shape({
   title: yup.string().required('Event title is required'),
   date: yup.date().required('Date is required').typeError('Invalid date'),
   time: yup.date().required('Time is required').typeError('Invalid time'),
@@ -32,189 +38,171 @@ const schema = yup.object().shape({
   description: yup.string().required('Description is required'),
 });
 
+const defaultValues: EventFormValues = {
+  title: '',
+  date: null,
+  time: null,
+  location: '',
+  description: '',
+};
+
 const CreateEvent = () => {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      title: '',
-      date: null,
-      time: null,
-      location: '',
-      description: '',
-    },
+  const { enqueueSnackbar } = useSnackbar();
+
+  const methods = useForm({
+    resolver: yupResolver(EventInformationSchema),
+    defaultValues,
+    mode: 'onChange',
   });
 
-  const onSubmit = (data) => {
-    setOpenSnackbar(true);
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = methods;
+
+  const requiredFields = useWatch({
+    control,
+    name: ['title', 'date', 'time', 'location', 'description'],
+  });
+
+  const isDisabled = requiredFields.some((value) => !value);
+
+  const onSubmit = async (values: EventFormValues) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      enqueueSnackbar('Event Created Successfully', { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar('Failed to create event. Please try again.', {
+        variant: 'error',
+      });
+    }
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          backgroundColor: '#f4f4f4',
-          p: 3,
-        }}
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Grid
+        item
+        xs={12}
+        display="flex"
+        alignItems="center"
+        flexDirection="column"
+        m={4}
       >
-        <Card
-          sx={{
-            maxWidth: 600,
-            width: '100%',
-            p: 3,
-            boxShadow: 4,
-            borderRadius: 2,
-          }}
-        >
-          <CardContent>
-            <Typography
-              variant="h4"
-              sx={{ fontWeight: 600, textAlign: 'center', mb: 3 }}
+        <Grid>
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            Create a Event
+          </Typography>
+          <Card
+            sx={{
+              maxWidth: 700,
+              width: '100%',
+              p: 3,
+              boxShadow: 4,
+              borderRadius: 2,
+              bgcolor: 'grey.200',
+            }}
+          >
+            <Card
+              sx={{
+                p: 2,
+                borderRadius: 2,
+                boxShadow: 1,
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             >
-              Create an Event
-            </Typography>
-
-            <Grid
-              container
-              spacing={2}
-              component="form"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <Grid item xs={12}>
-                <InputLabel required>Event Title</InputLabel>
-                <Controller
-                  name="title"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      error={!!errors.title}
-                      helperText={errors.title?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
+              <CardContent>
+                {Object.keys(errors).length > 0 && (
+                  <Box mb={2}>
+                    <Alert severity="error">
+                      {errors.title?.message || 'Please fix the form errors.'}
+                    </Alert>
+                  </Box>
+                )}
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <InputLabel required>Date</InputLabel>
-                    <Controller
-                      name="date"
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          value={field.value}
-                          onChange={field.onChange}
-                          slotProps={{
-                            textField: {
-                              fullWidth: true,
-                              error: !!errors.date,
-                              helperText: errors.date?.message,
-                            },
-                          }}
-                        />
-                      )}
+                  <Grid item xs={12}>
+                    <InputLabel required>Event Title</InputLabel>
+                    <RHFTextField
+                      name="title"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Icons.Title sx={{ fontSize: '16px' }} />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </Grid>
+
+                  <Grid item xs={6}>
+                    <InputLabel required>Date</InputLabel>
+                    <RHFDatePicker
+                      name="date"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Icons.CalendarToday sx={{ fontSize: '16px' }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+
                   <Grid item xs={6}>
                     <InputLabel required>Time</InputLabel>
-                    <Controller
+                    <RHFTimePicker
                       name="time"
-                      control={control}
-                      render={({ field }) => (
-                        <TimePicker
-                          {...field}
-                          value={field.value}
-                          onChange={field.onChange}
-                          slotProps={{
-                            textField: {
-                              fullWidth: true,
-                              error: !!errors.time,
-                              helperText: errors.time?.message,
-                            },
-                          }}
-                        />
-                      )}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Icons.AccessTime sx={{ fontSize: '16px' }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <InputLabel required>Location</InputLabel>
+                    <RHFTextField
+                      name="location"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Icons.LocationOn sx={{ fontSize: '16px' }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <InputLabel required>Description</InputLabel>
+                    <RHFTextField
+                      name="description"
+                      multiline
+                      rows={4}
+                      placeholder="Tell us something about your event"
                     />
                   </Grid>
                 </Grid>
-              </Grid>
-
-              <Grid item xs={12}>
-                <InputLabel required>Location</InputLabel>
-                <Controller
-                  name="location"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      error={!!errors.location}
-                      helperText={errors.location?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <InputLabel required>Description</InputLabel>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      rows={4}
-                      error={!!errors.description}
-                      helperText={errors.description?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  sx={{ py: 1.5 }}
-                >
-                  Create Event
-                </Button>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </Box>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity="success"
-          sx={{ width: '100%' }}
-        >
-          Event Created Successfully!
-        </Alert>
-      </Snackbar>
-    </LocalizationProvider>
+              </CardContent>
+            </Card>
+            <Box width="100%" display="flex" justifyContent="flex-end" mt={4}>
+              <LoadingButton
+                type="submit"
+                loading={isSubmitting}
+                variant="contained"
+                disabled={isDisabled}
+              >
+                Create Event
+              </LoadingButton>
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
+    </FormProvider>
   );
 };
 

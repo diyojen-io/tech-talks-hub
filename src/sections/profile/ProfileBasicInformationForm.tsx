@@ -1,7 +1,7 @@
 'use client';
 
 import { FormProvider, RHFTextField } from '@/components/hook-form';
-import RHFDatePicker from '@/components/hook-form/RHFDatePicker';
+import { RHFDatePicker } from '@/components/hook-form/RHFDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
