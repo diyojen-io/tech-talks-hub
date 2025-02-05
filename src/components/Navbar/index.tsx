@@ -68,7 +68,7 @@ const Navbar = () => {
               cursor: 'pointer',
               '&:hover': { textDecoration: 'underline' },
             }}
-            onClick={() => router.push('/event-page')}
+            onClick={() => router.push('/event')}
           >
             Create a Event
           </Typography>

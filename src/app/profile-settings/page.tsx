@@ -1,7 +1,7 @@
 'use client';
 import ProfileBasicInformationForm from '@/sections/profile/ProfileBasicInformationForm';
 import ProfilPasswordForm from '@/sections/profile/ProfilePasswordForm';
-import { Container, Typography, Box, Tabs, Tab } from '@mui/material';
+import { Container, Box, Tabs, Tab, CardHeader } from '@mui/material';
 import React from 'react';
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -19,7 +19,14 @@ export default function Page() {
       }}
     >
       <Box mb={4}>
-        <Typography variant="h4">Profile Settings</Typography>
+        <CardHeader
+          title="Profile Settings"
+          sx={{
+            '& .MuiCardHeader-title': {
+              fontSize: '1.5rem',
+            },
+          }}
+        ></CardHeader>
       </Box>
       <TabsProvider />
     </Container>

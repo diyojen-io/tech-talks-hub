@@ -7,12 +7,9 @@ import { TextField } from '@mui/material';
 
 RHFDatePicker.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  sx: PropTypes.object,
-  InputProps: PropTypes.object,
 };
 
-export function RHFDatePicker({ name, label, sx }) {
+export default function RHFDatePicker({ name, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -24,15 +21,15 @@ export function RHFDatePicker({ name, label, sx }) {
           <DatePicker
             {...field}
             value={field.value || null}
-            label={label}
             disableOpenPicker
-            sx={{ width: '100%', ...sx }}
+            sx={{ width: '100%' }}
             renderInput={(params) => (
               <TextField
                 {...params}
                 fullWidth
                 error={!!error}
                 helperText={error?.message}
+                {...other}
               />
             )}
           />
@@ -44,12 +41,9 @@ export function RHFDatePicker({ name, label, sx }) {
 
 RHFTimePicker.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  sx: PropTypes.object,
-  InputProps: PropTypes.object,
 };
 
-export function RHFTimePicker({ name, label, sx }) {
+export function RHFTimePicker({ name, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -61,8 +55,7 @@ export function RHFTimePicker({ name, label, sx }) {
           <TimePicker
             {...field}
             value={field.value || null}
-            label={label}
-            sx={{ width: '100%', ...sx }}
+            sx={{ width: '100%' }}
             disableOpenPicker
             renderInput={(params) => (
               <TextField
@@ -70,6 +63,7 @@ export function RHFTimePicker({ name, label, sx }) {
                 fullWidth
                 error={!!error}
                 helperText={error?.message}
+                {...other}
               />
             )}
           />
