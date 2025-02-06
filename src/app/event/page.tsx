@@ -15,10 +15,11 @@ import {
   CardHeader,
   InputLabel,
   InputAdornment,
-  Typography,
   Alert,
   Grid,
   Box,
+  CardActions,
+  Container,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
@@ -82,8 +83,15 @@ const CreateEvent = () => {
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Grid container justifyContent="center" m={4}>
-        <Grid item xs={12} md={8} lg={6}>
+      <Container maxWidth="md" sx={{ my: 4 }}>
+        <Card
+          sx={{
+            p: 3,
+            boxShadow: 4,
+            borderRadius: 2,
+            bgcolor: 'grey.200',
+          }}
+        >
           <CardHeader
             title="Create an Event"
             sx={{
@@ -91,113 +99,106 @@ const CreateEvent = () => {
                 fontSize: '1.5rem',
               },
             }}
-          ></CardHeader>
-          <Card
+          />
+          <CardContent
             sx={{
-              p: 3,
-              boxShadow: 4,
+              p: 2,
               borderRadius: 2,
-              bgcolor: 'grey.200',
+              boxShadow: 1,
+              maxWidth: '100%',
+              height: 'auto',
+              bgcolor: 'grey.0',
             }}
           >
-            <CardContent
-              sx={{
-                p: 2,
-                borderRadius: 2,
-                boxShadow: 1,
-                maxWidth: '100%',
-                height: 'auto',
-                bgcolor: 'grey.0',
-              }}
-            >
-              {Object.keys(errors).length > 0 && (
-                <Box mb={2}>
-                  <Alert severity="error">
-                    {errors.title?.message || 'Please fix the form errors.'}
-                  </Alert>
-                </Box>
-              )}
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <InputLabel required>Event Title</InputLabel>
-                  <RHFTextField
-                    name="title"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Title sx={{ fontSize: '16px' }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <InputLabel required>Date</InputLabel>
-                  <RHFDatePicker
-                    name="date"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <CalendarToday sx={{ fontSize: '16px' }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <InputLabel required>Time</InputLabel>
-                  <RHFTimePicker
-                    name="time"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccessTime sx={{ fontSize: '16px' }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <InputLabel required>Location</InputLabel>
-                  <RHFTextField
-                    name="location"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LocationOn sx={{ fontSize: '16px' }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <InputLabel required>Description</InputLabel>
-                  <RHFTextField
-                    name="description"
-                    multiline
-                    rows={4}
-                    placeholder="Tell us something about your event"
-                  />
-                </Grid>
+            {Object.keys(errors).length > 0 && (
+              <Box mb={2}>
+                <Alert severity="error">
+                  {errors.title?.message || 'Please fix the form errors.'}
+                </Alert>
+              </Box>
+            )}
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <InputLabel required>Event Title</InputLabel>
+                <RHFTextField
+                  name="title"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Title sx={{ fontSize: '16px' }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Grid>
-            </CardContent>
-          </Card>
-          <Box width="100%" display="flex" justifyContent="flex-end" mt={4}>
-            <LoadingButton
-              type="submit"
-              loading={isSubmitting}
-              variant="contained"
-              disabled={isDisabled}
-            >
-              Create Event
-            </LoadingButton>
-          </Box>
-        </Grid>
-      </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <InputLabel required>Date</InputLabel>
+                <RHFDatePicker
+                  name="date"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CalendarToday sx={{ fontSize: '16px' }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <InputLabel required>Time</InputLabel>
+                <RHFTimePicker
+                  name="time"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccessTime sx={{ fontSize: '16px' }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel required>Location</InputLabel>
+                <RHFTextField
+                  name="location"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationOn sx={{ fontSize: '16px' }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel required>Description</InputLabel>
+                <RHFTextField
+                  name="description"
+                  multiline
+                  rows={4}
+                  placeholder="Tell us something about your event"
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <CardActions
+          sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}
+        >
+          <LoadingButton
+            type="submit"
+            loading={isSubmitting}
+            variant="contained"
+            disabled={isDisabled}
+          >
+            Create Event
+          </LoadingButton>
+        </CardActions>
+      </Container>
     </FormProvider>
   );
 };
