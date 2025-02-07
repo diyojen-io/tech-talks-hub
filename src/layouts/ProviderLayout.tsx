@@ -18,7 +18,7 @@ export default function ProviderLayout({
       <AuthProvider>
         <SnackbarProvider
           maxSnack={3}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         >
           <ModalProvider>
             <ModalContainer />
