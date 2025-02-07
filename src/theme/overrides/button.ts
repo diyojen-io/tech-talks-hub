@@ -2,7 +2,7 @@ import { Components } from '@mui/material';
 import shape from '../shape';
 import { GREY, PRIMARY } from '../palette';
 
-const buttons: Components['MuiButton'] = {
+const Button: Components['MuiButton'] = {
   defaultProps: {
     variant: 'primary',
   },
@@ -84,4 +84,4 @@ const buttons: Components['MuiButton'] = {
   ],
 };
 
-export default buttons;
+export default Button;
