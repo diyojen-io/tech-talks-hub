@@ -1,18 +1,15 @@
 import PropTypes from 'prop-types';
 import { useFormContext, Controller } from 'react-hook-form';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
 
 RHFDatePicker.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  sx: PropTypes.object,
-  InputProps: PropTypes.object,
 };
 
-export default function RHFDatePicker({ name, label, InputProps }) {
+export default function RHFDatePicker({ name, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -22,10 +19,43 @@ export default function RHFDatePicker({ name, label, InputProps }) {
         control={control}
         render={({ field, fieldState: { error } }) => (
           <DatePicker
-            sx={{ width: '504px' }}
             {...field}
             value={field.value || null}
-            label={label}
+            disableOpenPicker
+            sx={{ width: '100%' }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                fullWidth
+                error={!!error}
+                helperText={error?.message}
+                {...other}
+              />
+            )}
+          />
+        )}
+      />
+    </LocalizationProvider>
+  );
+}
+
+RHFTimePicker.propTypes = {
+  name: PropTypes.string.isRequired,
+};
+
+export function RHFTimePicker({ name, ...other }) {
+  const { control } = useFormContext();
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <TimePicker
+            {...field}
+            value={field.value || null}
+            sx={{ width: '100%' }}
             disableOpenPicker
             renderInput={(params) => (
               <TextField
@@ -33,6 +63,7 @@ export default function RHFDatePicker({ name, label, InputProps }) {
                 fullWidth
                 error={!!error}
                 helperText={error?.message}
+                {...other}
               />
             )}
           />
