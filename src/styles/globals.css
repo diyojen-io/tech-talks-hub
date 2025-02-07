@@ -3,3 +3,13 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
+@media (max-width: 600px) {
+  .small-btn {
+    padding: 2px 4px;
+    font-size: 12px;
+    border-radius: 4px;
+    min-width: 64px;
+  }
+}
+

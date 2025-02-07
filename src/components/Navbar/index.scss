@@ -10,6 +10,10 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   transition: background-color 0.3s;
 
+  @media screen and (max-width: 600px) {
+    padding:16px;
+  }
+
   .global-loading {
     position: fixed;
     top: 0;
@@ -31,6 +35,10 @@
     font-weight: 500;
     background-color: black;
     padding: 5px 3px;
+
+    @media screen and (max-width: 600px) {
+      font-size: 16px;
+    }
 
     span {
       background-color: $primary-color;

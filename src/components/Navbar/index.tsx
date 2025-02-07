@@ -21,10 +21,15 @@ const Navbar = () => {
           <AccountMenu />
         ) : (
           <>
-            <Button aria-label="login-btn" onClick={() => openModal('login')}>
+            <Button
+              className="small-btn"
+              aria-label="login-btn"
+              onClick={() => openModal('login')}
+            >
               Login
             </Button>
             <Button
+              className="small-btn"
               aria-label="signup-btn"
               variant="outlined"
               onClick={() => openModal('signup')}
