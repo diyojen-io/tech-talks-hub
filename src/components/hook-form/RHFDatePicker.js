@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
-import { useFormContext, Controller } from 'react-hook-form';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import PropTypes from 'prop-types';
+import { Controller, useFormContext } from 'react-hook-form';
 
 RHFDatePicker.propTypes = {
   name: PropTypes.string.isRequired,
@@ -21,7 +21,6 @@ export default function RHFDatePicker({ name, ...other }) {
           <DatePicker
             {...field}
             value={field.value || null}
-            disableOpenPicker
             sx={{ width: '100%' }}
             renderInput={(params) => (
               <TextField
@@ -56,7 +55,6 @@ export function RHFTimePicker({ name, ...other }) {
             {...field}
             value={field.value || null}
             sx={{ width: '100%' }}
-            disableOpenPicker
             renderInput={(params) => (
               <TextField
                 {...params}

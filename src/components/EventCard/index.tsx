@@ -5,19 +5,27 @@ import {
   Typography,
   Button,
 } from '@mui/material';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import React from 'react';
 
 interface ContentCardProps {
-  imageUrl: string;
   title: string;
   description: string;
+  location: string;
+  date: number;
+  time: number;
+  createdBy: string;
+  imageUrl: StaticImageData;
 }
 
-const MeetingCard: React.FC<ContentCardProps> = ({
-  imageUrl,
+const EventCard: React.FC<ContentCardProps> = ({
   title,
   description,
+  location,
+  date,
+  time,
+  createdBy,
+  imageUrl,
 }) => {
   return (
     <Card
@@ -30,9 +38,7 @@ const MeetingCard: React.FC<ContentCardProps> = ({
         borderRadius: 2,
       }}
     >
-      <CardMedia sx={{ height: 200, position: 'relative' }}>
-        <Image src={imageUrl} alt={title} layout="fill" objectFit="cover" />
-      </CardMedia>
+      <Image src={imageUrl} alt={title} width={300} height={200} />
       <CardContent>
         <Typography variant="h6" component="h4" sx={{ margin: 0 }}>
           {title}
@@ -48,4 +54,4 @@ const MeetingCard: React.FC<ContentCardProps> = ({
   );
 };
 
-export default MeetingCard;
+export default EventCard;

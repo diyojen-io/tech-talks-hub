@@ -1,31 +1,59 @@
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
-import React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import ContentCard from '../EventCard';
 import './index.scss';
+import useAuth from '@/context/AuthContext';
+import MockImage from '@/assets/mocks/mock1.jpg';
+import { Container, Grid, Typography } from '@mui/material';
 
-interface EventsContainerProps {
-  cards: {
-    imageUrl: StaticImport;
-    title: string;
-    description: string;
-  }[];
+interface Event {
+  title: string;
+  description: string;
+  location: string;
+  date: number;
+  time: number;
+  createdBy: string;
 }
 
-const EventsContainer: React.FC<EventsContainerProps> = ({ cards }) => {
+const EventsContainer: React.FC = () => {
+  const { getAll } = useAuth();
+
+  const [events, setEvents] = useState<Event[]>([]);
+
+  const getEvents = useCallback(async () => {
+    const response = await getAll('events');
+    setEvents(response);
+  }, []);
+
+  useEffect(() => {
+    getEvents();
+  }, []);
+
   return (
-    <div className="events-container">
-      <h1 className="events-container__header">Events</h1>
-      <div className="events-container__contents">
-        {cards.map((card, index) => (
-          <ContentCard
-            key={index}
-            imageUrl={card.imageUrl}
-            title={card.title}
-            description={card.description}
-          />
+    <Container
+      maxWidth="lg"
+      sx={{
+        my: 4,
+      }}
+    >
+      <Typography variant="h4" sx={{ mb: 4 }}>
+        Events
+      </Typography>
+      <Grid container spacing={2}>
+        {events.map((event, index) => (
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <ContentCard
+              imageUrl={MockImage}
+              title={event.title}
+              description={event.description}
+              location={event.location}
+              date={event.date}
+              time={event.time}
+              createdBy={event.createdBy}
+            />
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Container>
   );
 };
 

@@ -2,39 +2,35 @@
 
 import {
   FormProvider,
-  RHFTextField,
   RHFDatePicker,
+  RHFTextField,
   RHFTimePicker,
 } from '@/components/hook-form';
-import { useForm } from 'react-hook-form';
+import useAuth from '@/context/AuthContext';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  InputLabel,
-  InputAdornment,
-  Alert,
-  Grid,
-  Box,
-  CardActions,
-  Container,
-} from '@mui/material';
-import { useSnackbar } from 'notistack';
+import { AccessTime, CalendarToday, LocationOn } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
-  Title,
-  LocationOn,
-  AccessTime,
-  CalendarToday,
-} from '@mui/icons-material';
-import useAuth from '@/context/AuthContext';
+  Alert,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Container,
+  Grid,
+  InputAdornment,
+  InputLabel,
+} from '@mui/material';
+import { useSnackbar } from 'notistack';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { useRouter } from 'next/navigation';
 
 interface EventFormValues {
   title: string;
-  date: Date | null;
-  time: Date | null;
+  date: Date;
+  time: Date;
   location: string;
   description: string;
 }
@@ -49,15 +45,18 @@ const EventInformationSchema = yup.object().shape({
 
 const defaultValues: EventFormValues = {
   title: '',
-  date: null,
-  time: null,
+  date: new Date(),
+  time: new Date(),
   location: '',
   description: '',
 };
 
 const CreateEvent = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { create } = useAuth();
+
+  const { user, create } = useAuth();
+
+  const router = useRouter();
 
   const methods = useForm({
     resolver: yupResolver(EventInformationSchema),
@@ -74,9 +73,14 @@ const CreateEvent = () => {
 
   const onSubmit = async (values: EventFormValues) => {
     try {
-      await create('events', values);
+      await create('events', {
+        ...values,
+        createdBy: user?.id,
+      });
       enqueueSnackbar('Event Created Successfully', { variant: 'success' });
+      router.push('/');
     } catch (error) {
+      console.error(error);
       enqueueSnackbar('Failed to create event. Please try again.', {
         variant: 'error',
       });
@@ -115,16 +119,7 @@ const CreateEvent = () => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <InputLabel required>Event Title</InputLabel>
-                <RHFTextField
-                  name="title"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Title sx={{ fontSize: '16px' }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <RHFTextField name="title" />
               </Grid>
 
               <Grid item xs={12} sm={6}>

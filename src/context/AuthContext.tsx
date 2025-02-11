@@ -1,20 +1,21 @@
+import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
 import { initializeApp } from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
+  updatePassword as firebaseUpdatePassword,
+  updateProfile as firebaseUpdateProfile,
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  updatePassword as firebaseUpdatePassword,
-  updateProfile as firebaseUpdateProfile,
 } from 'firebase/auth';
 import {
   collection,
   doc,
   getDoc,
-  updateDoc,
   getFirestore,
   setDoc,
+  getDocs,
 } from 'firebase/firestore';
 import PropTypes from 'prop-types';
 import {
@@ -25,7 +26,6 @@ import {
   useReducer,
   useState,
 } from 'react';
-import { ADMIN_EMAILS, FIREBASE_API } from '@/config';
 
 // ----------------------------------------------------------------------
 
@@ -91,6 +91,7 @@ interface AuthContextType extends AuthState {
   ) => Promise<void>;
   logout: () => Promise<void>;
   create: (collectionName: string, data: any) => Promise<void>;
+  getAll: (collectionName: string) => Promise<any[]>;
   update: (
     collectionName: string,
     id: string,
@@ -126,6 +127,7 @@ const AuthContext = createContext<AuthContextType>({
     Promise.resolve(),
   logout: () => Promise.resolve(),
   create: (collectionName: string, data: any) => Promise.resolve(),
+  getAll: (collectionName: string) => Promise.resolve([]),
   update: (collectionName: string, id: string, data: any, merge = true) =>
     Promise.resolve(),
   updatePassword: (newPassword: string) => Promise.resolve(),
@@ -199,7 +201,21 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const create = async (collectionName: string, data: any) => {
     const collectionRef = doc(collection(DB, collectionName));
-    await setDoc(collectionRef, { ...data, createdAt: new Date().getTime() });
+
+    data.date = new Date(data.date).getTime();
+    data.time = new Date(data.time).getTime();
+
+    await setDoc(collectionRef, {
+      ...data,
+      createdAt: new Date().getTime(),
+    });
+  };
+
+  const getAll = async (collectionName: string) => {
+    const collectionRef = collection(DB, collectionName);
+    const querySnapshot = await getDocs(collectionRef);
+
+    return querySnapshot.docs.map((doc) => doc.data());
   };
 
   const update = async (
@@ -274,6 +290,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         register,
         logout,
         create,
+        getAll,
         update,
         updatePassword,
         updateProfile,
