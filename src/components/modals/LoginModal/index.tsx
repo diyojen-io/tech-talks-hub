@@ -1,13 +1,12 @@
 'use client';
 import React, { useState } from 'react';
-import BaseButton from '@/components/BaseButton';
 import useAuth from '@/context/AuthContext';
 import { Icon } from '@iconify/react';
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
-import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from 'yup';
 import './index.scss';
+import Button from '@/components/Button/Button';
 import BaseModal from '../BaseModal';
 
 interface LoginValues {
@@ -112,23 +111,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 className="login-modal__error"
               />
             </div>
-            <BaseButton
-              type="submit"
-              label={
-                isLoading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  'Login'
-                )
-              }
-              size="large"
-              style={{
-                width: '100%',
-                marginTop: '16px',
-                pointerEvents: isLoading ? 'none' : 'auto',
-              }}
+            <Button
               disabled={isLoading}
-            />
+              loading={isLoading}
+              type="submit"
+              variant="contained"
+            >
+              Login
+            </Button>
           </Form>
         )}
       </Formik>

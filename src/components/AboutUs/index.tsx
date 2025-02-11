@@ -1,10 +1,11 @@
 'use client';
 import React from 'react';
-import { Box, Typography, Button, Grid, Stack } from '@mui/material';
+import { Box, Typography, Stack, Container } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import OrganizationCover from '@/assets/organization-cover.png';
+import Button from '../Button/Button';
 
 const AboutUs: React.FC = () => {
   const router = useRouter();
@@ -21,45 +22,31 @@ const AboutUs: React.FC = () => {
         color: '#fff',
         padding: { xs: '2rem 1rem', md: '4rem 2rem' },
         position: 'relative',
-        height: '50vh',
         overflow: 'hidden',
       }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0,
-        }}
-      >
-        <Image
-          src={OrganizationCover}
-          alt="organization cover"
-          priority
-          style={{ opacity: 0.4 }}
-        />
-      </Box>
+      <Image
+        src={OrganizationCover}
+        alt="organization cover"
+        objectPosition="bottom"
+        objectFit="cover"
+        fill
+        priority
+        style={{ opacity: 0.4 }}
+      />
 
-      <Grid
-        container
-        alignItems="center"
-        spacing={4}
+      <Container
         sx={{
           position: 'relative',
-          zIndex: 1,
-          textAlign: { xs: 'center', md: 'left' },
         }}
       >
-        <Grid item xs={12} md={6}>
+        <Stack gap={1}>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Typography variant="h3">
+            <Typography typography={{ xs: 'h5', md: 'h3' }}>
               Let&apos;s build your organization together.
             </Typography>
           </motion.div>
@@ -69,32 +56,30 @@ const AboutUs: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <Typography
-              variant="body1"
-              paragraph
-              sx={{
-                marginTop: 2,
-              }}
-            >
+            <Typography typography={{ xs: 'body2', md: 'body1' }}>
               We are a team of passionate individuals dedicated to building
               high-quality web applications. Our mission is to deliver solutions
               that help our clients succeed in the digital world.
             </Typography>
           </motion.div>
 
-          <Stack direction="row" spacing={2} mt={3}>
+          <Stack direction="row" spacing={2} mt={{ xs: 0, md: 3 }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <Button variant="contained" size="large" onClick={handleClick}>
+              <Button
+                variant={'contained'}
+                size={'large'}
+                onClick={handleClick}
+              >
                 Create an Organization
               </Button>
             </motion.div>
           </Stack>
-        </Grid>
-      </Grid>
+        </Stack>
+      </Container>
     </Box>
   );
 };

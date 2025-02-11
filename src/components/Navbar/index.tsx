@@ -1,10 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
+import { AppBar, Toolbar, Box, Typography } from '@mui/material';
 import useAuth from '@/context/AuthContext';
 import { useModalContext } from '@/context/ModalContext';
 import AccountMenu from '../AccountMenu';
+import Button from '../Button/Button';
 
 const Navbar = () => {
   const { openModal } = useModalContext();
@@ -22,10 +23,11 @@ const Navbar = () => {
       <Toolbar
         sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'space-between',
           height: '80px',
           alignItems: 'center',
-          p: '16px 48px',
+          p: { xs: '16px', md: '16px 48px' },
         }}
       >
         <Typography
@@ -59,7 +61,13 @@ const Navbar = () => {
           </Box>
         </Typography>
 
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           <Typography
             variant="subtitle1"
             sx={{
@@ -88,6 +96,7 @@ const Navbar = () => {
             <>
               <Button
                 onClick={() => openModal('login')}
+                className="small-btn"
                 sx={{
                   cursor: 'pointer',
                   '&:hover': { textDecoration: 'underline' },
@@ -96,19 +105,9 @@ const Navbar = () => {
                 Login
               </Button>
               <Button
+                className="small-btn"
                 onClick={() => openModal('signup')}
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover': {
-                    textDecoration: 'underline',
-                    color: '#fff',
-                    opacity: 0.8,
-                    transition: 'background-color 0.3s',
-                  },
-                  backgroundColor: 'transparent',
-                  color: '#fff',
-                  border: '1px solid #FF6700',
-                }}
+                variant="outlined"
               >
                 Sign Up
               </Button>
