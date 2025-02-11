@@ -1,11 +1,15 @@
-import BaseButton from '@/components/BaseButton';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+} from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
-import './index.scss';
 
 interface ContentCardProps {
-  imageUrl: StaticImport;
+  imageUrl: string;
   title: string;
   description: string;
 }
@@ -16,22 +20,31 @@ const MeetingCard: React.FC<ContentCardProps> = ({
   description,
 }) => {
   return (
-    <div className="meeting-card">
-      <Image
-        src={imageUrl}
-        alt={title}
-        width={300}
-        height={200}
-        priority
-        style={{
-          borderRadius: '10px',
-          objectFit: 'cover',
-        }}
-      />
-      <h4 className="meeting-card__header">{title}</h4>
-      <p className="meeting-card__text">{description}</p>
-      <BaseButton variant="primary-outline" size="small" label="Go to Detail" />
-    </div>
+    <Card
+      sx={{
+        maxWidth: 300,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        boxShadow: 3,
+        borderRadius: 2,
+      }}
+    >
+      <CardMedia sx={{ height: 200, position: 'relative' }}>
+        <Image src={imageUrl} alt={title} layout="fill" objectFit="cover" />
+      </CardMedia>
+      <CardContent>
+        <Typography variant="h6" component="h4" sx={{ margin: 0 }}>
+          {title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ margin: 0 }}>
+          {description}
+        </Typography>
+        <Button variant="outlined" color="primary" size="small" sx={{ mt: 1 }}>
+          Go to Detail
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 

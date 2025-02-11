@@ -29,6 +29,7 @@ import {
   AccessTime,
   CalendarToday,
 } from '@mui/icons-material';
+import useAuth from '@/context/AuthContext';
 
 interface EventFormValues {
   title: string;
@@ -56,6 +57,7 @@ const defaultValues: EventFormValues = {
 
 const CreateEvent = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const { create } = useAuth();
 
   const methods = useForm({
     resolver: yupResolver(EventInformationSchema),
@@ -72,7 +74,7 @@ const CreateEvent = () => {
 
   const onSubmit = async (values: EventFormValues) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await create('events', values);
       enqueueSnackbar('Event Created Successfully', { variant: 'success' });
     } catch (error) {
       enqueueSnackbar('Failed to create event. Please try again.', {
@@ -84,14 +86,7 @@ const CreateEvent = () => {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Container maxWidth="md" sx={{ my: 4 }}>
-        <Card
-          sx={{
-            p: 3,
-            boxShadow: 4,
-            borderRadius: 2,
-            bgcolor: 'grey.200',
-          }}
-        >
+        <Card sx={{ p: 3, boxShadow: 4, borderRadius: 2, bgcolor: 'grey.200' }}>
           <CardHeader
             title="Create an Event"
             sx={{
