@@ -60,7 +60,7 @@ const AboutUs: React.FC = () => {
             transition={{ duration: 0.5 }}
           >
             <Typography variant="h3">
-              Let's build your organization together.
+              Let&apos;s build your organization together.
             </Typography>
           </motion.div>
 
