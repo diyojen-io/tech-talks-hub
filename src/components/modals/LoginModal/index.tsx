@@ -5,9 +5,9 @@ import { Icon } from '@iconify/react';
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
-import BaseModal from '../BaseModal';
 import './index.scss';
 import Button from '@/components/Button/Button';
+import BaseModal from '../BaseModal';
 
 interface LoginValues {
   email: string;
