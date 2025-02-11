@@ -1,7 +1,10 @@
 'use client';
 
-import { FormProvider, RHFTextField } from '@/components/hook-form';
-import RHFDatePicker from '@/components/hook-form/RHFDatePicker';
+import {
+  FormProvider,
+  RHFTextField,
+  RHFDatePicker,
+} from '@/components/hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
@@ -18,7 +21,17 @@ import * as Yup from 'yup';
 import useAuth from '@/context/AuthContext';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
-import * as Icons from '@mui/icons-material';
+import {
+  LocationOn,
+  Email,
+  AccountCircle,
+  CalendarToday,
+  Person,
+  GitHub,
+  Twitter,
+  Instagram,
+  LinkedIn,
+} from '@mui/icons-material';
 
 interface BasicInformationFormValues {
   email: string;
@@ -133,7 +146,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.Email sx={{ fontSize: '16px' }} />
+                          <Email sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -147,7 +160,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.AccountCircle sx={{ fontSize: '16px' }} />
+                          <AccountCircle sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -161,7 +174,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.Person sx={{ fontSize: '16px' }} />
+                          <Person sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -175,7 +188,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.CalendarToday sx={{ fontSize: '16px' }} />
+                          <CalendarToday sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -189,7 +202,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.LocationOn sx={{ fontSize: '16px' }} />
+                          <LocationOn sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -230,7 +243,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.Twitter sx={{ fontSize: '16px' }} />
+                          <Twitter sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -244,7 +257,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.Instagram sx={{ fontSize: '16px' }} />
+                          <Instagram sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -258,7 +271,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.LinkedIn sx={{ fontSize: '16px' }} />
+                          <LinkedIn sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -272,7 +285,7 @@ export default function ProfileBasicInformationForm() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Icons.GitHub sx={{ fontSize: '16px' }} />
+                          <GitHub sx={{ fontSize: '16px' }} />
                         </InputAdornment>
                       ),
                     }}
