@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import { useFormContext, Controller } from 'react-hook-form';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import { DatePicker, TimePicker, AdapterDateFns } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
 
 RHFDatePicker.propTypes = {

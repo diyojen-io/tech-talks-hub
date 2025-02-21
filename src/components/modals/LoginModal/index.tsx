@@ -7,7 +7,9 @@ import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import './index.scss';
 import Button from '@/components/Button/Button';
-import BaseModal from '../BaseModal';
+import Modal from '../Modal';
+import { Stack, Typography, TypographyProps } from '@mui/material';
+import { ERROR, GREY, PRIMARY } from '@/theme/palette';
 
 interface LoginValues {
   email: string;
@@ -42,7 +44,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     values: { email: string; password: string },
     actions: FormikHelpers<LoginValues>,
   ) => {
-    const { setErrors, reset } = actions;
+    const { setErrors, resetForm } = actions;
     setIsLoading(true);
     try {
       await login(values.email, values.password);
@@ -54,75 +56,95 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       }
     } finally {
       setIsLoading(false);
-      reset();
+      resetForm();
     }
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose}>
-      <h2 className="login-modal__title">Login</h2>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ errors }) => (
-          <Form className="login-modal__form">
-            {errors.afterSubmit && (
-              <div className="login-modal__error__alert">
-                <p className="login-modal__error__alert__error__text">
-                  <Icon icon="material-symbols:warning" fontSize={20} />
-                  {errors.afterSubmit}
-                </p>
-              </div>
-            )}
-            <div className="login-modal__form-group">
-              <label className="login-modal__form-group__label" htmlFor="email">
-                Email
-              </label>
-              <Field
-                className="login-modal__form-group__input"
-                type="email"
-                id="email"
-                name="email"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="login-modal__error"
-              />
-            </div>
-            <div className="login-modal__form-group">
-              <label
-                className="login-modal__form-group__label"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <Field
-                className="login-modal__form-group__input"
-                type="password"
-                id="password"
-                name="password"
-              />
-              <ErrorMessage
-                name="password"
-                component="div"
-                className="login-modal__error"
-              />
-            </div>
-            <Button
-              disabled={isLoading}
-              loading={isLoading}
-              type="submit"
-              variant="contained"
-            >
-              Login
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </BaseModal>
+    <Modal open={isOpen} onClose={onClose}>
+      <>
+        <Typography textAlign={'center'} color={PRIMARY.main} variant="h4">
+          Login
+        </Typography>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors }) => (
+            <Form>
+              <Stack gap={2}>
+                <Stack gap={1}>
+                  <Typography fontWeight={600} color={PRIMARY.main}>
+                    Email
+                  </Typography>
+                  <Field
+                    className="login-modal__form-group__input"
+                    type="email"
+                    id="email"
+                    name="email"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component={({ children }: TypographyProps) => (
+                      <Typography variant="caption" color={ERROR.main}>
+                        {children}
+                      </Typography>
+                    )}
+                  />
+                </Stack>
+                <Stack gap={1}>
+                  <Typography fontWeight={600} color={PRIMARY.main}>
+                    Password
+                  </Typography>
+                  <Field
+                    className="login-modal__form-group__input"
+                    type="password"
+                    id="password"
+                    name="password"
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component={({ children }: TypographyProps) => (
+                      <Typography variant="caption" color={ERROR.main}>
+                        {children}
+                      </Typography>
+                    )}
+                  />
+                </Stack>
+                {errors.afterSubmit && (
+                  <Stack
+                    borderRadius={0.5}
+                    gap={1}
+                    direction={'row'}
+                    bgcolor={ERROR.main}
+                    py={0.5}
+                    px={1}
+                  >
+                    <Icon
+                      color={GREY[0]}
+                      icon="material-symbols:warning"
+                      fontSize={20}
+                    />
+                    <Typography color={GREY[0]} variant="body2">
+                      Kullanıcı adı veya şifre hatalı
+                    </Typography>
+                  </Stack>
+                )}
+                <Button
+                  disabled={isLoading}
+                  loading={isLoading}
+                  type="submit"
+                  variant="contained"
+                >
+                  Login
+                </Button>
+              </Stack>
+            </Form>
+          )}
+        </Formik>
+      </>
+    </Modal>
   );
 };
 

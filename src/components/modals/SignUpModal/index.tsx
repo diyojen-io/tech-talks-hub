@@ -8,6 +8,9 @@ import * as Yup from 'yup';
 import './index.scss';
 import Button from '@/components/Button/Button';
 import BaseModal from '../BaseModal';
+import { Stack, Typography, TypographyProps } from '@mui/material';
+import { ERROR, GREY, PRIMARY } from '@/theme/palette';
+import Modal from '../Modal';
 
 interface SignUpFormValues {
   username: string;
@@ -50,7 +53,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
     values: SignUpFormValues,
     actions: FormikHelpers<SignUpFormValues>,
   ) => {
-    const { setErrors, reset } = actions;
+    const { setErrors, resetForm } = actions;
     setIsLoading(true);
     try {
       await register(values.username, values.email, values.password);
@@ -65,97 +68,115 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
       }
     } finally {
       setIsLoading(false);
-      reset();
+      resetForm();
     }
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose}>
-      <h2 className="sign-up-modal__title">Sign Up</h2>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ errors }) => (
-          <Form className="sign-up-modal__form">
-            {errors.afterSubmit && (
-              <div className="sign-up-modal__error__alert">
-                <p className="sign-up-modal__error__alert__text">
-                  <Icon icon="material-symbols:warning" fontSize={20} />
-                  {errors.afterSubmit}
-                </p>
-              </div>
-            )}
-            <div className="sign-up-modal__form-group">
-              <label
-                className="sign-up-modal__form-group__label"
-                htmlFor="username"
-              >
-                Username
-              </label>
-              <Field
-                className="sign-up-modal__form-group__input"
-                type="text"
-                id="username"
-                name="username"
-              />
-              <ErrorMessage
-                component="div"
-                className="sign-up-modal__error"
-                name="username"
-              />
-            </div>
-            <div className="sign-up-modal__form-group">
-              <label
-                className="sign-up-modal__form-group__label"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <Field
-                className="sign-up-modal__form-group__input"
-                type="email"
-                id="email"
-                name="email"
-              />
-              <ErrorMessage
-                component="div"
-                className="sign-up-modal__error"
-                name="email"
-              />
-            </div>
-            <div className="sign-up-modal__form-group">
-              <label
-                className="sign-up-modal__form-group__label"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <Field
-                className="sign-up-modal__form-group__input"
-                type="password"
-                id="password"
-                name="password"
-              />
-              <ErrorMessage
-                component="div"
-                className="sign-up-modal__error"
-                name="password"
-              />
-            </div>
-            <Button
-              disabled={isLoading}
-              loading={isLoading}
-              type="submit"
-              variant="contained"
-            >
-              Sign up
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </BaseModal>
+    <Modal open={isOpen} onClose={onClose}>
+      <>
+        <Typography textAlign={'center'} color={PRIMARY.main} variant="h4">
+          Sign Up
+        </Typography>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors }) => (
+            <Form>
+              <Stack gap={2}>
+                <Stack gap={1}>
+                  <Typography fontWeight={600} color={PRIMARY.main}>
+                    Username
+                  </Typography>
+                  <Field
+                    className="sign-up-modal__form-group__input"
+                    type="text"
+                    id="username"
+                    name="username"
+                  />
+                  <ErrorMessage
+                    name="username"
+                    component={({ children }: TypographyProps) => (
+                      <Typography variant="caption" color={ERROR.main}>
+                        {children}
+                      </Typography>
+                    )}
+                  />
+                </Stack>
+                <Stack gap={1}>
+                  <Typography fontWeight={600} color={PRIMARY.main}>
+                    Email
+                  </Typography>
+                  <Field
+                    className="sign-up-modal__form-group__input"
+                    type="email"
+                    id="email"
+                    name="email"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component={({ children }: TypographyProps) => (
+                      <Typography variant="caption" color={ERROR.main}>
+                        {children}
+                      </Typography>
+                    )}
+                  />
+                </Stack>
+                <Stack gap={1}>
+                  <Typography fontWeight={600} color={PRIMARY.main}>
+                    Password
+                  </Typography>
+
+                  <Field
+                    className="sign-up-modal__form-group__input"
+                    type="password"
+                    id="password"
+                    name="password"
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component={({ children }: TypographyProps) => (
+                      <Typography variant="caption" color={ERROR.main}>
+                        {children}
+                      </Typography>
+                    )}
+                  />
+                </Stack>
+                {errors.afterSubmit && (
+                  <Stack
+                    borderRadius={0.5}
+                    gap={1}
+                    direction={'row'}
+                    bgcolor={ERROR.main}
+                    py={0.5}
+                    px={1}
+                  >
+                    <Icon
+                      color={GREY[0]}
+                      icon="material-symbols:warning"
+                      fontSize={20}
+                    />
+                    <Typography color={GREY[0]} variant="body2">
+                      {errors.afterSubmit}
+                    </Typography>
+                  </Stack>
+                )}
+                <Button
+                  disabled={isLoading}
+                  loading={isLoading}
+                  type="submit"
+                  variant="contained"
+                >
+                  Sign up
+                </Button>
+              </Stack>
+            </Form>
+          )}
+        </Formik>
+      </>
+    </Modal>
   );
 };
 
