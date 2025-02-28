@@ -151,19 +151,43 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, async (user) => {
+      if (!user) {
+        dispatch({
+          type: 'INITIALISE',
+          payload: { isAuthenticated: false, user: null, isLoading: false },
+        });
+        return;
+      }
+
       dispatch({
         type: 'INITIALISE',
-        payload: { isAuthenticated: false, user: null, isLoading: true },
+        payload: {
+          isAuthenticated: true,
+          user: AUTH.currentUser,
+          isLoading: true,
+        },
       });
 
-      if (user) {
-        const userRef = doc(DB, 'users', user.uid);
-        const docSnap = await getDoc(userRef);
+      const userRef = doc(DB, 'users', user.uid);
+      const docSnap = await getDoc(userRef);
 
-        if (docSnap.exists()) {
-          setProfile(docSnap.data() as IUser);
-        }
+      if (docSnap.exists()) {
+        const profileData = docSnap.data() as IUser;
+        setProfile(profileData);
 
+        dispatch({
+          type: 'INITIALISE',
+          payload: {
+            isAuthenticated: true,
+            user: {
+              ...AUTH.currentUser,
+              displayName:
+                profileData.displayName || AUTH.currentUser?.displayName,
+            },
+            isLoading: false,
+          },
+        });
+      } else {
         dispatch({
           type: 'INITIALISE',
           payload: {
@@ -172,16 +196,11 @@ function AuthProvider({ children }: AuthProviderProps) {
             isLoading: false,
           },
         });
-      } else {
-        dispatch({
-          type: 'INITIALISE',
-          payload: { isAuthenticated: false, user: null, isLoading: false },
-        });
       }
     });
 
     return () => unsubscribe();
-  }, [dispatch]);
+  }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
     await signInWithEmailAndPassword(AUTH, email, password);
@@ -210,6 +229,11 @@ function AuthProvider({ children }: AuthProviderProps) {
       createdAt: new Date().getTime(),
     });
   };
+
+  const createdBy = () => ({
+    id: AUTH.currentUser?.uid || '',
+    displayName: AUTH.currentUser?.displayName || '',
+  });
 
   const getAll = async (collectionName: string) => {
     const collectionRef = collection(DB, collectionName);
@@ -255,49 +279,53 @@ function AuthProvider({ children }: AuthProviderProps) {
     const user = AUTH.currentUser;
     if (user) {
       await firebaseUpdateProfile(user, data);
+      await user.reload();
       setProfile((prev) => ({ ...prev, ...data }));
     }
   };
-
   return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        method: 'firebase',
-        user: {
-          id: state?.user?.uid,
-          email: state?.user?.email || null,
-          photoURL: state?.user?.photoURL || profile?.photoURL,
-          displayName: state?.user?.displayName || profile?.displayName,
-          username: state?.user?.username || profile?.username,
-          birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
-          location: profile?.location || '',
-          role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
-          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
-          country: profile?.country || '',
-          address: profile?.address || '',
-          state: profile?.state || '',
-          city: profile?.city || '',
-          zipCode: profile?.zipCode || '',
-          about: profile?.about || '',
-          isPublic: profile?.isPublic || false,
-          twitter: profile?.twitter || null,
-          instagram: profile?.instagram || null,
-          linkedin: profile?.linkedin || null,
-          github: profile?.github || null,
-        },
-        login,
-        register,
-        logout,
-        create,
-        getAll,
-        update,
-        updatePassword,
-        updateProfile,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    console.log('User:', state?.user),
+    (
+      <AuthContext.Provider
+        value={{
+          ...state,
+          method: 'firebase',
+          user: {
+            id: state?.user?.uid,
+
+            email: state?.user?.email || null,
+            photoURL: state?.user?.photoURL || profile?.photoURL,
+            displayName: state?.user?.displayName || profile?.displayName,
+            username: state?.user?.username || profile?.username,
+            birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
+            location: profile?.location || '',
+            role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
+            phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
+            country: profile?.country || '',
+            address: profile?.address || '',
+            state: profile?.state || '',
+            city: profile?.city || '',
+            zipCode: profile?.zipCode || '',
+            about: profile?.about || '',
+            isPublic: profile?.isPublic || false,
+            twitter: profile?.twitter || null,
+            instagram: profile?.instagram || null,
+            linkedin: profile?.linkedin || null,
+            github: profile?.github || null,
+          },
+          login,
+          register,
+          logout,
+          create,
+          getAll,
+          update,
+          updatePassword,
+          updateProfile,
+        }}
+      >
+        {children}
+      </AuthContext.Provider>
+    )
   );
 }
 

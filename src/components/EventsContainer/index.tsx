@@ -11,7 +11,10 @@ interface Event {
   location: string;
   date: number;
   time: number;
-  createdBy: string;
+  createdBy: {
+    id: number;
+    displayName: string;
+  };
 }
 
 const EventsContainer: React.FC = () => {
@@ -26,7 +29,7 @@ const EventsContainer: React.FC = () => {
 
   useEffect(() => {
     getEvents();
-  }, []);
+  }, [getEvents]);
 
   return (
     <Container
@@ -48,7 +51,7 @@ const EventsContainer: React.FC = () => {
               location={event.location}
               date={event.date}
               time={event.time}
-              createdBy={event.createdBy}
+              createdBy={event.createdBy.displayName}
             />
           </Grid>
         ))}

@@ -60,18 +60,7 @@ const Navbar = () => {
         </Typography>
 
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: '#fff',
-              fontWeight: 400,
-              cursor: 'pointer',
-              '&:hover': { textDecoration: 'underline' },
-            }}
-            onClick={() => router.push('/event')}
-          >
-            Create a Event
-          </Typography>
+          <Button onClick={() => router.push('/event')}>Create a Event</Button>
         </Box>
 
         <Box

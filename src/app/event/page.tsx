@@ -80,7 +80,6 @@ const CreateEvent = () => {
       enqueueSnackbar('Event Created Successfully', { variant: 'success' });
       router.push('/');
     } catch (error) {
-      console.error(error);
       enqueueSnackbar('Failed to create event. Please try again.', {
         variant: 'error',
       });
