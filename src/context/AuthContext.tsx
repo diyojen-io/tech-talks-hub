@@ -220,7 +220,9 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const create = async (collectionName: string, data: any) => {
     const collectionRef = doc(collection(DB, collectionName));
+    const id = collectionRef.id;
 
+    data.id = id;
     data.date = new Date(data.date).getTime();
     data.time = new Date(data.time).getTime();
 
@@ -284,48 +286,45 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   };
   return (
-    console.log('User:', state?.user),
-    (
-      <AuthContext.Provider
-        value={{
-          ...state,
-          method: 'firebase',
-          user: {
-            id: state?.user?.uid,
+    <AuthContext.Provider
+      value={{
+        ...state,
+        method: 'firebase',
+        user: {
+          id: state?.user?.uid,
 
-            email: state?.user?.email || null,
-            photoURL: state?.user?.photoURL || profile?.photoURL,
-            displayName: state?.user?.displayName || profile?.displayName,
-            username: state?.user?.username || profile?.username,
-            birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
-            location: profile?.location || '',
-            role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
-            phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
-            country: profile?.country || '',
-            address: profile?.address || '',
-            state: profile?.state || '',
-            city: profile?.city || '',
-            zipCode: profile?.zipCode || '',
-            about: profile?.about || '',
-            isPublic: profile?.isPublic || false,
-            twitter: profile?.twitter || null,
-            instagram: profile?.instagram || null,
-            linkedin: profile?.linkedin || null,
-            github: profile?.github || null,
-          },
-          login,
-          register,
-          logout,
-          create,
-          getAll,
-          update,
-          updatePassword,
-          updateProfile,
-        }}
-      >
-        {children}
-      </AuthContext.Provider>
-    )
+          email: state?.user?.email || null,
+          photoURL: state?.user?.photoURL || profile?.photoURL,
+          displayName: state?.user?.displayName || profile?.displayName,
+          username: state?.user?.username || profile?.username,
+          birthDay: profile?.birthDay ? new Date(profile.birthDay) : null,
+          location: profile?.location || '',
+          role: ADMIN_EMAILS.includes(state?.user?.email) ? 'admin' : 'user',
+          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || '',
+          country: profile?.country || '',
+          address: profile?.address || '',
+          state: profile?.state || '',
+          city: profile?.city || '',
+          zipCode: profile?.zipCode || '',
+          about: profile?.about || '',
+          isPublic: profile?.isPublic || false,
+          twitter: profile?.twitter || null,
+          instagram: profile?.instagram || null,
+          linkedin: profile?.linkedin || null,
+          github: profile?.github || null,
+        },
+        login,
+        register,
+        logout,
+        create,
+        getAll,
+        update,
+        updatePassword,
+        updateProfile,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 }
 
