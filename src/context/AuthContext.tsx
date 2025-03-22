@@ -218,20 +218,29 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = () => signOut(AUTH);
 
+  const getEventDate = (data: any) => {
+    const eventDate = {
+      date: data.date ? new Date(data.date).getTime() : null,
+      time: data.time ? new Date(data.time).getTime() : null,
+    };
+
+    return eventDate;
+  };
+
   const create = async (collectionName: string, data: any) => {
     const collectionRef = doc(collection(DB, collectionName));
     const id = collectionRef.id;
 
     data.id = id;
-    data.date = new Date(data.date).getTime();
-    data.time = new Date(data.time).getTime();
+
+    const eventDate = getEventDate(data);
+    data = { ...data, ...eventDate };
 
     await setDoc(collectionRef, {
       ...data,
       createdAt: new Date().getTime(),
     });
   };
-
   const createdBy = () => ({
     id: AUTH.currentUser?.uid || '',
     displayName: AUTH.currentUser?.displayName || '',

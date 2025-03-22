@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ContentCard from '../EventCard';
 import './index.scss';
 import useAuth from '@/context/AuthContext';
@@ -34,7 +34,7 @@ const EventsContainer: React.FC = () => {
   }, []);
 
   const handleEventClick = (eventId: string) => {
-    router.push(`/event-detail?id=${eventId}`);
+    router.push(`/event-detail/${eventId}`);
   };
 
   return (

@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { formatDate, formatTime } from '@/utils/dateUtils';
+import { useParams } from 'next/navigation';
 import {
   Container,
   Typography,
@@ -28,26 +29,24 @@ import {
   Favorite,
 } from '@mui/icons-material';
 
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  date: string;
+  time: string;
+  createdBy?: {
+    id: number;
+    displayName?: string;
+  };
+}
+
 const EventDetail = () => {
   const [liked, setLiked] = useState(false);
   const [isAttending, setIsAttending] = useState(false);
   const { getAll } = useAuth();
-  const searchParams = useSearchParams();
-  const eventId = searchParams.get('id');
-
-  interface Event {
-    id: string;
-    title: string;
-    description: string;
-    location: string;
-    date: string;
-    time: string;
-    createdBy?: {
-      id: number;
-      displayName?: string;
-    };
-  }
-
+  const { id } = useParams();
   const [events, setEvents] = useState<Event[]>([]);
 
   const getEvents = useCallback(async () => {
@@ -59,7 +58,7 @@ const EventDetail = () => {
     getEvents();
   }, [getEvents]);
 
-  const event = events.find((event) => event.id === eventId);
+  const event = events.find((event) => event.id === id);
 
   if (!event) {
     return (
@@ -69,18 +68,9 @@ const EventDetail = () => {
     );
   }
 
-  const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const formattedDate = formatDate(event.date);
 
-  const formattedTime = new Date(event.time).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  });
+  const formattedTime = formatTime(event.time);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
